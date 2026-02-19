@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agentic AI Orchestration | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .key-point {
+            background: white;
+            border: 2px solid var(--forest-accent);
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <a href="../index.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: inline-block; margin-bottom: 20px;">← Back to Overview</a>
+            <h1 style="font-family: var(--font-display); font-size: 4em; margin-bottom: 20px; font-weight: 400;">Agentic AI Orchestration Layer</h1>
+            <p style="font-size: 1.3em; opacity: 0.95; max-width: 800px;">Autonomous agents that understand intent, orchestrate multi-service journeys, and transform reactive portals into proactive assistance</p>
+            <div style="margin-top: 30px;">
+                <span style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 2px; margin-right: 15px;">🔄 2026-2028</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 2px;">🤖 LLM-Powered</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-nav">
+        <div class="container">
+            <a href="#overview">Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#patterns">Patterns</a>
+            <a href="#safety">Safety</a>
+            <a href="#integration">Integration</a>
+            <a href="#governance">Governance</a>
+        </div>
+    </div>
+
+    <div class="tech-content">
+        <section id="overview" class="tech-section">
+            <h2>Executive Overview</h2>
+            
+            <div class="warning-box">
+                <h3 style="margin-top: 0;">⚠️ Critical Context</h3>
+                <p>Agentic AI represents a <strong>fundamental shift</strong> in how public services operate. Rather than citizens navigating bureaucracy, AI agents navigate on their behalf. This capability demands exceptional care around safety, transparency, and human oversight.</p>
+            </div>
+
+            <p>The Agentic AI Layer transforms government digital services from <strong>passive portals</strong> (where citizens must know what to do) to <strong>active assistants</strong> (where AI understands intent and executes journeys).</p>
+
+            <h3>The Problem: Orchestration Burden</h3>
+            <p>Current reality:</p>
+            <ul>
+                <li>Citizen faces life event (job loss, new child, moving)</li>
+                <li>Must discover 8-15 relevant services across multiple agencies</li>
+                <li>Navigate each portal independently</li>
+                <li>Re-enter data repeatedly</li>
+                <li>Track status across disconnected systems</li>
+                <li>Miss eligible benefits due to complexity</li>
+            </ul>
+
+            <h3>The Solution: AI-Orchestrated Journeys</h3>
+            <p>With Agentic AI:</p>
+            <ol>
+                <li><strong>Citizen expresses intent:</strong> "I just lost my job"</li>
+                <li><strong>Agent understands context:</strong> Analyzes profile, eligibility, options</li>
+                <li><strong>Agent proposes plan:</strong> "I can help with 6 services: unemployment benefits, housing support, retraining programs..."</li>
+                <li><strong>Citizen approves:</strong> Reviews and authorizes agent actions</li>
+                <li><strong>Agent executes:</strong> Files applications, monitors status, handles follow-ups</li>
+                <li><strong>Agent reports:</strong> "3 approved, 1 pending documentation, 2 scheduled"</li>
+            </ol>
+
+            <div class="highlight">
+                <h3 style="margin-top: 0;">Key Principle: Human-in-the-Loop</h3>
+                <p>Agents <strong>propose and execute</strong> but never make consequential decisions without explicit human approval. Transparency and auditability are non-negotiable requirements.</p>
+            </div>
+        </section>
+
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>System Components</h3>
+
+            <div class="arch-diagram">
+┌────────────────────────────────────────────────────────────────┐
+│                    Agentic AI Layer                             │
+├────────────────────────────────────────────────────────────────┤
+│                                                                  │
+│  ┌──────────────┐  ┌───────────────┐  ┌──────────────────┐   │
+│  │   Intent     │  │    Planning   │  │   Execution      │   │
+│  │ Understanding│→ │    Engine     │→ │     Engine       │   │
+│  │   (LLM)      │  │  (Reasoning)  │  │   (Actions)      │   │
+│  └──────────────┘  └───────────────┘  └──────────────────┘   │
+│         ↓                  ↓                     ↓              │
+│  ┌──────────────────────────────────────────────────────┐     │
+│  │            Knowledge & Context Layer                  │     │
+│  ├──────────────────────────────────────────────────────┤     │
+│  │  • User Profile & History                            │     │
+│  │  • Service Catalog (Interop Platform)                │     │
+│  │  • Eligibility Rules (SHACL)                         │     │
+│  │  • Legal Constraints                                 │     │
+│  └──────────────────────────────────────────────────────┘     │
+│         ↓                                                       │
+│  ┌──────────────────────────────────────────────────────┐     │
+│  │              Tool Invocation Layer                    │     │
+│  ├──────────────────────────────────────────────────────┤     │
+│  │  • API Catalog Integration                           │     │
+│  │  • Data Space Connectors                             │     │
+│  │  • Wallet Credential Requests                        │     │
+│  │  • Event Publishers                                  │     │
+│  └──────────────────────────────────────────────────────┘     │
+│         ↓                                                       │
+│  ┌──────────────────────────────────────────────────────┐     │
+│  │            Safety & Oversight Layer                   │     │
+│  ├──────────────────────────────────────────────────────┤     │
+│  │  • Action Approval Workflow                          │     │
+│  │  • Audit Logging (immutable)                         │     │
+│  │  • Explainability Engine                             │     │
+│  │  • Anomaly Detection                                 │     │
+│  └──────────────────────────────────────────────────────┘     │
+│                                                                  │
+└────────────────────────────────────────────────────────────────┘
+                              ↓
+                    ┌──────────────────────┐
+                    │  Public Services     │
+                    │  (APIs, Events, VCs) │
+                    └──────────────────────┘
+            </div>
+
+            <h3>Technology Stack</h3>
+
+            <table class="spec-table">
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td><strong>LLM Foundation</strong></td>
+                    <td>GPT-4, Claude 3, Llama 3 (multi-model)</td>
+                    <td>Intent understanding, reasoning, natural language</td>
+                </tr>
+                <tr>
+                    <td><strong>Orchestration</strong></td>
+                    <td>LangGraph, AutoGPT, Custom</td>
+                    <td>Multi-step plan execution, state management</td>
+                </tr>
+                <tr>
+                    <td><strong>Tool Framework</strong></td>
+                    <td>OpenAI Function Calling, Anthropic Tool Use</td>
+                    <td>API invocation, structured actions</td>
+                </tr>
+                <tr>
+                    <td><strong>Knowledge Base</strong></td>
+                    <td>Vector DB (Pinecone, Weaviate), Graph DB</td>
+                    <td>Service catalog, eligibility rules, precedents</td>
+                </tr>
+                <tr>
+                    <td><strong>Workflow Engine</strong></td>
+                    <td>Temporal, Apache Airflow</td>
+                    <td>Reliable execution, retries, compensation</td>
+                </tr>
+                <tr>
+                    <td><strong>Audit System</strong></td>
+                    <td>Event Sourcing, Blockchain (critical paths)</td>
+                    <td>Immutable audit trail, compliance</td>
+                </tr>
+            </table>
+
+            <h3>Multi-Agent Coordination</h3>
+
+            <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────┐
+│              Multi-Agent System                          │
+├─────────────────────────────────────────────────────────┤
+│                                                           │
+│  ┌─────────────┐  ┌──────────────┐  ┌──────────────┐  │
+│  │   Planner   │→ │  Researcher  │→ │   Executor   │  │
+│  │    Agent    │  │    Agent     │  │    Agent     │  │
+│  └─────────────┘  └──────────────┘  └──────────────┘  │
+│         ↓                  ↓                 ↓           │
+│  ┌────────────────────────────────────────────────┐    │
+│  │          Supervisor Agent                      │    │
+│  │  (Coordinates, validates, human escalation)    │    │
+│  └────────────────────────────────────────────────┘    │
+│                                                           │
+└─────────────────────────────────────────────────────────┘
+
+Example Journey:
+1. Planner: "User needs unemployment benefits + retraining"
+2. Researcher: "Found 3 eligible programs, here are requirements"
+3. Planner: "Best path: Apply to benefits first, then training"
+4. Executor: "Fetching credentials from wallet..."
+5. Executor: "Submitting application via API..."
+6. Supervisor: "Action requires user approval ↓ PAUSE"
+7. [User approves]
+8. Executor: "Confirmed. Application submitted."
+            </div>
+        </section>
+
+        <section id="patterns" class="tech-section">
+            <h2>Implementation Patterns</h2>
+
+            <h3>Pattern 1: Intent → Plan → Act</h3>
+
+            <div class="code-block">
+# Example: LangGraph implementation
+
+from langgraph.graph import StateGraph, END
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts import ChatPromptTemplate
+
+# Define state
+class AgentState(TypedDict):
+    user_input: str
+    intent: str
+    plan: List[str]
+    results: List[dict]
+    requires_approval: bool
+
+# Intent understanding node
+def understand_intent(state: AgentState):
+    llm = ChatOpenAI(model="gpt-4")
+    prompt = ChatPromptTemplate.from_template(
+        "User said: {input}\nExtract intent and context."
+    )
+    response = llm.invoke(prompt.format(input=state["user_input"]))
+    return {"intent": response.content}
+
+# Planning node
+def create_plan(state: AgentState):
+    llm = ChatOpenAI(model="gpt-4")
+    prompt = ChatPromptTemplate.from_template(
+        "Intent: {intent}\nAvailable services: {services}\nCreate action plan."
+    )
+    services = get_relevant_services(state["intent"])
+    response = llm.invoke(prompt.format(
+        intent=state["intent"], 
+        services=services
+    ))
+    return {"plan": parse_plan(response.content)}
+
+# Execution node
+def execute_actions(state: AgentState):
+    results = []
+    for action in state["plan"]:
+        # Check if action requires approval
+        if is_consequential(action):
+            return {
+                "results": results, 
+                "requires_approval": True
+            }
+        # Execute action
+        result = invoke_tool(action)
+        results.append(result)
+    return {"results": results}
+
+# Build graph
+workflow = StateGraph(AgentState)
+workflow.add_node("understand", understand_intent)
+workflow.add_node("plan", create_plan)
+workflow.add_node("execute", execute_actions)
+workflow.add_node("approval_gate", human_approval_required)
+
+workflow.set_entry_point("understand")
+workflow.add_edge("understand", "plan")
+workflow.add_edge("plan", "execute")
+workflow.add_conditional_edges(
+    "execute",
+    lambda state: "approval_gate" if state.get("requires_approval") else END
+)
+            </div>
+
+            <h3>Pattern 2: Tool Invocation with Safety</h3>
+
+            <div class="code-block">
+# Tool definition with safety metadata
+
+from typing import Annotated
+
+@tool
+def submit_benefit_application(
+    user_id: Annotated[str, "User identifier"],
+    benefit_type: Annotated[str, "Benefit type code"],
+    amount_requested: Annotated[float, "Requested monthly amount"]
+) -> dict:
+    """
+    Submit application for social benefits.
+    
+    Safety Level: HIGH - Requires human approval
+    Data Access: Personal financial data
+    Legal Basis: Social Security Act §42
+    Audit Required: Yes
+    Reversible: No (must file correction)
+    """
+    
+    # Log for audit
+    audit_log.record({
+        "action": "benefit_application_submit",
+        "user_id": user_id,
+        "timestamp": datetime.now(),
+        "agent_session": get_session_id(),
+        "approval_status": "pending"
+    })
+    
+    # Submit via API
+    response = benefits_api.submit_application({
+        "applicant": user_id,
+        "type": benefit_type,
+        "amount": amount_requested,
+        "source": "ai_agent",
+        "requires_review": True
+    })
+    
+    return {
+        "application_id": response["id"],
+        "status": "submitted",
+        "estimated_decision": response["decision_date"]
+    }
+
+# Agent invokes tool with safety check
+
+def invoke_with_safety(tool_name, params):
+    tool = get_tool(tool_name)
+    
+    # Safety metadata check
+    if tool.safety_level == "HIGH":
+        # Require human approval
+        approval = request_approval({
+            "action": tool_name,
+            "params": params,
+            "explanation": tool.__doc__,
+            "consequences": tool.get_consequences(params)
+        })
+        
+        if not approval.granted:
+            return {
+                "status": "rejected",
+                "reason": approval.reason
+            }
+    
+    # Execute
+    result = tool(**params)
+    
+    # Log
+    audit_log.record({
+        "tool": tool_name,
+        "result": result,
+        "approval_id": approval.id if approval else None
+    })
+    
+    return result
+            </div>
+
+            <h3>Pattern 3: Explainability</h3>
+
+            <div class="code-block">
+# Every agent action must be explainable
+
+class ExplainableAction:
+    def __init__(self, action_type, params, context):
+        self.action_type = action_type
+        self.params = params
+        self.context = context
+        self.reasoning = None
+        self.alternatives_considered = []
+    
+    def explain(self):
+        """Generate human-readable explanation"""
+        return {
+            "what": f"I plan to {self.action_type}",
+            "why": self.reasoning,
+            "how": self.describe_mechanism(),
+            "alternatives": [
+                f"I also considered {alt} but chose this because {reason}"
+                for alt, reason in self.alternatives_considered
+            ],
+            "consequences": self.predict_outcomes(),
+            "reversibility": self.is_reversible(),
+            "legal_basis": self.get_legal_authority()
+        }
+    
+    def describe_mechanism(self):
+        return f"This will call {self.get_api_endpoint()} with your data"
+    
+    def predict_outcomes(self):
+        return {
+            "expected": "Application processed within 5 days",
+            "best_case": "Approval in 3 days",
+            "worst_case": "Additional documentation requested",
+            "failure_modes": ["Missing required document", "Eligibility check fails"]
+        }
+
+# Usage in approval UI
+
+def show_approval_request(action: ExplainableAction):
+    explanation = action.explain()
+    
+    ui.show({
+        "title": "Agent Requests Approval",
+        "action": explanation["what"],
+        "reason": explanation["why"],
+        "mechanism": explanation["how"],
+        "outcomes": explanation["consequences"],
+        "can_undo": explanation["reversibility"],
+        "buttons": ["Approve", "Reject", "Ask Questions"]
+    })
+            </div>
+        </section>
+
+        <section id="safety" class="tech-section">
+            <h2>Safety & Governance</h2>
+
+            <div class="warning-box">
+                <h3 style="margin-top: 0;">⚠️ Non-Negotiable Safety Requirements</h3>
+                <ul>
+                    <li><strong>No autonomous decisions</strong> for consequential actions</li>
+                    <li><strong>Immutable audit trail</strong> for all actions</li>
+                    <li><strong>Explainability</strong> for every recommendation</li>
+                    <li><strong>Human override</strong> always available</li>
+                    <li><strong>Harm prevention</strong> built into foundation</li>
+                </ul>
+            </div>
+
+            <h3>Safety Classification</h3>
+
+            <table class="spec-table">
+                <tr>
+                    <th>Level</th>
+                    <th>Action Type</th>
+                    <th>Approval Required</th>
+                    <th>Examples</th>
+                </tr>
+                <tr style="background: rgba(74, 124, 44, 0.05);">
+                    <td><strong>LOW</strong></td>
+                    <td>Read-only queries</td>
+                    <td>No</td>
+                    <td>Check application status, retrieve documents</td>
+                </tr>
+                <tr style="background: rgba(184, 151, 90, 0.05);">
+                    <td><strong>MEDIUM</strong></td>
+                    <td>Data updates</td>
+                    <td>Implicit (batch approval)</td>
+                    <td>Update contact info, schedule appointment</td>
+                </tr>
+                <tr style="background: rgba(157, 124, 90, 0.1);">
+                    <td><strong>HIGH</strong></td>
+                    <td>Consequential actions</td>
+                    <td><strong>Explicit (per-action)</strong></td>
+                    <td>Submit benefit application, file tax return</td>
+                </tr>
+                <tr style="background: rgba(220, 53, 69, 0.05);">
+                    <td><strong>CRITICAL</strong></td>
+                    <td>Irreversible/Legal</td>
+                    <td><strong>Explicit + 2FA</strong></td>
+                    <td>Terminate service, file complaint, legal consent</td>
+                </tr>
+            </table>
+
+            <h3>Audit Requirements</h3>
+
+            <div class="code-block">
+# Immutable audit log structure
+
+{
+  "audit_id": "550e8400-e29b-41d4-a716-446655440000",
+  "timestamp": "2026-02-19T14:30:00Z",
+  "session_id": "agent_session_123456",
+  "user_id": "010180-123A",
+  "action": "benefit_application_submit",
+  "parameters": {
+    "benefit_type": "unemployment",
+    "amount": 1200
+  },
+  "reasoning": {
+    "intent": "User requested help with job loss",
+    "plan_step": "3/5 - Submit unemployment benefits",
+    "model_used": "gpt-4-turbo",
+    "confidence": 0.94
+  },
+  "approval": {
+    "required": true,
+    "granted": true,
+    "granted_by": "user",
+    "grant_timestamp": "2026-02-19T14:29:45Z",
+    "grant_method": "mobile_app_confirm"
+  },
+  "result": {
+    "status": "success",
+    "application_id": "APP-2026-0987654",
+    "api_response_time_ms": 234
+  },
+  "legal_basis": "Social Security Act §42",
+  "data_accessed": ["income_history", "employment_status"],
+  "reversible": false,
+  "hash": "a7f3e9c2...",  // Blockchain anchor for critical actions
+  "signature": "..."       // Digital signature for integrity
+}
+            </div>
+
+            <h3>Harm Prevention</h3>
+
+            <div class="highlight">
+                <h3 style="margin-top: 0;">Built-in Safeguards</h3>
+                <ul>
+                    <li><strong>Hallucination detection:</strong> Cross-reference against knowledge base, flag uncertainty</li>
+                    <li><strong>Action validation:</strong> Verify eligibility before suggesting actions</li>
+                    <li><strong>Anomaly detection:</strong> Flag unusual patterns (sudden spike in applications)</li>
+                    <li><strong>Rate limiting:</strong> Prevent abuse (max 10 consequential actions/day)</li>
+                    <li><strong>Human escalation:</strong> Automatic escalation when confidence &lt; 80%</li>
+                    <li><strong>Kill switch:</strong> Instant agent disable capability for admins</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="integration" class="tech-section">
+            <h2>Integration with Infrastructure</h2>
+
+            <h3>Capability Synergies</h3>
+
+            <div class="arch-diagram">
+┌────────────────────────────────────────────────────────┐
+│                  Agentic AI Integration                 │
+├────────────────────────────────────────────────────────┤
+│                                                          │
+│  Uses Interoperability Platform:                        │
+│    → Discover services via semantic catalog            │
+│    → Understand eligibility via SHACL rules            │
+│    → Access API specs (OpenAPI + JSON-LD)              │
+│                                                          │
+│  Uses EUDI Wallet:                                      │
+│    → Request credentials on user's behalf              │
+│    → Present proofs to services (with approval)        │
+│    → Store received attestations                       │
+│                                                          │
+│  Uses Event-Driven Architecture:                        │
+│    → Subscribe to relevant life/business events        │
+│    → Proactively suggest actions                       │
+│    → Monitor application status changes                │
+│                                                          │
+│  Uses Data Spaces:                                      │
+│    → Query federated data (with consent)               │
+│    → Aggregate information across domains              │
+│    → Respect usage policies automatically              │
+│                                                          │
+│  Uses API Catalog:                                      │
+│    → Discover available services                       │
+│    → Generate API calls from natural language          │
+│    → Handle authentication and rate limits             │
+│                                                          │
+└────────────────────────────────────────────────────────┘
+            </div>
+
+            <h3>Example: Birth Registration Journey</h3>
+
+            <div class="code-block">
+# Orchestration Flow
+
+Event: Hospital issues birth certificate VC
+  ↓
+Agent detects event (subscribed to birth events)
+  ↓
+Agent analyzes user's situation:
+  - New parent
+  - Eligible for child benefits
+  - Needs daycare enrollment
+  - Tax situation changes
+  ↓
+Agent creates plan:
+  1. Register child (automatic via event)
+  2. Apply for child benefits (requires approval)
+  3. Search daycare options (automated)
+  4. Update tax card (requires approval)
+  5. Notify employer (user action)
+  ↓
+Agent presents plan to user:
+  "I detected your child's birth certificate. I can help with 5 tasks.
+   May I proceed with [detailed list + explanations]?"
+  ↓
+User approves items 2 and 4
+  ↓
+Agent executes:
+  - Requests birth certificate VC from wallet
+  - Submits child benefit application via Kela API
+  - Updates tax office via API
+  - Generates daycare comparison report
+  ↓
+Agent reports results:
+  "✅ Child benefits: Applied (decision in 5 days)
+   ✅ Tax card: Updated (new rate: 18.5%)
+   📋 Daycare options: 3 nearby centers with availability
+   ⏸️ Employer notification: Awaiting your action"
+            </div>
+        </section>
+
+        <section id="governance" class="tech-section">
+            <h2>Governance & Ethics</h2>
+
+            <h3>Oversight Bodies</h3>
+
+            <table class="spec-table">
+                <tr>
+                    <th>Body</th>
+                    <th>Role</th>
+                    <th>Authority</th>
+                </tr>
+                <tr>
+                    <td><strong>AI Ethics Board</strong></td>
+                    <td>Policy framework, ethical guidelines</td>
+                    <td>Approve/reject agent capabilities</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Protection Authority</strong></td>
+                    <td>Privacy compliance, GDPR adherence</td>
+                    <td>Audit data access, enforce rights</td>
+                </tr>
+                <tr>
+                    <td><strong>Technical Oversight</strong></td>
+                    <td>Architecture review, security</td>
+                    <td>Approve system changes, incident response</td>
+                </tr>
+                <tr>
+                    <td><strong>Citizen Advisory Panel</strong></td>
+                    <td>User experience, trust, feedback</td>
+                    <td>Recommend improvements, flag concerns</td>
+                </tr>
+            </table>
+
+            <h3>Ethical Principles</h3>
+
+            <div class="key-point">
+                <strong>1. Human Agency</strong><br>
+                Citizens retain ultimate control. Agents assist, never replace, human decision-making.
+            </div>
+
+            <div class="key-point">
+                <strong>2. Transparency</strong><br>
+                All agent reasoning must be explainable in plain language. No "black box" decisions.
+            </div>
+
+            <div class="key-point">
+                <strong>3. Fairness</strong><br>
+                Agents must not discriminate. Regular audits for bias in recommendations and outcomes.
+            </div>
+
+            <div class="key-point">
+                <strong>4. Privacy</strong><br>
+                Agents access only necessary data. Full compliance with GDPR including data minimization.
+            </div>
+
+            <div class="key-point">
+                <strong>5. Accountability</strong><br>
+                Clear responsibility chains. Audit trails link every action to human approval.
+            </div>
+
+            <div class="key-point">
+                <strong>6. Opt-Out</strong><br>
+                Citizens can always choose traditional services. Agent assistance is optional.
+            </div>
+        </section>
+
+        <section class="tech-section">
+            <h2>Roadmap & Pilots</h2>
+
+            <h3>Phase 1: Limited Pilots (2026)</h3>
+            <ul>
+                <li>Read-only information assistants (LOW safety level only)</li>
+                <li>100 volunteer users in 2 municipalities</li>
+                <li>Focus: Child benefits, housing support</li>
+                <li>Success criteria: 80% user satisfaction, zero privacy incidents</li>
+            </ul>
+
+            <h3>Phase 2: Action Pilots (2027)</h3>
+            <ul>
+                <li>Extend to MEDIUM and HIGH safety levels</li>
+                <li>1,000 users across 10 services</li>
+                <li>Multi-agent coordination (planner + executor)</li>
+                <li>Integration with EUDI Wallet</li>
+            </ul>
+
+            <h3>Phase 3: National Rollout (2028)</h3>
+            <ul>
+                <li>General availability for all citizens (opt-in)</li>
+                <li>50+ government services</li>
+                <li>Proactive event-driven suggestions</li>
+                <li>Cross-border service orchestration (EU)</li>
+            </ul>
+
+            <div class="warning-box">
+                <h3 style="margin-top: 0;">Risk Mitigation</h3>
+                <p><strong>Each phase gate requires:</strong></p>
+                <ul>
+                    <li>Independent security audit (passed)</li>
+                    <li>Ethics board approval</li>
+                    <li>Privacy impact assessment</li>
+                    <li>User satisfaction >75%</li>
+                    <li>Zero critical incidents</li>
+                </ul>
+                <p>Failure to meet criteria = pause deployment, address issues, re-evaluate.</p>
+            </div>
+        </section>
+
+        <div style="margin-top: 80px; padding: 40px; background: var(--sand); border-radius: 4px; text-align: center;">
+            <h3 style="font-family: var(--font-display); font-size: 2em; margin-bottom: 20px;">Join the Discussion</h3>
+            <p style="margin-bottom: 30px;">Agentic AI in government is uncharted territory. Your feedback shapes the future.</p>
+            <a href="https://github.com/jgmikael/realdigitalization/issues" target="_blank" class="btn btn-primary" style="margin-right: 15px;">Share Feedback →</a>
+            <a href="../index.html" class="btn btn-secondary">← Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>

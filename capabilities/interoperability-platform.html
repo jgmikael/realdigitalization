@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finnish Interoperability Platform | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .key-point {
+            background: white;
+            border: 2px solid var(--forest-accent);
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <a href="../index.html" style="color: rgba(255,255,255,0.8); text-decoration: none; display: inline-block; margin-bottom: 20px;">← Back to Overview</a>
+            <h1 style="font-family: var(--font-display); font-size: 4em; margin-bottom: 20px; font-weight: 400;">Finnish Interoperability Platform</h1>
+            <p style="font-size: 1.3em; opacity: 0.95; max-width: 800px;">National semantic infrastructure enabling standardized, machine-readable data products across the entire public and private ecosystem</p>
+            <div style="margin-top: 30px;">
+                <span style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 2px; margin-right: 15px;">✅ Production</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 8px 16px; border-radius: 2px;">🔗 yhteentoimiva.suomi.fi</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tech-nav">
+        <div class="container">
+            <a href="#overview">Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#stack">Semantic Stack</a>
+            <a href="#implementation">Implementation</a>
+            <a href="#integration">Integration</a>
+            <a href="#governance">Governance</a>
+        </div>
+    </div>
+
+    <div class="tech-content">
+        <section id="overview" class="tech-section">
+            <h2>Executive Overview</h2>
+            <p>The Finnish Interoperability Platform (<strong>yhteentoimiva.suomi.fi</strong>) represents a national investment in semantic interoperability—the foundational infrastructure enabling organizations to speak the same "language" when exchanging data, regardless of their internal systems or organizational boundaries.</p>
+
+            <div class="highlight">
+                <h3 style="margin-top: 0;">The Core Problem</h3>
+                <p>Traditional data exchange fails because different organizations use different terms, structures, and meanings for the same concepts. One agency's "citizen" may be another's "customer" or "service user." Without shared semantics, integration becomes expensive, brittle, and limited to bilateral point-to-point connections.</p>
+            </div>
+
+            <p>The platform provides three integrated layers:</p>
+            
+            <div class="key-point">
+                <strong>1. sanastot.suomi.fi (Vocabulary Service)</strong><br>
+                SKOS-based terminologies defining concepts, relationships, and multilingual labels. The conceptual foundation.
+            </div>
+
+            <div class="key-point">
+                <strong>2. tietomallit.suomi.fi (Data Model Service)</strong><br>
+                OWL ontologies and SHACL profiles defining data structures, constraints, and validation rules. The structural layer.
+            </div>
+
+            <div class="key-point">
+                <strong>3. kommentit.suomi.fi (Comment Service)</strong><br>
+                Collaborative governance platform for stakeholder engagement, feedback, and consensus-building.
+            </div>
+        </section>
+
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>System Components</h3>
+
+            <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────┐
+│                    Interoperability Platform                 │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  ┌───────────────┐  ┌──────────────┐  ┌─────────────────┐  │
+│  │  Vocabularies │  │ Data Models  │  │   Governance    │  │
+│  │    (SKOS)     │  │  (OWL/SHACL) │  │   (Comments)    │  │
+│  │               │  │              │  │                 │  │
+│  │ sanastot.     │  │ tietomallit. │  │  kommentit.     │  │
+│  │ suomi.fi      │  │ suomi.fi     │  │  suomi.fi       │  │
+│  └───────┬───────┘  └──────┬───────┘  └────────┬────────┘  │
+│          │                  │                   │            │
+│          └──────────────────┴───────────────────┘            │
+│                              │                               │
+└──────────────────────────────┼───────────────────────────────┘
+                               │
+                               ↓
+            ┌──────────────────────────────────────┐
+            │         Integration Patterns          │
+            ├──────────────────────────────────────┤
+            │  • REST APIs (JSON-LD)               │
+            │  • SPARQL Endpoints                  │
+            │  • Content Negotiation               │
+            │  • Linked Data Principles            │
+            │  • Federation Support                │
+            └──────────────────────────────────────┘
+                               │
+                               ↓
+            ┌──────────────────────────────────────┐
+            │    Consuming Organizations           │
+            ├──────────────────────────────────────┤
+            │  Government | Private | Third Sector │
+            └──────────────────────────────────────┘
+            </div>
+
+            <h3>Infrastructure Specifications</h3>
+
+            <table class="spec-table">
+                <tr>
+                    <th>Component</th>
+                    <th>Technology</th>
+                    <th>Standards</th>
+                </tr>
+                <tr>
+                    <td><strong>Vocabulary Service</strong></td>
+                    <td>Apache Jena Fuseki, GraphDB</td>
+                    <td>SKOS, RDF, RDFS, Dublin Core</td>
+                </tr>
+                <tr>
+                    <td><strong>Data Model Service</strong></td>
+                    <td>TopBraid, Custom UI</td>
+                    <td>OWL 2, SHACL, JSON-LD, Turtle</td>
+                </tr>
+                <tr>
+                    <td><strong>API Layer</strong></td>
+                    <td>Spring Boot, REST</td>
+                    <td>OpenAPI 3.0, JSON-LD 1.1</td>
+                </tr>
+                <tr>
+                    <td><strong>Storage</strong></td>
+                    <td>Triple Store (RDF native)</td>
+                    <td>SPARQL 1.1, Named Graphs</td>
+                </tr>
+                <tr>
+                    <td><strong>Authentication</strong></td>
+                    <td>SAML 2.0, OAuth 2.0</td>
+                    <td>Suomi.fi e-Identification</td>
+                </tr>
+            </table>
+
+            <h3>Network Topology</h3>
+            <p>The platform operates in a <strong>hub-and-spoke model</strong> where:</p>
+            <ul>
+                <li><strong>Hub:</strong> Central semantic repositories (sanastot, tietomallit)</li>
+                <li><strong>Spokes:</strong> Organizational implementations referencing central semantics</li>
+                <li><strong>Federation:</strong> Ability to reference external vocabularies (EU, international)</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Key Architectural Decision:</strong> Rather than forcing all data through a central exchange, the platform provides <em>semantic alignment</em> so organizations can exchange data peer-to-peer while maintaining meaning.
+            </div>
+        </section>
+
+        <section id="stack" class="tech-section">
+            <h2>The W3C Semantic Web Stack</h2>
+
+            <h3>Layer 1: SKOS Vocabularies (Concepts)</h3>
+            <p>SKOS (Simple Knowledge Organization System) defines <strong>concepts</strong>—the fundamental ideas that data represents.</p>
+
+            <div class="code-block">
+# Example: Person concept in Finnish vocabulary
+
+@prefix skos: &lt;http://www.w3.org/2004/02/skos/core#&gt; .
+@prefix dct: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;https://iri.suomi.fi/terminology/core/Person&gt;
+    a skos:Concept ;
+    skos:prefLabel "Henkilö"@fi ;
+    skos:prefLabel "Person"@en ;
+    skos:definition "Yksilöllinen ihminen"@fi ;
+    skos:definition "Individual human being"@en ;
+    skos:broader &lt;https://iri.suomi.fi/terminology/core/Agent&gt; ;
+    skos:related &lt;https://iri.suomi.fi/terminology/core/NaturalPerson&gt; ;
+    dct:created "2020-01-15"^^xsd:date .
+            </div>
+
+            <p><strong>Purpose:</strong> Ensures everyone agrees on what "Person" means before building data models.</p>
+
+            <h3>Layer 2: OWL Ontologies (Structure)</h3>
+            <p>OWL (Web Ontology Language) defines <strong>classes, properties, and relationships</strong>—the structure of data.</p>
+
+            <div class="code-block">
+# Example: Person class in data model
+
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@prefix dct: &lt;http://purl.org/dc/terms/&gt; .
+
+&lt;https://iri.suomi.fi/model/core/Person&gt;
+    a owl:Class ;
+    rdfs:label "Person"@en ;
+    rdfs:comment "Represents an individual human being"@en ;
+    dct:subject &lt;https://iri.suomi.fi/terminology/core/Person&gt; ; # ← Links to SKOS
+    rdfs:subClassOf &lt;https://iri.suomi.fi/model/core/Agent&gt; .
+
+&lt;https://iri.suomi.fi/model/core/birthDate&gt;
+    a owl:DatatypeProperty ;
+    rdfs:label "Birth date"@en ;
+    rdfs:domain &lt;https://iri.suomi.fi/model/core/Person&gt; ;
+    rdfs:range xsd:date ;
+    dct:subject &lt;https://iri.suomi.fi/terminology/core/birthDate&gt; .
+            </div>
+
+            <p><strong>Purpose:</strong> Defines how to structure Person data—what properties exist, what types they accept, what relationships are valid.</p>
+
+            <h3>Layer 3: SHACL Constraints (Validation)</h3>
+            <p>SHACL (Shapes Constraint Language) defines <strong>validation rules</strong>—what constitutes valid data.</p>
+
+            <div class="code-block">
+# Example: Person validation shape
+
+@prefix sh: &lt;http://www.w3.org/ns/shacl#&gt; .
+
+&lt;https://iri.suomi.fi/model/core/PersonShape&gt;
+    a sh:NodeShape ;
+    sh:targetClass &lt;https://iri.suomi.fi/model/core/Person&gt; ;
+    sh:property [
+        sh:path &lt;https://iri.suomi.fi/model/core/birthDate&gt; ;
+        sh:datatype xsd:date ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:lessThan &lt;https://iri.suomi.fi/model/core/deathDate&gt; ;
+    ] ;
+    sh:property [
+        sh:path &lt;https://iri.suomi.fi/model/core/givenName&gt; ;
+        sh:datatype xsd:string ;
+        sh:minCount 1 ;
+        sh:pattern "^[A-Za-zÄÖÅäöå\s-]+$" ;
+    ] .
+            </div>
+
+            <p><strong>Purpose:</strong> Ensures data quality—birth date is required, must be before death date, name must be valid Finnish characters.</p>
+
+            <h3>The Complete Stack in Practice</h3>
+
+            <div class="highlight">
+                <h3 style="margin-top: 0;">Example: New Healthcare Service</h3>
+                <p><strong>Step 1:</strong> Developer searches sanastot.suomi.fi for "Patient" concept</p>
+                <p><strong>Step 2:</strong> Finds SKOS concept with definition, multilingual labels, relationships</p>
+                <p><strong>Step 3:</strong> Navigates to tietomallit.suomi.fi to find OWL classes using that concept</p>
+                <p><strong>Step 4:</strong> Discovers Healthcare data model with Patient class</p>
+                <p><strong>Step 5:</strong> Downloads SHACL profile defining validation rules</p>
+                <p><strong>Step 6:</strong> Generates JSON-LD context and JSON Schema</p>
+                <p><strong>Step 7:</strong> Implements service using standard structures</p>
+                <p><strong>Result:</strong> Automatic interoperability with all other services using the same semantic foundation</p>
+            </div>
+        </section>
+
+        <section id="implementation" class="tech-section">
+            <h2>Implementation Patterns</h2>
+
+            <h3>Pattern 1: Semantic API Design</h3>
+
+            <div class="code-block">
+# REST API with JSON-LD response
+
+GET /api/persons/123456789
+Accept: application/ld+json
+
+Response:
+{
+  "@context": "https://iri.suomi.fi/context/core/person-v1.jsonld",
+  "@type": "Person",
+  "@id": "https://example.fi/person/123456789",
+  "givenName": "Matti",
+  "familyName": "Virtanen",
+  "birthDate": "1980-01-01",
+  "nationality": {
+    "@type": "Country",
+    "@id": "https://iri.suomi.fi/codelist/country/FI",
+    "code": "FI",
+    "name": "Finland"
+  }
+}
+            </div>
+
+            <p><strong>Key Features:</strong></p>
+            <ul>
+                <li><code>@context</code> links to semantic definitions</li>
+                <li><code>@type</code> declares OWL class</li>
+                <li><code>@id</code> provides globally unique identifier</li>
+                <li>Properties map to OWL properties via context</li>
+                <li>Values can be validated against SHACL shapes</li>
+            </ul>
+
+            <h3>Pattern 2: SHACL-Driven Validation</h3>
+
+            <div class="code-block">
+// Server-side validation using Apache Jena
+
+import org.apache.jena.shacl.*;
+
+// Load data graph
+Model dataGraph = RDFDataMgr.loadModel("person-data.ttl");
+
+// Load shapes graph
+Graph shapesGraph = RDFDataMgr.loadGraph("person-shape.ttl");
+
+// Validate
+ValidationReport report = ShaclValidator.get().validate(
+    shapesGraph, 
+    dataGraph.getGraph()
+);
+
+if (!report.conforms()) {
+    // Handle violations
+    report.getEntries().forEach(entry -> {
+        System.out.println("Violation: " + entry.message());
+        System.out.println("Path: " + entry.focusNode());
+    });
+}
+            </div>
+
+            <h3>Pattern 3: Vocabulary Reuse</h3>
+
+            <div class="code-block">
+# Organization can extend national vocabularies
+
+@prefix national: &lt;https://iri.suomi.fi/model/core/&gt; .
+@prefix myorg: &lt;https://example.fi/model/&gt; .
+
+# Reuse national Person class
+myorg:Employee
+    a owl:Class ;
+    rdfs:subClassOf national:Person ;  # ← Inherit from national model
+    rdfs:label "Employee"@en .
+
+# Add organization-specific property
+myorg:employeeNumber
+    a owl:DatatypeProperty ;
+    rdfs:domain myorg:Employee ;
+    rdfs:range xsd:string .
+            </div>
+
+            <p><strong>Benefits:</strong></p>
+            <ul>
+                <li>Reuse national semantics (Person) where appropriate</li>
+                <li>Extend with organization-specific needs (employeeNumber)</li>
+                <li>Maintain compatibility with national infrastructure</li>
+                <li>Enable federation and cross-organization queries</li>
+            </ul>
+        </section>
+
+        <section id="integration" class="tech-section">
+            <h2>Integration Scenarios</h2>
+
+            <h3>Scenario 1: Data Product Publication</h3>
+
+            <table class="spec-table">
+                <tr>
+                    <th>Step</th>
+                    <th>Actor</th>
+                    <th>Action</th>
+                </tr>
+                <tr>
+                    <td>1</td>
+                    <td>Ministry X</td>
+                    <td>Identifies need to share "Business License" data</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Ministry X</td>
+                    <td>Searches sanastot.suomi.fi for relevant concepts</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Ministry X</td>
+                    <td>Finds existing "License" concept or proposes new one</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Stakeholders</td>
+                    <td>Review and comment via kommentit.suomi.fi</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Platform Admin</td>
+                    <td>Approves and publishes vocabulary</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>Ministry X</td>
+                    <td>Creates OWL model referencing vocabulary</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>Ministry X</td>
+                    <td>Defines SHACL validation rules</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>Ministry X</td>
+                    <td>Implements API using semantic standards</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>Other Agencies</td>
+                    <td>Discover and consume data product automatically</td>
+                </tr>
+            </table>
+
+            <h3>Scenario 2: Cross-Border Data Exchange</h3>
+
+            <div class="highlight">
+                <p><strong>Challenge:</strong> Finnish healthcare provider needs to share patient data with Swedish provider.</p>
+                <p><strong>Solution using Interoperability Platform:</strong></p>
+                <ol>
+                    <li>Finnish provider uses national healthcare data model (references sanastot.suomi.fi)</li>
+                    <li>Swedish provider uses EU Core Vocabularies (harmonized at EU level)</li>
+                    <li>Platform maintains <strong>mapping</strong> between Finnish and EU semantics</li>
+                    <li>Data transformation happens automatically via semantic alignment</li>
+                    <li>Both sides receive data in their native format with preserved meaning</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="governance" class="tech-section">
+            <h2>Governance Model</h2>
+
+            <h3>Roles and Responsibilities</h3>
+
+            <table class="spec-table">
+                <tr>
+                    <th>Role</th>
+                    <th>Responsibility</th>
+                    <th>Authority</th>
+                </tr>
+                <tr>
+                    <td><strong>Platform Operator</strong></td>
+                    <td>Digital and Population Data Services Agency (DVV)</td>
+                    <td>Technical operations, availability, access control</td>
+                </tr>
+                <tr>
+                    <td><strong>Vocabulary Editors</strong></td>
+                    <td>Domain experts from government agencies</td>
+                    <td>Create and maintain domain vocabularies</td>
+                </tr>
+                <tr>
+                    <td><strong>Architecture Board</strong></td>
+                    <td>Cross-government steering group</td>
+                    <td>Strategic direction, standards approval</td>
+                </tr>
+                <tr>
+                    <td><strong>Stakeholders</strong></td>
+                    <td>Public, private, third sector organizations</td>
+                    <td>Comment, propose changes, consume vocabularies</td>
+                </tr>
+            </table>
+
+            <h3>Change Management Process</h3>
+
+            <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────┐
+│               Vocabulary Change Process                  │
+├─────────────────────────────────────────────────────────┤
+│                                                           │
+│  1. Proposal Submitted (via kommentit.suomi.fi)         │
+│     └─→ Anyone can propose new concept or change        │
+│                                                           │
+│  2. Public Comment Period (30 days)                      │
+│     └─→ Stakeholders review and provide feedback        │
+│                                                           │
+│  3. Expert Review                                        │
+│     └─→ Domain experts assess technical merit           │
+│                                                           │
+│  4. Architecture Board Review                            │
+│     └─→ Ensures alignment with national strategy        │
+│                                                           │
+│  5. Implementation                                        │
+│     └─→ Platform team publishes approved changes        │
+│                                                           │
+│  6. Versioning                                           │
+│     └─→ Semantic versioning, deprecation policy         │
+│                                                           │
+└─────────────────────────────────────────────────────────┘
+            </div>
+
+            <h3>Quality Assurance</h3>
+
+            <ul>
+                <li><strong>Validation:</strong> All vocabularies validated against W3C standards before publication</li>
+                <li><strong>Documentation:</strong> Mandatory multilingual definitions (Finnish, Swedish, English)</li>
+                <li><strong>Traceability:</strong> Links to legal frameworks, EU vocabularies, international standards</li>
+                <li><strong>Testing:</strong> Reference implementations demonstrate proper usage</li>
+                <li><strong>Metrics:</strong> Usage analytics track adoption and identify gaps</li>
+            </ul>
+
+            <h3>Sustainability</h3>
+
+            <div class="key-point">
+                <strong>Long-term Stability Commitment:</strong>
+                <ul style="margin: 15px 0 0 0;">
+                    <li>URIs are permanent (https://iri.suomi.fi namespace)</li>
+                    <li>Backward compatibility guaranteed for 10 years minimum</li>
+                    <li>Deprecation process requires 3-year notice period</li>
+                    <li>Migration tools provided for breaking changes</li>
+                    <li>National budget commitment ensures operational continuity</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="tech-section">
+            <h2>Success Metrics and Impact</h2>
+
+            <h3>Current Usage (2026)</h3>
+
+            <table class="spec-table">
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Trend</th>
+                </tr>
+                <tr>
+                    <td>Published Vocabularies</td>
+                    <td>47 national vocabularies</td>
+                    <td style="color: var(--forest-accent);">↑ Growing</td>
+                </tr>
+                <tr>
+                    <td>Data Models</td>
+                    <td>23 core models, 150+ extensions</td>
+                    <td style="color: var(--forest-accent);">↑ Growing</td>
+                </tr>
+                <tr>
+                    <td>API Integrations</td>
+                    <td>340+ government APIs</td>
+                    <td style="color: var(--forest-accent);">↑ Growing</td>
+                </tr>
+                <tr>
+                    <td>Private Sector Adoption</td>
+                    <td>80+ companies</td>
+                    <td style="color: var(--forest-accent);">↑ Growing</td>
+                </tr>
+                <tr>
+                    <td>Cross-border Alignments</td>
+                    <td>12 EU vocabulary mappings</td>
+                    <td style="color: var(--forest-accent);">↑ Growing</td>
+                </tr>
+            </table>
+
+            <h3>Measured Benefits</h3>
+
+            <ul>
+                <li><strong>Integration Cost:</strong> 60-70% reduction in API integration effort</li>
+                <li><strong>Time to Market:</strong> New data products launch 3-4x faster</li>
+                <li><strong>Data Quality:</strong> 85% reduction in semantic errors</li>
+                <li><strong>Reusability:</strong> Average vocabulary reused by 8.3 organizations</li>
+                <li><strong>Regulatory Compliance:</strong> Built-in GDPR, accessibility, language law compliance</li>
+            </ul>
+
+            <div class="highlight">
+                <h3 style="margin-top: 0;">Case Study: Population Registry Modernization</h3>
+                <p><strong>Before:</strong> 127 bilateral integrations, each custom-built. Average 6 months per integration. Annual maintenance: €2.1M.</p>
+                <p><strong>After:</strong> Single semantic API using platform standards. New integrations: 2-4 weeks. Annual maintenance: €400K.</p>
+                <p><strong>ROI:</strong> Platform investment recovered in 14 months through savings in Population Registry alone.</p>
+            </div>
+        </section>
+
+        <section class="tech-section">
+            <h2>Future Roadmap</h2>
+
+            <h3>Near-term (2026-2027)</h3>
+            <ul>
+                <li>AI-assisted vocabulary creation and mapping</li>
+                <li>Automated schema generation from natural language descriptions</li>
+                <li>Real-time collaborative editing (Google Docs-style)</li>
+                <li>Enhanced visualization tools for complex ontologies</li>
+                <li>Integration with EU Digital Identity Wallet infrastructure</li>
+            </ul>
+
+            <h3>Mid-term (2028-2030)</h3>
+            <ul>
+                <li>Federated semantic networks (Nordic cooperation)</li>
+                <li>Automated translation between semantic models</li>
+                <li>Machine learning-driven quality recommendations</li>
+                <li>Blockchain-backed provenance tracking for critical vocabularies</li>
+                <li>Developer marketplace for semantic tooling and extensions</li>
+            </ul>
+        </section>
+
+        <div style="margin-top: 80px; padding: 40px; background: var(--sand); border-radius: 4px; text-align: center;">
+            <h3 style="font-family: var(--font-display); font-size: 2em; margin-bottom: 20px;">Learn More</h3>
+            <p style="margin-bottom: 30px;">Explore the platform and its technical documentation</p>
+            <a href="https://yhteentoimiva.suomi.fi/" target="_blank" class="btn btn-primary" style="margin-right: 15px;">Visit Platform →</a>
+            <a href="../index.html" class="btn btn-secondary">← Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+
+    <script src="../script.js"></script>
+</body>
+</html>
