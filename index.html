@@ -401,27 +401,57 @@
 
                     <div class="event-comparison">
                         <div class="event-current">
-                            <h4>Today's Experience</h4>
+                            <h4>Today's Experience (Finland 2024-2026)</h4>
                             <ul class="pain-points">
-                                <li>Parent visits hospital → receives birth certificate (paper)</li>
-                                <li>Parent visits population registry → registers child</li>
-                                <li>Parent contacts Kela → applies for child benefits</li>
-                                <li>Parent contacts daycare → enrolls child (separate application)</li>
-                                <li>Parent repeats basic info (name, ID, address) to each service</li>
-                                <li>No single view of child's service eligibility</li>
+                                <li>✅ <strong>Good:</strong> Hospital registers birth digitally to DVV → child gets automatic personal ID (henkilötunnu)</li>
+                                <li>✅ <strong>Good:</strong> No physical visits to population registry (digitalized)</li>
+                                <li>❌ <strong>Gap:</strong> Parent must log into Kela.fi → manually apply for child benefit (not automatic despite eligibility being obvious)</li>
+                                <li>❌ <strong>Gap:</strong> Parent must log into municipal daycare portal → fill separate application form (basic info re-entered)</li>
+                                <li>❌ <strong>Gap:</strong> Parent must log into Vero.fi → request updated tax card with child deduction (not automatic)</li>
+                                <li>❌ <strong>Gap:</strong> Health center: Parent must book well-baby appointments manually (no proactive outreach)</li>
+                                <li>❌ <strong>Gap:</strong> Each service = separate portal, separate login, separate form (data silos)</li>
+                                <li>❌ <strong>Gap:</strong> No unified dashboard showing "your child is registered, benefits pending, 3 actions needed"</li>
+                                <li><strong>Result:</strong> Digital but fragmented. Parent visits 4-5 different websites over 2 weeks, re-entering same basic data.</li>
+                                <li><strong>Time:</strong> ~3-4 hours spread across multiple sessions (not 2-4 weeks, but still manual labor)</li>
                             </ul>
                         </div>
 
                         <div class="event-future">
-                            <h4>Automated Ecosystem</h4>
+                            <h4>Fully Orchestrated Ecosystem (Beyond Today's Digitalization)</h4>
                             <ul class="benefits">
-                                <li>🔗 <strong>Event Trigger:</strong> Hospital issues digital birth certificate → event published to service bus</li>
-                                <li>📱 <strong>Wallet:</strong> Parent's EUDI Wallet receives birth certificate VC</li>
-                                <li>⚡ <strong>Auto-Registration:</strong> Population registry subscribes to birth events → auto-registers child</li>
-                                <li>🤖 <strong>AI Orchestration:</strong> Agent detects eligibility for 12 benefits → pre-fills applications</li>
-                                <li>🌐 <strong>Data Space:</strong> Healthcare data flows (with consent) to early childhood services</li>
-                                <li>📊 <strong>Proactive:</strong> AI suggests daycare options based on location, availability, preferences</li>
-                                <li>✅ <strong>One Action:</strong> Parent reviews and confirms—all services activated</li>
+                                <li>🔗 <strong>Event Trigger:</strong> Hospital registers birth → "ChildBorn" event published to national service bus (builds on existing DVV integration)</li>
+                                <li>📱 <strong>Unified Notification:</strong> Parent's EUDI Wallet receives: "Birth registered. Review 4 pre-filled applications."</li>
+                                <li>⚡ <strong>Auto-Eligibility Detection:</strong> AI agent analyzes parent data (income, residence, family size) → identifies all eligible benefits:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Kela child benefit (€94.88/month) → application pre-filled, ready to submit</li>
+                                        <li>Municipal daycare subsidy → eligibility confirmed, queue position offered</li>
+                                        <li>Tax deduction → new tax card auto-generated (parent just confirms)</li>
+                                        <li>Health center → well-baby schedule auto-booked at local clinic</li>
+                                    </ul>
+                                </li>
+                                <li>🤖 <strong>Proactive Orchestration:</strong> Agent doesn't wait for parent to log in:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Health center: Sends appointment reminder directly to parent's wallet</li>
+                                        <li>Daycare: "3 spots available within 2km. Apply with one tap?"</li>
+                                        <li>Library: "Child library card created. Digital books available now."</li>
+                                    </ul>
+                                </li>
+                                <li>🌐 <strong>Data Space Integration:</strong> Healthcare data flows (with consent):
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Birth weight, Apgar scores → health center (continuity of care)</li>
+                                        <li>Special needs detected → early intervention services auto-notified</li>
+                                        <li>Maternity clinic history → pediatrician has full context</li>
+                                    </ul>
+                                </li>
+                                <li>📊 <strong>Single Dashboard:</strong> Parent opens wallet once:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>"Child registered ✓ | Benefits: 1 pending approval | Daycare: 3 options | Appointments: 2 scheduled"</li>
+                                        <li>All pre-filled forms in one place (no portal hopping)</li>
+                                        <li>Tap "Approve All" → 4 services activated simultaneously</li>
+                                    </ul>
+                                </li>
+                                <li>✅ <strong>One Session, 5 Minutes:</strong> Parent reviews, approves → entire ecosystem synchronized. No re-entering data. No visiting multiple portals.</li>
+                                <li>🎯 <strong>Key Difference from Today:</strong> Not about digitalization (already done) but <strong>orchestration</strong>. Systems talk to each other. AI does the work. Parent just confirms.</li>
                             </ul>
                             <div class="capabilities-used">
                                 <strong>Capabilities:</strong>
