@@ -77,6 +77,7 @@ National registry of authorized issuers, verifiers, and credential schemas.
 The site presents a matrix showing how these capabilities transform:
 
 ### Life Events
+- 🕊️ **Death of a Close Person** - Complete automation of estate administration (inspired by Finnish EOAVH project)
 - 👶 Birth & Early Childhood
 - 💼 Starting Work
 - 🏠 Buying Property
@@ -188,4 +189,18 @@ Join the discussion, contribute to the vision, and help build Finland's digital 
 
 ---
 
-**Last Updated:** February 2026
+**Last Updated:** February 20, 2026
+
+## 🆕 Latest Updates
+
+**February 20, 2026:**
+- ✅ Added comprehensive "Death of a Close Person" life event with full automation scenario
+- ✅ Updated "Birth of a Child" to reflect accurate 2024-2026 Finnish digital reality
+- ✅ Published all 9 technical deep-dive capability pages
+- ✅ Configured GitHub Pages deployment
+
+**Content Highlights:**
+- **Death Event**: Based on Finnish EOAVH project + Nordic government services (Finland & Norway)
+- **Complete automation**: AI Estate Agent handles 20-40+ service cancellations automatically
+- **Time savings**: 60-120 hours → 2-3 hours for families
+- **All 7 infrastructure capabilities** demonstrated in real scenarios
