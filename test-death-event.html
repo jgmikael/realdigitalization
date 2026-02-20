@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Death Event Test - Real Digitalization</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-result {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #2d5016;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .error {
+            color: #c41e3a;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .info {
+            background: #e8ede8;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #4a7c2c;
+        }
+        pre {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .check {
+            margin: 10px 0;
+            padding: 10px;
+        }
+        .check.pass::before {
+            content: "✅ ";
+        }
+        .check.fail::before {
+            content: "❌ ";
+        }
+        button {
+            background: #4a7c2c;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #2d5016;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-result">
+        <h1>🕊️ Death Event Test Page</h1>
+        <p>This page tests if the Death of a Close Person event is present in the main index.html</p>
+        
+        <div id="test-results">
+            <p>Running tests...</p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <button onclick="runTests()">🔄 Re-run Tests</button>
+            <button onclick="window.location.href='index.html#matrix'">📊 Go to Main Page (Matrix Section)</button>
+            <button onclick="window.open('index.html', '_blank')">🔗 Open Main Page (New Tab)</button>
+        </div>
+    </div>
+    
+    <div class="test-result">
+        <h2>Direct Links to Test</h2>
+        <div class="info">
+            <strong>Homepage:</strong> <a href="index.html" target="_blank">index.html</a><br>
+            <strong>Matrix Section:</strong> <a href="index.html#matrix" target="_blank">index.html#matrix</a><br>
+            <strong>Verification Page:</strong> <a href="verify.html" target="_blank">verify.html</a>
+        </div>
+    </div>
+    
+    <script>
+        async function runTests() {
+            const resultsDiv = document.getElementById('test-results');
+            resultsDiv.innerHTML = '<p>Running tests...</p>';
+            
+            const results = [];
+            
+            // Test 1: Fetch index.html
+            try {
+                const response = await fetch('index.html?nocache=' + Date.now());
+                const html = await response.text();
+                
+                // Test 2: Check if Death event exists
+                const hasDeathEvent = html.includes('Death of a Close Person');
+                results.push({
+                    test: 'Death event text present',
+                    pass: hasDeathEvent,
+                    details: hasDeathEvent ? 'Found "Death of a Close Person" in HTML' : 'Death event text NOT found'
+                });
+                
+                // Test 3: Check for emoji
+                const hasEmoji = html.includes('🕊️');
+                results.push({
+                    test: 'Death event emoji present',
+                    pass: hasEmoji,
+                    details: hasEmoji ? 'Found 🕊️ emoji' : 'Emoji NOT found'
+                });
+                
+                // Test 4: Check for EOAVH mention
+                const hasEOAVH = html.includes('EOAVH');
+                results.push({
+                    test: 'EOAVH project mention',
+                    pass: hasEOAVH,
+                    details: hasEOAVH ? 'Found EOAVH reference' : 'EOAVH NOT found'
+                });
+                
+                // Test 5: Check matrix section exists
+                const hasMatrix = html.includes('Service Ecosystem Matrix');
+                results.push({
+                    test: 'Matrix section exists',
+                    pass: hasMatrix,
+                    details: hasMatrix ? 'Matrix section found' : 'Matrix section NOT found'
+                });
+                
+                // Test 6: Check life events section
+                const hasLifeEvents = html.includes('id="life-events"');
+                results.push({
+                    test: 'Life events section exists',
+                    pass: hasLifeEvents,
+                    details: hasLifeEvents ? 'Life events section found' : 'Life events section NOT found'
+                });
+                
+                // Test 7: Count occurrences
+                const count = (html.match(/Death of a Close Person/g) || []).length;
+                results.push({
+                    test: 'Death event occurrence count',
+                    pass: count >= 2,
+                    details: `Found ${count} occurrences (expected: 2)`
+                });
+                
+                // Test 8: Check if Event 0 comment exists
+                const hasEvent0 = html.includes('Event 0: Death of a Close Person');
+                results.push({
+                    test: 'Event 0 comment present',
+                    pass: hasEvent0,
+                    details: hasEvent0 ? 'HTML comment found' : 'Comment NOT found'
+                });
+                
+                // Test 9: Extract a snippet around Death event
+                const deathIndex = html.indexOf('Death of a Close Person');
+                const snippet = deathIndex > 0 ? html.substring(deathIndex - 100, deathIndex + 200) : 'NOT FOUND';
+                
+                // Render results
+                let html_output = '<h2>Test Results:</h2>';
+                let allPassed = true;
+                
+                results.forEach(result => {
+                    html_output += `<div class="check ${result.pass ? 'pass' : 'fail'}">${result.test}: ${result.details}</div>`;
+                    if (!result.pass) allPassed = false;
+                });
+                
+                if (allPassed) {
+                    html_output = '<div class="success">✅ All Tests Passed!</div>' + html_output;
+                    html_output += '<div class="info"><strong>The Death event is definitely in the HTML file.</strong><br>If you can\'t see it on the main page, try:<br>1. Hard refresh (Ctrl+Shift+R)<br>2. Clear browser cache<br>3. Open in incognito/private window<br>4. Check that you\'re viewing the GitHub Pages URL, not a local file</div>';
+                } else {
+                    html_output = '<div class="error">❌ Some Tests Failed</div>' + html_output;
+                    html_output += '<div class="info"><strong>The Death event appears to be missing from index.html!</strong><br>GitHub Pages may still be deploying. Wait 2-5 minutes and re-run tests.</div>';
+                }
+                
+                // Add snippet
+                html_output += '<h3>HTML Snippet Around "Death of a Close Person":</h3>';
+                html_output += '<pre>' + escapeHtml(snippet) + '</pre>';
+                
+                // Add file info
+                html_output += '<h3>File Information:</h3>';
+                html_output += `<div class="info">
+                    <strong>File size:</strong> ${(html.length / 1024).toFixed(2)} KB<br>
+                    <strong>Fetch time:</strong> ${new Date().toLocaleTimeString()}<br>
+                    <strong>Status:</strong> ${response.status} ${response.statusText}
+                </div>`;
+                
+                resultsDiv.innerHTML = html_output;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error">❌ Error fetching index.html: ${error.message}</div>`;
+            }
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Run tests on load
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>
