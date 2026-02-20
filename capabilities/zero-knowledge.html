@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zero-Knowledge Infrastructure | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>🔐 Zero-Knowledge Infrastructure</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">Prove attributes without revealing data—the privacy frontier of digital identity</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#fundamentals">ZK Fundamentals</a>
+            <a href="#protocols">Protocols</a>
+            <a href="#use-cases">Use Cases</a>
+            <a href="#implementation">Implementation</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                <strong>Zero-Knowledge Proofs (ZKPs)</strong> allow one party (prover) to convince another party (verifier) that a 
+                statement is true, without revealing any information beyond the truth of the statement itself. In identity systems, 
+                this means proving attributes (age, income, citizenship) without exposing the underlying data.
+            </p>
+            <div class="highlight">
+                <strong>Example:</strong> Prove "I am over 18" without revealing your birthdate. The verifier learns <em>only</em> 
+                that the statement is true—not your age, birthdate, or any other detail. The cryptographic proof is mathematically 
+                sound: forging it is computationally infeasible.
+            </div>
+            <p>
+                ZK infrastructure is the <strong>next evolution</strong> of privacy-preserving identity. While selective disclosure 
+                (SD-JWT) lets you share <em>some</em> attributes, ZKPs let you prove <em>properties</em> of attributes without sharing 
+                the attributes at all. This is critical for use cases where even partial data disclosure is too risky.
+            </p>
+        </section>
+
+        <!-- Fundamentals -->
+        <section id="fundamentals" class="tech-section">
+            <h2>Zero-Knowledge Fundamentals</h2>
+
+            <h3>The Three Properties</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Property</th>
+                        <th>Definition</th>
+                        <th>Meaning</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Completeness</strong></td>
+                        <td>If statement is true, honest verifier will be convinced</td>
+                        <td>Valid proofs always succeed</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Soundness</strong></td>
+                        <td>If statement is false, no cheating prover can convince verifier</td>
+                        <td>Faking proofs is computationally infeasible</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Zero-Knowledge</strong></td>
+                        <td>Verifier learns nothing beyond the truth of the statement</td>
+                        <td>No data leakage—only the boolean result (true/false)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>ZKP Types</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Properties</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>ZK-SNARKs</strong><br>(Succinct Non-interactive ARguments of Knowledge)</td>
+                        <td>Very small proofs (~200 bytes), fast verification, requires trusted setup</td>
+                        <td>Blockchain (Zcash), verifiable computation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ZK-STARKs</strong><br>(Scalable Transparent ARguments of Knowledge)</td>
+                        <td>No trusted setup, larger proofs (~100 KB), quantum-resistant</td>
+                        <td>Post-quantum privacy, transparent systems</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bulletproofs</strong></td>
+                        <td>Short proofs (~1 KB), no trusted setup, slower verification</td>
+                        <td>Range proofs (e.g., income between X-Y)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BBS+ Signatures</strong></td>
+                        <td>Efficient selective disclosure + ZKP over credentials</td>
+                        <td>Identity credentials (W3C VC with ZKP support)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Protocols -->
+        <section id="protocols" class="tech-section">
+            <h2>Identity-Focused ZK Protocols</h2>
+
+            <h3>BBS+ Signatures for Verifiable Credentials</h3>
+            <p>
+                <strong>BBS+ (Boneh-Boyen-Shacham)</strong> is a signature scheme designed for selective disclosure and zero-knowledge proofs. 
+                It allows a credential issuer to sign multiple attributes, and the holder can later prove statements about those attributes 
+                without revealing them.
+            </p>
+            <div class="code-block">
+# Example: Age verification with BBS+
+
+1. Issuer (Government) issues credential:
+   {
+     "name": "John Doe",
+     "birthdate": "1990-05-15",
+     "nationality": "Finnish"
+   }
+   - Signs with BBS+ (creates signature over all attributes)
+
+2. Holder creates ZK proof:
+   Statement: "birthdate indicates age >= 18"
+   - Does NOT reveal birthdate
+   - Verifier receives only: proof + boolean result (true)
+
+3. Verifier checks:
+   - Proof signature valid (issuer's public key)
+   - Statement satisfied (age >= 18)
+   - Learns NOTHING about birthdate, name, or nationality
+            </div>
+
+            <h3>Anonymous Credentials (Idemix, U-Prove)</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Protocol</th>
+                        <th>Developer</th>
+                        <th>Features</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Idemix</strong></td>
+                        <td>IBM</td>
+                        <td>Anonymous authentication, unlinkable presentations, revocation support</td>
+                    </tr>
+                    <tr>
+                        <td><strong>U-Prove</strong></td>
+                        <td>Microsoft</td>
+                        <td>Minimal disclosure, no issuer tracking, efficient mobile implementation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BBS+ (W3C)</strong></td>
+                        <td>MATTR, others</td>
+                        <td>Open standard, VC integration, selective disclosure + ZKP</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Range Proofs (Bulletproofs)</h3>
+            <p>
+                Prove a value lies within a range without revealing the value. Critical for financial and eligibility proofs.
+            </p>
+            <div class="code-block">
+# Example: Income verification for loan
+
+Issuer: Tax office issues credential with income = €75,000
+
+Holder wants to prove: "Income >= €60,000" (loan requirement)
+
+Bulletproof construction:
+1. Holder computes proof: P = Prove(income >= 60000)
+   - Uses Pedersen commitment (hides actual value)
+   - Generates range proof (cryptographic evidence)
+2. Verifier checks: Verify(P, commitment, public_key)
+   - Confirms: income >= 60000 is TRUE
+   - Learns nothing about actual income (could be 60k, 100k, 1M—unknown)
+
+Proof size: ~1 KB (efficient for mobile wallets)
+            </div>
+        </section>
+
+        <!-- Use Cases -->
+        <section id="use-cases" class="tech-section">
+            <h2>Real-World Use Cases</h2>
+
+            <h3>1. Age Verification (Privacy-Preserving)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Online service requires age >= 18 (alcohol sales, adult content).
+                <br><br>
+                <strong>Traditional:</strong> User uploads ID scan → service sees birthdate, name, photo → privacy breach.
+                <br><br>
+                <strong>With ZKP:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>User's wallet holds government-issued birthdate credential</li>
+                    <li>Service requests: "Prove age >= 18"</li>
+                    <li>Wallet generates ZK proof (BBS+): "birthdate implies age >= 18"</li>
+                    <li>Service verifies proof → grants access</li>
+                    <li>Service learns ONLY: user is 18+ (not birthdate, not identity)</li>
+                </ol>
+                <strong>Benefit:</strong> Compliance without surveillance. Service can't build user profiles.
+            </div>
+
+            <h3>2. Income Threshold for Benefits</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Housing allowance requires "annual income < €30,000".
+                <br><br>
+                <strong>Traditional:</strong> Applicant submits tax return → agency sees exact salary → stigma, privacy loss.
+                <br><br>
+                <strong>With ZKP:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>Tax office issues income credential (signed, but value hidden in commitment)</li>
+                    <li>Applicant generates range proof: "income < 30000"</li>
+                    <li>Agency verifies proof → approves benefit</li>
+                    <li>Agency learns ONLY: applicant qualifies (not exact income)</li>
+                </ol>
+                <strong>Benefit:</strong> Dignity-preserving eligibility checks.
+            </div>
+
+            <h3>3. Citizenship Proof (No Border Data Leak)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Traveler crosses border, customs needs citizenship verification.
+                <br><br>
+                <strong>Traditional:</strong> Passport scan → full identity stored in customs database → potential misuse.
+                <br><br>
+                <strong>With ZKP:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>Traveler's wallet holds citizenship credential (government-issued)</li>
+                    <li>Border system requests: "Prove EU citizenship"</li>
+                    <li>Wallet generates ZK proof: "nationality ∈ {EU member states}"</li>
+                    <li>System verifies → allows entry</li>
+                    <li>System learns ONLY: traveler is EU citizen (not which country, not identity)</li>
+                </ol>
+                <strong>Benefit:</strong> Privacy at scale—no central database of border crossings.
+            </div>
+
+            <h3>4. Compliance Verification (B2B)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Supplier must prove "revenue > €2M" to qualify for contract.
+                <br><br>
+                <strong>Traditional:</strong> Supplier shares full financial statements → buyer sees sensitive data.
+                <br><br>
+                <strong>With ZKP:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>Auditor issues revenue credential (certified financials)</li>
+                    <li>Supplier generates ZK proof: "revenue > 2M"</li>
+                    <li>Buyer verifies proof → approves supplier</li>
+                    <li>Buyer learns ONLY: supplier meets threshold (not exact revenue)</li>
+                </ol>
+                <strong>Benefit:</strong> Competitive intelligence protected while proving eligibility.
+            </div>
+        </section>
+
+        <!-- Implementation -->
+        <section id="implementation" class="tech-section">
+            <h2>Implementation Architecture</h2>
+
+            <h3>ZK-Enabled Wallet Stack</h3>
+            <div class="arch-diagram">
+┌────────────────────────────────────────────────────────────────┐
+│                 ZK-Enhanced EUDI Wallet                         │
+└────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│  User Interface Layer                                        │
+│  - Credential viewer                                         │
+│  - Proof generation prompts ("Prove age >= 18?")            │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│  Credential Storage (Encrypted)                             │
+│  - VCs with BBS+ signatures                                 │
+│  - Commitments (hidden values)                              │
+│  - Issuer public keys                                       │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│  ZK Proof Engine                                            │
+│  - BBS+ proof generation                                    │
+│  - Bulletproof range proofs                                 │
+│  - Statement parser ("age >= 18" → circuit)                 │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│  Cryptographic Libraries                                    │
+│  - libsodium (elliptic curve ops)                           │
+│  - zkp-toolkit (proof generation)                           │
+│  - bbs-signatures (W3C spec implementation)                 │
+└─────────────────┬───────────────────────────────────────────┘
+                  │
+                  ▼
+             [Presentation to Verifier]
+                  │
+┌─────────────────▼───────────────────────────────────────────┐
+│  Verifier System                                            │
+│  - Receives proof (200 bytes - 1 KB)                        │
+│  - Verifies against issuer public key                       │
+│  - Checks statement validity (age >= 18 → TRUE)             │
+│  - No access to underlying data                             │
+└─────────────────────────────────────────────────────────────┘
+            </div>
+
+            <h3>Implementation Challenges</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Challenge</th>
+                        <th>Current Status</th>
+                        <th>Solution Path</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Performance</strong></td>
+                        <td>Proof generation: 1-10 seconds on mobile</td>
+                        <td>Hardware acceleration (ARM TrustZone), optimized circuits</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Standardization</strong></td>
+                        <td>BBS+ in W3C draft, no finalized spec</td>
+                        <td>W3C VC working group targeting 2026 recommendation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Revocation</strong></td>
+                        <td>ZK-friendly revocation schemes immature</td>
+                        <td>Accumulators (Merkle trees) for privacy-preserving revocation checks</td>
+                    </tr>
+                    <tr>
+                        <td><strong>User Experience</strong></td>
+                        <td>Complex for non-technical users</td>
+                        <td>Abstract complexity: "Prove age without sharing birthdate" (simple prompt)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Issuer Adoption</strong></td>
+                        <td>Most issuers use basic VCs (no ZKP)</td>
+                        <td>Gradual migration: support both standard VCs and ZK-VCs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Code Example: BBS+ Proof Generation</h3>
+            <div class="code-block">
+# Pseudo-code: Generate age >= 18 proof
+
+import bbs_signatures as bbs
+
+# 1. Holder's credential (BBS+ signed)
+credential = {
+    "issuer": "did:web:dvv.fi",
+    "credentialSubject": {
+        "name": "John Doe",
+        "birthdate": "1990-05-15"  # Hidden in commitment
+    },
+    "proof": {
+        "type": "BbsBlsSignature2020",
+        "proofValue": "..."  # BBS+ signature over attributes
+    }
+}
+
+# 2. Verifier requests proof
+presentation_request = {
+    "statement": "credentialSubject.birthdate indicates age >= 18"
+}
+
+# 3. Generate ZK proof
+proof = bbs.generate_proof(
+    credential=credential,
+    statement=presentation_request["statement"],
+    disclosed_attributes=[],  # Reveal nothing
+    holder_secret=wallet.private_key
+)
+
+# 4. Send proof to verifier
+presentation = {
+    "type": "VerifiablePresentation",
+    "verifiableCredential": [{
+        "proof": proof  # ZK proof (compact: ~200 bytes)
+    }]
+}
+
+# 5. Verifier checks
+is_valid = bbs.verify_proof(
+    proof=proof,
+    issuer_public_key="did:web:dvv.fi#key-1",
+    statement="age >= 18"
+)
+
+# Result: is_valid = True, but verifier learns NOTHING about birthdate
+            </div>
+        </section>
+
+        <!-- Deployment Timeline -->
+        <section class="tech-section">
+            <h2>Deployment Roadmap</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Milestones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Standards Finalization</strong></td>
+                        <td>2025-2026</td>
+                        <td>W3C BBS+ specification reaches recommendation status</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Library Development</strong></td>
+                        <td>2026</td>
+                        <td>Production-ready ZK libraries for mobile (iOS, Android)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pilot Programs</strong></td>
+                        <td>2027</td>
+                        <td>Age verification, benefit eligibility (limited rollout)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EUDI Wallet Integration</strong></td>
+                        <td>2027-2028</td>
+                        <td>National wallets support ZK proofs (optional feature)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Widespread Adoption</strong></td>
+                        <td>2028+</td>
+                        <td>ZK proofs standard for privacy-sensitive verifications</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://www.w3.org/TR/vc-di-bbs/" target="_blank">W3C BBS+ Signature Specification (Draft)</a></li>
+                <li><a href="https://eprint.iacr.org/2019/953.pdf" target="_blank">Bulletproofs Paper (Bünz et al.)</a></li>
+                <li><a href="https://z.cash/technology/zksnarks/" target="_blank">ZK-SNARKs Explained (Zcash)</a></li>
+                <li><a href="https://starkware.co/stark/" target="_blank">ZK-STARKs Overview (StarkWare)</a></li>
+                <li><a href="https://github.com/mattrglobal/bbs-signatures" target="_blank">BBS Signatures Reference Implementation (MATTR)</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>

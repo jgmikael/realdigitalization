@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>National API Catalog | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>🔌 National API Catalog</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">Standardized, discoverable APIs transforming government services into composable building blocks</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#standards">API Standards</a>
+            <a href="#examples">Service APIs</a>
+            <a href="#governance">API Governance</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                A <strong>National API Catalog</strong> is a centralized registry where government agencies publish machine-readable 
+                API specifications for their digital services. Instead of humans navigating web portals to request services, 
+                software systems discover, understand, and invoke services programmatically through standardized APIs.
+            </p>
+            <div class="highlight">
+                <strong>Vision:</strong> Every public service—tax filing, business registration, health records, permits—becomes an API. 
+                Third-party developers build citizen-facing apps, AI agents orchestrate multi-service workflows, and government systems 
+                integrate seamlessly. "Government as a Platform."
+            </div>
+            <p>
+                This isn't just REST endpoints. It's a <strong>semantic API layer</strong> where:
+                <ul style="margin-top: 10px;">
+                    <li>APIs are linked to data models (tietomallit.suomi.fi)</li>
+                    <li>Request/response schemas are machine-readable (OpenAPI, JSON Schema)</li>
+                    <li>Authentication is federated (OAuth 2.0, DID Auth)</li>
+                    <li>Rate limits and SLAs are transparent</li>
+                </ul>
+            </p>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>Core Components</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>API Registry</strong></td>
+                        <td>OpenAPI 3.1 specs, AsyncAPI for events</td>
+                        <td>Centralized catalog of all government APIs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Gateway</strong></td>
+                        <td>Kong, Apigee, AWS API Gateway</td>
+                        <td>Routing, rate limiting, authentication, monitoring</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Developer Portal</strong></td>
+                        <td>Swagger UI, Redocly, custom React app</td>
+                        <td>Human-readable docs, sandbox environments, API keys</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Identity Provider</strong></td>
+                        <td>OAuth 2.0, OpenID Connect, DID Auth</td>
+                        <td>Authenticate API consumers (apps, agents, citizens)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Semantic Linker</strong></td>
+                        <td>JSON-LD contexts, SHACL validators</td>
+                        <td>Link API schemas to national data models</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Analytics Dashboard</strong></td>
+                        <td>Grafana, ELK stack</td>
+                        <td>Track API usage, errors, performance metrics</td>
+                    </tr>
+                    <tr>
+                        <td><strong>SLA Monitor</strong></td>
+                        <td>Prometheus, PagerDuty</td>
+                        <td>Alert on SLA breaches (uptime, latency)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>API Catalog Architecture</h3>
+            <div class="arch-diagram">
+┌───────────────────────────────────────────────────────────────────┐
+│               National API Catalog (api.suomi.fi)                  │
+└───────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                    API PROVIDERS (Agencies)                       │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐         │
+│  │  Tax Office  │   │     DVV      │   │     Kela     │         │
+│  │  (Vero API)  │   │  (Pop. Reg)  │   │  (Benefits)  │         │
+│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘         │
+│         │ Publish           │ Publish           │ Publish         │
+│         │ OpenAPI           │ OpenAPI           │ OpenAPI         │
+└─────────┼───────────────────┼───────────────────┼─────────────────┘
+          │                   │                   │
+          └───────────────────┼───────────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │   API Registry    │
+                    │  - OpenAPI specs  │
+                    │  - Semantic links │
+                    │  - Rate limits    │
+                    │  - SLA terms      │
+                    └─────────┬─────────┘
+                              │
+          ┌───────────────────┼───────────────────┐
+          │                   │                   │
+    ┌─────▼─────┐      ┌──────▼──────┐    ┌─────▼─────┐
+    │   API     │      │  Developer  │    │  Semantic │
+    │  Gateway  │      │   Portal    │    │  Validator│
+    │ (Routing) │      │  (Sandbox)  │    │  (SHACL)  │
+    └─────┬─────┘      └─────────────┘    └───────────┘
+          │
+          │ Authenticated requests
+          │
+┌─────────▼───────────────────────────────────────────────────────┐
+│                    API CONSUMERS                                 │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐        │
+│  │  Mobile App  │   │  AI Agent    │   │  3rd-Party   │        │
+│  │  (Citizen)   │   │ (Orchestr.)  │   │  Service     │        │
+│  └──────────────┘   └──────────────┘   └──────────────┘        │
+└─────────────────────────────────────────────────────────────────┘
+
+Flow:
+1. Agencies publish OpenAPI specs to registry
+2. Developers browse catalog, generate API clients
+3. Consumers authenticate (OAuth), call APIs via gateway
+4. Gateway enforces rate limits, logs usage
+5. Analytics track API health (uptime, latency, errors)
+            </div>
+        </section>
+
+        <!-- API Standards -->
+        <section id="standards" class="tech-section">
+            <h2>API Standards & Specifications</h2>
+
+            <h3>OpenAPI 3.1 (Swagger)</h3>
+            <p>
+                All APIs must provide an OpenAPI specification—a machine-readable description of endpoints, parameters, 
+                authentication, and data schemas. This enables automatic client generation and validation.
+            </p>
+            <div class="code-block">
+# Example: Tax Office API (vero.fi/api/openapi.yaml)
+
+openapi: 3.1.0
+info:
+  title: Finnish Tax Office API
+  version: 1.0.0
+  description: Access tax records, file returns, retrieve tax cards
+  contact:
+    name: Tax Office API Team
+    email: api@vero.fi
+
+servers:
+  - url: https://api.vero.fi/v1
+
+security:
+  - oauth2:
+      - tax.read
+      - tax.write
+
+paths:
+  /taxpayers/{hetu}/tax-card:
+    get:
+      summary: Retrieve tax card for a taxpayer
+      operationId: getTaxCard
+      parameters:
+        - name: hetu
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: '^\d{6}[-+A]\d{3}[0-9A-Z]$'
+          description: Finnish personal identity code
+      responses:
+        '200':
+          description: Tax card retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaxCard'
+              example:
+                hetu: "010190-900C"
+                taxPercentage: 18.5
+                additionalPercentage: 0
+                validFrom: "2026-01-01"
+                validTo: "2026-12-31"
+        '404':
+          description: Taxpayer not found
+        '403':
+          description: Unauthorized (missing consent or scope)
+
+components:
+  schemas:
+    TaxCard:
+      type: object
+      properties:
+        hetu:
+          type: string
+          description: Personal identity code
+        taxPercentage:
+          type: number
+          format: float
+          description: Main tax withholding percentage
+        additionalPercentage:
+          type: number
+          format: float
+        validFrom:
+          type: string
+          format: date
+        validTo:
+          type: string
+          format: date
+      required:
+        - hetu
+        - taxPercentage
+        - validFrom
+        - validTo
+            </div>
+
+            <h3>Semantic API Design</h3>
+            <p>
+                APIs are linked to national data models via JSON-LD contexts. This ensures interoperability: different 
+                agencies use the same vocabulary for "address," "person," "company."
+            </p>
+            <div class="code-block">
+# API response with semantic annotations (JSON-LD)
+
+{
+  "@context": "https://tietomallit.suomi.fi/contexts/person/v1",
+  "@type": "Person",
+  "id": "urn:person:010190-900C",
+  "name": {
+    "@type": "FullName",
+    "givenName": "Matti",
+    "familyName": "Meikäläinen"
+  },
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Mannerheimintie 5",
+    "postalCode": "00100",
+    "addressLocality": "Helsinki",
+    "addressCountry": "FI"
+  }
+}
+
+# Benefit: AI agents can understand this structure without custom parsing
+# Same vocabulary used by DVV, Kela, Tax Office → automatic interoperability
+            </div>
+
+            <h3>Authentication & Authorization</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Use Case</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>OAuth 2.0 (User Delegation)</strong></td>
+                        <td>Citizen authorizes app to access their data</td>
+                        <td>Mobile app fetches user's tax card (with consent)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Client Credentials (M2M)</strong></td>
+                        <td>System-to-system integration (no user)</td>
+                        <td>Payroll system queries tax office API automatically</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Keys</strong></td>
+                        <td>Public data APIs (no sensitive data)</td>
+                        <td>Weather data, public transport schedules</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DID Auth</strong></td>
+                        <td>Verifiable credential holders authenticate</td>
+                        <td>Company proves registration certificate to access B2B API</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Service APIs -->
+        <section id="examples" class="tech-section">
+            <h2>Key Service APIs</h2>
+
+            <h3>Citizen Services</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>API</th>
+                        <th>Provider</th>
+                        <th>Capabilities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Tax Card API</strong></td>
+                        <td>Vero (Tax Office)</td>
+                        <td>Fetch tax card, update prepayment, file corrections</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Population Register API</strong></td>
+                        <td>DVV</td>
+                        <td>Address lookup, family relations, birth/death registration</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Benefits API</strong></td>
+                        <td>Kela</td>
+                        <td>Check eligibility, apply for benefits, track status</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Healthcare API</strong></td>
+                        <td>Kanta (National Health Archive)</td>
+                        <td>Fetch prescriptions, lab results, patient records (consent-based)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Education Credentials API</strong></td>
+                        <td>Universities, schools</td>
+                        <td>Fetch degrees, transcripts, certificates as VCs</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Business Services</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>API</th>
+                        <th>Provider</th>
+                        <th>Capabilities</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Company Register API</strong></td>
+                        <td>PRH</td>
+                        <td>Register company, update details, fetch certificates</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VAT Registration API</strong></td>
+                        <td>Vero</td>
+                        <td>Register for VAT, file returns, check VAT number validity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Customs Declaration API</strong></td>
+                        <td>Tulli (Customs)</td>
+                        <td>Submit declarations, check clearance status, pay duties</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Permits & Licenses API</strong></td>
+                        <td>Various regulators</td>
+                        <td>Apply for permits (construction, food handling, etc.)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Public Procurement API</strong></td>
+                        <td>Hilma</td>
+                        <td>Search tenders, submit bids, track awards</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example: Automated Tax Filing</h3>
+            <div class="highlight">
+                <strong>Use Case:</strong> Freelancer files quarterly VAT return via accounting software.
+                <br><br>
+                <strong>Traditional:</strong> Log into Vero portal, manually enter revenue, expenses → submit form.
+                <br><br>
+                <strong>With API:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>Accounting software (e.g., Procountor) aggregates transactions</li>
+                    <li>Software calls <code>POST /vat/returns</code> (Vero API) with structured data</li>
+                    <li>Vero API validates submission → returns confirmation ID</li>
+                    <li>User receives notification: "VAT return filed successfully"</li>
+                    <li>Zero manual data entry, automatic submission before deadline</li>
+                </ol>
+                <strong>Result:</strong> Compliance becomes automatic—software handles filing, alerts on issues.
+            </div>
+        </section>
+
+        <!-- Governance -->
+        <section id="governance" class="tech-section">
+            <h2>API Governance & Quality</h2>
+
+            <h3>API Lifecycle Management</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>Activities</th>
+                        <th>Governance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Design</strong></td>
+                        <td>Define endpoints, schemas, error codes</td>
+                        <td>API design review board approves spec</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Development</strong></td>
+                        <td>Implement backend, generate OpenAPI spec</td>
+                        <td>Automated schema validation (CI/CD pipeline)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Testing</strong></td>
+                        <td>Unit tests, integration tests, contract tests</td>
+                        <td>100% test coverage for public APIs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Publication</strong></td>
+                        <td>Register in API catalog, publish docs</td>
+                        <td>SLA commitment (uptime, latency, rate limits)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Versioning</strong></td>
+                        <td>Deprecate old versions, migrate consumers</td>
+                        <td>12-month deprecation notice, backward compatibility</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monitoring</strong></td>
+                        <td>Track usage, errors, performance</td>
+                        <td>Alert on SLA breaches, publish uptime reports</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>API Design Principles</h3>
+            <div class="highlight">
+                <strong>Mandatory Standards (Finland):</strong>
+                <ul style="margin-top: 10px;">
+                    <li><strong>REST</strong>: Resource-based URLs, HTTP verbs (GET, POST, PUT, DELETE)</li>
+                    <li><strong>JSON</strong>: Default format (XML optional for legacy)</li>
+                    <li><strong>Semantic alignment</strong>: Use tietomallit.suomi.fi vocabularies</li>
+                    <li><strong>OAuth 2.0</strong>: Standard authentication (no custom auth)</li>
+                    <li><strong>OpenAPI 3.x</strong>: Machine-readable spec required</li>
+                    <li><strong>HTTPS only</strong>: TLS 1.3, no plain HTTP</li>
+                    <li><strong>Rate limiting</strong>: Transparent limits (e.g., 100 req/min)</li>
+                    <li><strong>Error codes</strong>: Standard HTTP status + semantic error messages</li>
+                </ul>
+            </div>
+
+            <h3>Developer Experience (DX)</h3>
+            <div class="code-block">
+# Good DX Example: Developer journey
+
+1. Visit api.suomi.fi (national API catalog)
+2. Browse services: "Population Register API"
+3. Read OpenAPI spec → understand endpoints
+4. Register app → receive OAuth client credentials
+5. Try sandbox: curl -H "Authorization: Bearer {token}" \
+                   https://api-sandbox.dvv.fi/v1/persons/010190-900C
+6. Receive test data → validate integration
+7. Move to production → same API, different base URL
+8. Monitor usage dashboard → track quota, errors
+
+Key: Zero friction, comprehensive docs, sandbox environment
+            </div>
+
+            <div class="warning-box">
+                <strong>Challenge:</strong> Legacy systems don't expose APIs natively. Solution: API facade pattern—build 
+                a REST API gateway in front of SOAP/mainframe systems. Gradual modernization without replacing backends.
+            </div>
+        </section>
+
+        <!-- Deployment Timeline -->
+        <section class="tech-section">
+            <h2>Deployment Roadmap</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Deliverables</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Foundation</strong></td>
+                        <td>2024-2025</td>
+                        <td>API gateway deployed, first 10 APIs published (core services)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Expansion</strong></td>
+                        <td>2026</td>
+                        <td>50+ APIs, developer portal live, OAuth federation operational</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Semantic Layer</strong></td>
+                        <td>2027</td>
+                        <td>All APIs linked to tietomallit.suomi.fi, JSON-LD adoption</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Third-Party Ecosystem</strong></td>
+                        <td>2027-2028</td>
+                        <td>100+ third-party apps built on gov APIs (fintech, healthtech)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>AI Integration</strong></td>
+                        <td>2028+</td>
+                        <td>AI agents discover and compose APIs autonomously (agentic layer)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://swagger.io/specification/" target="_blank">OpenAPI 3.1 Specification</a></li>
+                <li><a href="https://oauth.net/2/" target="_blank">OAuth 2.0 Framework</a></li>
+                <li><a href="https://www.w3.org/TR/json-ld11/" target="_blank">JSON-LD (Semantic APIs)</a></li>
+                <li><a href="https://yhteentoimiva.suomi.fi/" target="_blank">Finnish Interoperability Platform</a></li>
+                <li><a href="https://konghq.com/" target="_blank">Kong API Gateway</a></li>
+                <li><a href="https://github.com/OAI/OpenAPI-Specification" target="_blank">OpenAPI Specification (GitHub)</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event-Driven Service Bus | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>⚡ Event-Driven Service Bus</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">National infrastructure for real-time life and business event orchestration</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#patterns">Event Patterns</a>
+            <a href="#examples">Life Events</a>
+            <a href="#governance">Governance</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                An <strong>Event-Driven Service Bus</strong> is a national messaging infrastructure that broadcasts significant life 
+                and business events to subscribed government agencies and authorized service providers. Instead of citizens manually 
+                notifying each organization about changes (address, employment, family status), events flow automatically to systems 
+                that need to react.
+            </p>
+            <div class="highlight">
+                <strong>Core Paradigm Shift:</strong> From <em>"notify-by-default"</em> (citizen tells everyone) to 
+                <em>"subscribe-and-react"</em> (agencies listen for relevant events). Birth, marriage, company formation—these 
+                trigger cascading workflows across the ecosystem without human intervention.
+            </div>
+            <p>
+                This isn't just pub/sub messaging. It's a <strong>semantic event mesh</strong> with standardized event schemas 
+                (linked to interoperability vocabularies), consent management, audit trails, and choreographed service orchestration. 
+                Think Kafka meets W3C Event Streams meets GDPR.
+            </p>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>Core Components</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Event Broker</strong></td>
+                        <td>Apache Kafka, Azure Event Hubs, AWS EventBridge</td>
+                        <td>Durable, scalable event streaming platform</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schema Registry</strong></td>
+                        <td>Confluent Schema Registry, JSON Schema + SHACL</td>
+                        <td>Centralized event schema definitions (versioned)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event Catalog</strong></td>
+                        <td>AsyncAPI, CloudEvents spec</td>
+                        <td>Documentation + discovery for subscribers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consent Engine</strong></td>
+                        <td>OAuth 2.0 scopes, GDPR consent logs</td>
+                        <td>User-controlled event sharing permissions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit Log</strong></td>
+                        <td>Immutable append-only log (Kafka compacted topics)</td>
+                        <td>Track all event publications/subscriptions for compliance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dead Letter Queue</strong></td>
+                        <td>Retry logic + alerting</td>
+                        <td>Handle failed deliveries (e.g., subscriber system down)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event Gateway</strong></td>
+                        <td>REST API + WebSocket (for real-time consumers)</td>
+                        <td>Subscribers connect via HTTP or persistent connections</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Event Mesh Architecture</h3>
+            <div class="arch-diagram">
+┌────────────────────────────────────────────────────────────────────┐
+│                  National Event-Driven Service Bus                  │
+└────────────────────────────────────────────────────────────────────┘
+
+                        ┌───────────────────┐
+                        │  Event Producers  │
+                        │  (Authoritative   │
+                        │   Data Sources)   │
+                        └─────────┬─────────┘
+                                  │
+                    ┌─────────────┼─────────────┐
+                    │             │             │
+           ┌────────▼───────┐ ┌──▼──────┐ ┌───▼────────┐
+           │  Hospital      │ │ PRH     │ │ Tax Office │
+           │  (Birth Event) │ │ (BizReg)│ │ (Income)   │
+           └────────┬───────┘ └──┬──────┘ └───┬────────┘
+                    │             │             │
+                    └─────────────┼─────────────┘
+                                  │
+                         ┌────────▼─────────┐
+                         │  Event Broker    │
+                         │  (Kafka Topics)  │
+                         │  - life.birth    │
+                         │  - biz.formation │
+                         │  - tax.income    │
+                         └────────┬─────────┘
+                                  │
+                    ┌─────────────┼─────────────┐
+                    │             │             │
+           ┌────────▼───────┐ ┌──▼─────────┐ ┌▼──────────┐
+           │  Population    │ │ Kela       │ │ Daycare   │
+           │  Registry      │ │ (Benefits) │ │ System    │
+           │  (Subscriber)  │ │ (Auto-App) │ │ (Enroll)  │
+           └────────────────┘ └────────────┘ └───────────┘
+
+Data Flow:
+1. Hospital publishes "birth" event → Kafka topic
+2. Population Registry subscribes → auto-registers child
+3. Kela subscribes → calculates benefit eligibility, pre-applies
+4. Daycare system subscribes → adds to waiting list
+5. Parent sees: "4 services updated automatically"
+
+Privacy: Event contains minimal PII (encrypted personal ID + event type)
+Full data fetched via API only by authorized subscribers (with consent)
+            </div>
+        </section>
+
+        <!-- Event Patterns -->
+        <section id="patterns" class="tech-section">
+            <h2>Event Design Patterns</h2>
+
+            <h3>Event Types</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Pattern</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>State Change Event</strong></td>
+                        <td>Entity transitioned to new state</td>
+                        <td>"PersonAddressChanged", "CompanyDissolved"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Domain Event</strong></td>
+                        <td>Significant business occurrence</td>
+                        <td>"ChildBorn", "EmploymentStarted", "PropertySold"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Notification Event</strong></td>
+                        <td>Informational (no action required)</td>
+                        <td>"DocumentViewed", "ServiceAccessed"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Command Event</strong></td>
+                        <td>Request for action (CQRS pattern)</td>
+                        <td>"CancelBenefit", "ScheduleInspection"</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Event Schema (CloudEvents Standard)</h3>
+            <div class="code-block">
+{
+  "specversion": "1.0",
+  "type": "fi.dvv.person.address.changed",
+  "source": "https://dvv.fi/population-registry",
+  "id": "A234-1234-1234",
+  "time": "2026-03-15T14:30:00Z",
+  "datacontenttype": "application/json",
+  "dataschema": "https://tietomallit.suomi.fi/model/PersonAddress/v1",
+  "subject": "urn:person:010186-900C",  // Finnish personal ID (hetu)
+  "data": {
+    "personId": "010186-900C",
+    "oldAddress": {
+      "street": "Mannerheimintie 5",
+      "city": "Helsinki",
+      "postalCode": "00100"
+    },
+    "newAddress": {
+      "street": "Käpylänkuja 3",
+      "city": "Oulu",
+      "postalCode": "90100"
+    },
+    "effectiveDate": "2026-03-20",
+    "consentScope": "address-change-notification"
+  },
+  "consent": {
+    "givenBy": "urn:person:010186-900C",
+    "authorizedSubscribers": ["kela.fi", "vero.fi", "posti.fi"]
+  }
+}
+            </div>
+
+            <h3>Subscription Model</h3>
+            <div class="code-block">
+# Subscriber registration (e.g., Kela subscribes to birth events)
+
+POST /api/subscriptions
+Authorization: Bearer {agency-token}
+
+{
+  "subscriberId": "kela.fi",
+  "eventTypes": ["fi.dvv.person.birth"],
+  "filter": {
+    "data.parentResidency": "Finland"  // Only Finnish residents
+  },
+  "webhook": "https://kela.fi/api/event-handler",
+  "consent": {
+    "requiredScopes": ["birth-notification", "benefit-eligibility"],
+    "purpose": "Automatic child benefit processing"
+  }
+}
+
+Response:
+{
+  "subscriptionId": "sub-kela-birth-001",
+  "status": "active",
+  "eventsDelivered": 0,
+  "createdAt": "2026-01-01T00:00:00Z"
+}
+            </div>
+        </section>
+
+        <!-- Life Event Examples -->
+        <section id="examples" class="tech-section">
+            <h2>Real-World Life Event Flows</h2>
+
+            <h3>Event 1: Birth of a Child</h3>
+            <div class="highlight">
+                <strong>Traditional Flow (Manual):</strong>
+                <ol>
+                    <li>Parent receives paper birth certificate at hospital</li>
+                    <li>Parent visits population registry → registers child</li>
+                    <li>Parent contacts Kela → applies for child benefit (form)</li>
+                    <li>Parent contacts daycare → enrolls in queue (separate form)</li>
+                    <li>Parent updates health records → separate system</li>
+                </ol>
+                <strong>Time:</strong> 2-4 weeks, 5+ forms, repeated data entry
+            </div>
+
+            <div class="highlight">
+                <strong>Event-Driven Flow (Automated):</strong>
+                <ol>
+                    <li><strong>Hospital publishes event:</strong> "fi.health.birth" (child ID, parent IDs, birthdate)</li>
+                    <li><strong>Population Registry subscribes →</strong> auto-registers child, issues personal ID</li>
+                    <li><strong>Kela subscribes →</strong> calculates eligibility, pre-fills benefit application, sends to parent's wallet</li>
+                    <li><strong>Daycare system subscribes →</strong> adds child to municipal waiting list</li>
+                    <li><strong>Tax office subscribes →</strong> updates parent's tax card (child deduction)</li>
+                    <li><strong>Parent receives notification:</strong> "5 services updated. Review and confirm benefit application."</li>
+                    <li><strong>Parent confirms →</strong> benefit payment starts automatically</li>
+                </ol>
+                <strong>Time:</strong> 24 hours, 1 confirmation, zero forms
+            </div>
+
+            <h3>Event 2: Starting Employment</h3>
+            <div class="highlight">
+                <strong>Event Flow:</strong>
+                <ol>
+                    <li><strong>Employer publishes:</strong> "fi.employment.started" (employee ID, employer ID, start date)</li>
+                    <li><strong>Tax office subscribes →</strong> adjusts prepayment (no more unemployment deduction)</li>
+                    <li><strong>Kela subscribes →</strong> terminates unemployment benefit</li>
+                    <li><strong>Pension fund subscribes →</strong> enrolls employee</li>
+                    <li><strong>Employee's wallet subscribes →</strong> receives tax card update notification</li>
+                </ol>
+                <strong>Result:</strong> No manual filing, automatic compliance
+            </div>
+
+            <h3>Event 3: Company Formation</h3>
+            <div class="highlight">
+                <strong>Event Flow:</strong>
+                <ol>
+                    <li><strong>PRH publishes:</strong> "fi.business.registered" (company ID, industry, founders)</li>
+                    <li><strong>Tax office subscribes →</strong> opens tax account, issues VAT number</li>
+                    <li><strong>Statistics Finland subscribes →</strong> adds to business register</li>
+                    <li><strong>Pension authority subscribes →</strong> creates employer account</li>
+                    <li><strong>Chamber of Commerce subscribes →</strong> sends onboarding materials</li>
+                    <li><strong>Company wallet receives:</strong> Registration certificate + VAT number as VCs</li>
+                </ol>
+                <strong>Time:</strong> Same-day registration, all IDs issued automatically
+            </div>
+        </section>
+
+        <!-- Governance -->
+        <section id="governance" class="tech-section">
+            <h2>Governance & Compliance</h2>
+
+            <h3>Privacy & Consent</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Requirement</th>
+                        <th>Implementation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GDPR Article 6</strong> (Lawful basis)</td>
+                        <td>Events published under legal obligation (population registry law) or explicit consent</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consent Management</strong></td>
+                        <td>Users control which agencies receive their events (via consent dashboard)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Minimization</strong></td>
+                        <td>Events contain minimal PII; full details fetched via API (need-to-know)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Right to Object</strong></td>
+                        <td>Users can block specific subscriptions (e.g., marketing-related)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit Trail</strong></td>
+                        <td>Every event access logged (who, when, purpose) for 5+ years</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Encryption</strong></td>
+                        <td>Events encrypted in transit (TLS) and at rest (AES-256)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Access Control</h3>
+            <div class="code-block">
+# Example: Kela authorized to subscribe to birth events
+
+1. Kela registers as authorized subscriber:
+   - Provides organization DID (did:web:kela.fi)
+   - Declares legal basis (Social Security Act §15)
+   - Specifies data usage purpose (benefit eligibility)
+
+2. Event Bus validates:
+   - Kela in Trust Registry as authorized agency
+   - Purpose aligns with declared event type
+   - Required security certifications (ISO 27001) valid
+
+3. Subscription approved → Kela receives events
+4. Each event delivery logged for audit
+
+5. If citizen revokes consent → subscription filtered
+   (unless legal obligation overrides, e.g., tax reporting)
+            </div>
+
+            <div class="warning-box">
+                <strong>Legal Challenge:</strong> Balancing automation with user control. Not all events can be "opt-out" 
+                (e.g., tax reporting is mandatory). Clear legal framework needed to define which events are consent-based vs. 
+                obligation-based.
+            </div>
+        </section>
+
+        <!-- Technology Stack -->
+        <section class="tech-section">
+            <h2>Technology Stack Recommendation</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Options</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Event Broker</strong></td>
+                        <td>Apache Kafka (on-prem/cloud)</td>
+                        <td>Battle-tested, scales to millions of events/sec, strong ecosystem</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schema Management</strong></td>
+                        <td>Confluent Schema Registry + JSON Schema</td>
+                        <td>Versioning, compatibility checks, integrates with Kafka</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event Gateway</strong></td>
+                        <td>Kong Gateway, AWS API Gateway</td>
+                        <td>Rate limiting, authentication, subscriber management</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Streaming Processing</strong></td>
+                        <td>Apache Flink, Kafka Streams</td>
+                        <td>Real-time event transformation, filtering, enrichment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Monitoring</strong></td>
+                        <td>Prometheus + Grafana, ELK stack</td>
+                        <td>Track event throughput, delivery failures, latency</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consent Store</strong></td>
+                        <td>PostgreSQL + Redis cache</td>
+                        <td>Fast consent lookups (cached for performance)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Deployment Timeline -->
+        <section class="tech-section">
+            <h2>Deployment Roadmap</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Scope</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pilot</strong></td>
+                        <td>2025</td>
+                        <td>Single event type (e.g., address change) across 3 agencies</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Core Life Events</strong></td>
+                        <td>2026</td>
+                        <td>Birth, death, marriage, address, employment (national rollout)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Events</strong></td>
+                        <td>2027</td>
+                        <td>Company formation, dissolution, ownership changes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Private Sector Integration</strong></td>
+                        <td>2027-2028</td>
+                        <td>Banks, insurers, utilities subscribe to relevant events (with consent)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cross-Border</strong></td>
+                        <td>2028+</td>
+                        <td>EU-wide event federation (e.g., Finnish birth recognized in Germany)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://cloudevents.io/" target="_blank">CloudEvents Specification (CNCF standard)</a></li>
+                <li><a href="https://kafka.apache.org/" target="_blank">Apache Kafka Documentation</a></li>
+                <li><a href="https://www.asyncapi.com/" target="_blank">AsyncAPI (Event-driven API docs)</a></li>
+                <li><a href="https://www.w3.org/TR/activitystreams-core/" target="_blank">W3C Activity Streams (semantic events)</a></li>
+                <li><a href="https://gdpr.eu/" target="_blank">GDPR Compliance for Event Systems</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>

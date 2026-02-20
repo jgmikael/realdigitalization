@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Federated Data Spaces | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>🌐 Federated Data Spaces</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">Domain-specific ecosystems for secure, governed data sharing without central data lakes</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#connectors">Data Connectors</a>
+            <a href="#examples">Domain Examples</a>
+            <a href="#governance">Governance</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                A <strong>Federated Data Space</strong> is a decentralized ecosystem where organizations share data under common 
+                governance rules, without moving data to a central repository. Participants retain sovereignty over their data—
+                deciding who accesses what, for how long, and under which conditions. Think "data marketplace" meets "trust framework."
+            </p>
+            <div class="highlight">
+                <strong>Core Principle:</strong> <em>Data stays at the source.</em> Instead of copying data to data lakes, 
+                participants expose <strong>data products</strong> (APIs, query endpoints) that others can access with permission. 
+                Governance, identity, and access control are federated across organizational boundaries.
+            </div>
+            <p>
+                Inspired by Europe's <strong>GAIA-X</strong> and <strong>International Data Spaces (IDS)</strong> initiatives, 
+                Finnish data spaces focus on domain-specific use cases: healthcare (patient data continuity), education 
+                (credential portability), business (supply chain transparency). Each space has its own rules, but interoperates 
+                via shared standards.
+            </p>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>Core Components</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Data Connector</strong></td>
+                        <td>IDS Connector, Eclipse Dataspace Components (EDC)</td>
+                        <td>Gateway for secure data exchange between participants</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Identity Provider</strong></td>
+                        <td>Decentralized Identifiers (DIDs), X.509 certs</td>
+                        <td>Authenticate participants (organizations, systems)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Usage Control</strong></td>
+                        <td>ODRL (Open Digital Rights Language)</td>
+                        <td>Enforce data usage policies (e.g., "no redistribution", "delete after 30 days")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Catalog</strong></td>
+                        <td>DCAT (Data Catalog Vocabulary), CKAN</td>
+                        <td>Discover available datasets/APIs within the space</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vocabulary Hub</strong></td>
+                        <td>Suomi.fi Interoperability Platform (SKOS, OWL)</td>
+                        <td>Shared semantic layer for data interoperability</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clearing House</strong></td>
+                        <td>Blockchain or distributed ledger</td>
+                        <td>Audit trail for data transactions (who accessed what, when)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trust Anchor</strong></td>
+                        <td>PKI infrastructure, Trust Registry</td>
+                        <td>Verify participant credentials (e.g., healthcare provider license)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Data Space Architecture (IDS Model)</h3>
+            <div class="arch-diagram">
+┌──────────────────────────────────────────────────────────────────────┐
+│                     Federated Data Space                              │
+│                  (e.g., Finnish Health Data Space)                   │
+└──────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────┐                                  ┌─────────────────┐
+│  DATA PROVIDER  │                                  │  DATA CONSUMER  │
+│  (Hospital A)   │                                  │  (Research Inst)│
+│                 │                                  │                 │
+│  ┌───────────┐  │          Data Exchange           │  ┌───────────┐  │
+│  │  Health   │  │                                  │  │  Analysis │  │
+│  │  Records  │  │                                  │  │   System  │  │
+│  │  Database │  │                                  │  │           │  │
+│  └─────┬─────┘  │                                  │  └─────▲─────┘  │
+│        │        │                                  │        │        │
+│  ┌─────▼──────────┐                          ┌────────────┴──────┐  │
+│  │ IDS Connector  │◄────────────────────────►│  IDS Connector    │  │
+│  │ (Provider)     │   Encrypted channel      │  (Consumer)       │  │
+│  │                │   (TLS + usage policy)   │                   │  │
+│  └────────────────┘                          └───────────────────┘  │
+│        │                                              │              │
+└────────┼──────────────────────────────────────────────┼──────────────┘
+         │                                              │
+         └──────────────────┬───────────────────────────┘
+                            │
+                   ┌────────▼──────────┐
+                   │  Metadata Broker  │
+                   │  (Data Catalog)   │
+                   │  - Who has what   │
+                   │  - Access terms   │
+                   │  - Schemas        │
+                   └───────────────────┘
+                            │
+                   ┌────────▼──────────┐
+                   │   Clearing House  │
+                   │   (Audit Log)     │
+                   │  - Transaction ID │
+                   │  - Timestamp      │
+                   │  - Data hash      │
+                   └───────────────────┘
+
+Key Flow:
+1. Consumer discovers dataset via Metadata Broker
+2. Consumer requests data from Provider's connector
+3. Provider's connector checks:
+   - Is consumer authorized? (Trust Registry)
+   - Does usage comply with policy? (ODRL rules)
+4. If approved → data transferred (encrypted)
+5. Transaction logged in Clearing House (audit trail)
+6. Usage policy enforced at consumer's connector (e.g., auto-delete after 30 days)
+            </div>
+        </section>
+
+        <!-- Data Connectors -->
+        <section id="connectors" class="tech-section">
+            <h2>Data Connectors & Usage Control</h2>
+
+            <h3>IDS Connector Architecture</h3>
+            <p>
+                The <strong>IDS Connector</strong> is a secure gateway that enforces data sovereignty. It sits between internal 
+                systems and the data space, acting as both firewall and policy enforcement point.
+            </p>
+            <div class="code-block">
+# IDS Connector Deployment (Docker example)
+
+docker run -d \
+  --name ids-connector-hospital \
+  -e CONNECTOR_ID=did:web:hospital.fi \
+  -e CLEARING_HOUSE_URL=https://clearing.healthspace.fi \
+  -e METADATA_BROKER=https://broker.healthspace.fi \
+  -e DAPS_URL=https://daps.gaia-x.eu \
+  -v /path/to/certs:/certs \
+  -v /path/to/policies:/policies \
+  idsconnector:latest
+
+# Configuration: /policies/data-sharing-policy.json
+{
+  "policy": {
+    "@type": "odrl:Set",
+    "odrl:permission": [{
+      "odrl:target": "https://hospital.fi/api/patient-records",
+      "odrl:action": "odrl:read",
+      "odrl:constraint": [
+        {
+          "odrl:leftOperand": "odrl:purpose",
+          "odrl:operator": "odrl:eq",
+          "odrl:rightOperand": "medical-research"
+        },
+        {
+          "odrl:leftOperand": "odrl:elapsedTime",
+          "odrl:operator": "odrl:lteq",
+          "odrl:rightOperand": "P30D"  // Auto-delete after 30 days
+        }
+      ],
+      "odrl:duty": [{
+        "odrl:action": "odrl:delete",
+        "odrl:constraint": [{
+          "odrl:leftOperand": "odrl:dateTime",
+          "odrl:operator": "odrl:gt",
+          "odrl:rightOperand": { "@value": "2026-04-15", "@type": "xsd:date" }
+        }]
+      }]
+    }]
+  }
+}
+            </div>
+
+            <h3>Usage Control Enforcement</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Policy Type</th>
+                        <th>Example Rule</th>
+                        <th>Enforcement Mechanism</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Purpose Limitation</strong></td>
+                        <td>"Data may only be used for cancer research"</td>
+                        <td>Consumer declares purpose; provider validates against whitelist</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Time-to-Live</strong></td>
+                        <td>"Delete data after 30 days"</td>
+                        <td>Consumer's connector enforces automatic deletion</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Anonymization</strong></td>
+                        <td>"No PII may be revealed"</td>
+                        <td>Provider's connector strips identifiers before transfer</td>
+                    </tr>
+                    <tr>
+                        <td><strong>No Redistribution</strong></td>
+                        <td>"Data cannot be shared with third parties"</td>
+                        <td>Consumer's connector blocks outbound sharing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Consent-Based</strong></td>
+                        <td>"Patient must have given explicit consent"</td>
+                        <td>Provider checks consent log before data release</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Domain Examples -->
+        <section id="examples" class="tech-section">
+            <h2>Domain-Specific Data Spaces</h2>
+
+            <h3>1. Finnish Health Data Space</h3>
+            <div class="highlight">
+                <strong>Challenge:</strong> Patient data scattered across hospitals, health centers, labs. No unified view.
+                <br><br>
+                <strong>Solution:</strong> Health providers expose patient records via IDS connectors. Authorized clinicians 
+                query federated data (with patient consent). Data never leaves source systems—queries federated at runtime.
+                <br><br>
+                <strong>Example:</strong> Patient visits Specialist B (never seen before). Specialist queries Health Data Space:
+                <ul style="margin-top: 10px;">
+                    <li>Health Center A shares: medication history (patient consented)</li>
+                    <li>Hospital C shares: lab results from 2024 (patient consented)</li>
+                    <li>Pharmacy chain shares: prescription fills (automatic, legal basis)</li>
+                </ul>
+                <strong>Result:</strong> Complete health history assembled in seconds, zero manual data transfer.
+            </div>
+
+            <h3>2. Finnish Education Data Space</h3>
+            <div class="highlight">
+                <strong>Challenge:</strong> Students change schools, universities. Transcripts, certificates manually requested.
+                <br><br>
+                <strong>Solution:</strong> Educational institutions share credentials (grades, degrees) as verifiable credentials 
+                within a federated space. Students control who accesses their records.
+                <br><br>
+                <strong>Example:</strong> Student applies to Master's program:
+                <ul style="margin-top: 10px;">
+                    <li>University requests: "Share your Bachelor's degree credential"</li>
+                    <li>Student's wallet presents VC (issued by previous university)</li>
+                    <li>University's connector verifies signature against Trust Registry</li>
+                    <li>Admission decision automated (no transcript courier needed)</li>
+                </ul>
+                <strong>Result:</strong> Lifelong learning passports—credentials portable, instantly verifiable.
+            </div>
+
+            <h3>3. Finnish Mobility Data Space</h3>
+            <div class="highlight">
+                <strong>Challenge:</strong> Transportation data siloed (trains, buses, taxis). No unified planning possible.
+                <br><br>
+                <strong>Solution:</strong> Transport operators share real-time data (schedules, capacity, routes) via data space. 
+                Journey planners, cities, researchers access data for optimization.
+                <br><br>
+                <strong>Example:</strong> City of Helsinki optimizes bus routes:
+                <ul style="margin-top: 10px;">
+                    <li>Queries: passenger flows (VR trains), e-scooter usage (Voi), taxi demand (metered trips)</li>
+                    <li>Data anonymized by connectors (GDPR-compliant aggregation)</li>
+                    <li>AI model identifies underserved routes → proposes new bus line</li>
+                </ul>
+                <strong>Result:</strong> Data-driven urban planning without central data ownership.
+            </div>
+        </section>
+
+        <!-- Governance -->
+        <section id="governance" class="tech-section">
+            <h2>Data Space Governance</h2>
+
+            <h3>Governance Model</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Governance Layer</th>
+                        <th>Mechanism</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Participation Rules</strong></td>
+                        <td>Onboarding process + technical certification</td>
+                        <td>Healthcare providers must prove ISO 27001 compliance to join Health Data Space</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Data Quality Standards</strong></td>
+                        <td>Mandatory schemas + validation</td>
+                        <td>Patient records must conform to HL7 FHIR (validated at connector)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Usage Policies</strong></td>
+                        <td>ODRL policy templates (sector-specific)</td>
+                        <td>Health data: "Research use only, no commercial exploitation"</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dispute Resolution</strong></td>
+                        <td>Data Space Authority (legal entity)</td>
+                        <td>If participant violates rules → suspension from space</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit & Compliance</strong></td>
+                        <td>Clearing House logs + periodic audits</td>
+                        <td>Annual review: did participants honor usage policies?</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Trust Framework</h3>
+            <div class="code-block">
+# Example: Verifying a participant's identity and authorization
+
+1. Organization requests to join Health Data Space
+2. Identity verification:
+   - Provides organization DID (did:web:hospital.fi)
+   - Presents credentials: business registration, healthcare license
+3. Technical certification:
+   - Connector passes security scan (ISO 27001 audit)
+   - Data encryption validated (AES-256, TLS 1.3)
+4. Trust Registry entry created:
+   {
+     "participantId": "did:web:hospital.fi",
+     "role": "data-provider",
+     "certifications": ["ISO27001", "GDPR-compliant"],
+     "allowedDataTypes": ["patient-records", "lab-results"],
+     "validUntil": "2027-12-31"
+   }
+5. Participant's connector can now authenticate to other participants
+6. Other connectors verify Trust Registry before accepting connections
+            </div>
+
+            <div class="warning-box">
+                <strong>Challenge:</strong> Enforcing usage policies <em>after</em> data leaves the provider's connector is difficult. 
+                Once data is at the consumer's site, technical enforcement relies on consumer's connector integrity. Legal contracts 
+                and audits are fallback mechanisms (deterrence, not prevention).
+            </div>
+        </section>
+
+        <!-- Standards -->
+        <section class="tech-section">
+            <h2>Key Standards & Technologies</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Standard</th>
+                        <th>Organization</th>
+                        <th>Role in Data Spaces</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>IDS Reference Architecture</strong></td>
+                        <td>International Data Spaces Association</td>
+                        <td>Blueprint for connector design, trust model</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GAIA-X</strong></td>
+                        <td>European Commission</td>
+                        <td>Federated cloud infrastructure, self-descriptions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ODRL (Usage Control)</strong></td>
+                        <td>W3C</td>
+                        <td>Express data usage policies (permissions, duties, prohibitions)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DCAT (Data Catalog)</strong></td>
+                        <td>W3C</td>
+                        <td>Metadata format for dataset discovery</td>
+                    </tr>
+                    <tr>
+                        <td><strong>HL7 FHIR</strong></td>
+                        <td>Health Level 7</td>
+                        <td>Healthcare data interoperability (patient records, observations)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Eclipse Dataspace Components (EDC)</strong></td>
+                        <td>Eclipse Foundation</td>
+                        <td>Open-source IDS connector implementation</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Deployment Timeline -->
+        <section class="tech-section">
+            <h2>Deployment Roadmap</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Deliverables</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pilots</strong></td>
+                        <td>2024-2025</td>
+                        <td>Health Data Space pilot (3 hospitals), Education pilot (universities)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>National Data Spaces</strong></td>
+                        <td>2026</td>
+                        <td>Health, Education, Mobility spaces operational in Finland</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cross-Domain Interop</strong></td>
+                        <td>2027</td>
+                        <td>Shared trust framework (participants can join multiple spaces)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EU Federation</strong></td>
+                        <td>2028+</td>
+                        <td>Finnish Health Data Space interoperates with German, Dutch equivalents</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://internationaldataspaces.org/" target="_blank">International Data Spaces Association</a></li>
+                <li><a href="https://gaia-x.eu/" target="_blank">GAIA-X European Data Infrastructure</a></li>
+                <li><a href="https://www.w3.org/TR/odrl-model/" target="_blank">W3C ODRL (Open Digital Rights Language)</a></li>
+                <li><a href="https://www.w3.org/TR/vocab-dcat/" target="_blank">W3C DCAT (Data Catalog Vocabulary)</a></li>
+                <li><a href="https://projects.eclipse.org/projects/technology.edc" target="_blank">Eclipse Dataspace Components (EDC)</a></li>
+                <li><a href="https://hl7.org/fhir/" target="_blank">HL7 FHIR Healthcare Standard</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>

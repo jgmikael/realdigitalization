@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distributed Trust Registry | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>✅ Distributed Trust Registry</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">Authoritative source of truth for who can issue, verify, and revoke credentials</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#registries">Registry Types</a>
+            <a href="#operations">Operations</a>
+            <a href="#security">Security</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                A <strong>Trust Registry</strong> is a verifiable directory of authorized issuers, verifiers, and credential schemas 
+                within an identity ecosystem. It answers critical questions: <em>Who is allowed to issue university degrees? Which 
+                organizations can verify health credentials? Is this credential schema valid?</em>
+            </p>
+            <div class="highlight">
+                <strong>Core Problem:</strong> Verifiable Credentials are cryptographically secure, but cryptography alone doesn't 
+                establish <em>trust</em>. Anyone can create a DID and issue a credential claiming "Harvard University Diploma." 
+                The Trust Registry provides the authoritative answer: <em>"Is did:web:harvard.edu actually Harvard?"</em>
+            </div>
+            <p>
+                Unlike X.509 Certificate Authorities (centralized), Trust Registries can be <strong>distributed</strong>—
+                federated across jurisdictions, governed by different authorities (government, industry consortia), yet 
+                interoperable. Think DNS for trust: hierarchical, cached, globally resolvable.
+            </p>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>Core Components</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>DID Registry</strong></td>
+                        <td>did:web, did:ebsi, DLT-based (e.g., Hyperledger Indy)</td>
+                        <td>Map DIDs to real-world entities (verified identities)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Issuer Registry</strong></td>
+                        <td>PostgreSQL, EBSI Trusted Issuers API</td>
+                        <td>List of authorized credential issuers (with permissions)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schema Registry</strong></td>
+                        <td>JSON Schema, SHACL, W3C VC Context</td>
+                        <td>Valid credential types and data models</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Revocation Registry</strong></td>
+                        <td>Status List 2021, CRL, OCSP</td>
+                        <td>Track revoked credentials (expired licenses, fired employees)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accreditation Store</strong></td>
+                        <td>Government database, blockchain ledger</td>
+                        <td>Store proof of issuer authorization (audited, time-stamped)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Gateway</strong></td>
+                        <td>REST, GraphQL</td>
+                        <td>Verifiers query registry ("Is this issuer authorized?")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cache Layer</strong></td>
+                        <td>Redis, CDN</td>
+                        <td>Fast lookups (millions of verifications/day)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Trust Registry Architecture</h3>
+            <div class="arch-diagram">
+┌──────────────────────────────────────────────────────────────────┐
+│              National Trust Registry (trust.suomi.fi)             │
+└──────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────┐
+│                REGISTRATION (Issuers Apply)                      │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐        │
+│  │ University   │   │ Government   │   │ Chamber of   │        │
+│  │ (Degree)     │   │ Agency (ID)  │   │ Commerce(CoO)│        │
+│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘        │
+│         │ Apply             │ Apply             │ Apply          │
+│         │ Authorization     │ Authorization     │ Authorization  │
+└─────────┼───────────────────┼───────────────────┼────────────────┘
+          │                   │                   │
+          └───────────────────┼───────────────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │  Trust Authority  │
+                    │  (Governance Org) │
+                    │  - Validates      │
+                    │  - Issues DID     │
+                    │  - Records Auth   │
+                    └─────────┬─────────┘
+                              │
+                    ┌─────────▼─────────┐
+                    │  Trust Registry   │
+                    │  (Database)       │
+                    │  ┌────────────┐   │
+                    │  │ Issuer:    │   │
+                    │  │ did:web:   │   │
+                    │  │ university │   │
+                    │  │ fi         │   │
+                    │  │ Authorized:│   │
+                    │  │ - Degrees  │   │
+                    │  │ - Diplomas │   │
+                    │  │ Valid:     │   │
+                    │  │ 2026-2030  │   │
+                    │  └────────────┘   │
+                    └─────────┬─────────┘
+                              │
+┌─────────────────────────────┼─────────────────────────────────────┐
+│                  VERIFICATION (Verifiers Query)                    │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────┐          │
+│  │  Employer    │   │  Bank        │   │  Gov Portal  │          │
+│  │  (HR Check)  │   │  (KYC)       │   │  (E-Service) │          │
+│  └──────┬───────┘   └──────┬───────┘   └──────┬───────┘          │
+│         │ Query            │ Query            │ Query             │
+│         │ "Is did:web:    │ "Is did:web:     │ "Is revoked?"     │
+│         │  university.fi   │  bank.fi         │                   │
+│         │  authorized?"    │  authorized?"    │                   │
+└─────────┼──────────────────┼──────────────────┼───────────────────┘
+          │                  │                  │
+          │                  │                  │
+          └──────────────────┴──────────────────┘
+                             │
+                    [API Response: YES/NO]
+
+Security: HTTPS + DNSSEC, cached for performance, audit trail for all queries
+            </div>
+        </section>
+
+        <!-- Registry Types -->
+        <section id="registries" class="tech-section">
+            <h2>Registry Types & Hierarchies</h2>
+
+            <h3>National Trust Registry (Finland)</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Registry Type</th>
+                        <th>Scope</th>
+                        <th>Governance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Government Issuer Registry</strong></td>
+                        <td>Agencies authorized to issue official credentials (ID, tax, health)</td>
+                        <td>Ministry of Finance (centralized approval)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Education Registry</strong></td>
+                        <td>Accredited universities, vocational schools</td>
+                        <td>Ministry of Education (delegation to accreditation bodies)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Healthcare Registry</strong></td>
+                        <td>Licensed hospitals, clinics, pharmacies</td>
+                        <td>National Supervisory Authority for Welfare and Health (Valvira)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Business Registry</strong></td>
+                        <td>Companies authorized to issue business credentials (B2B)</td>
+                        <td>Patent and Registration Office (PRH) + sector regulators</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Schema Registry</strong></td>
+                        <td>Valid credential types (linked to tietomallit.suomi.fi)</td>
+                        <td>Interoperability Platform governance board</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>EU-Level Federation (EBSI)</h3>
+            <p>
+                The <strong>European Blockchain Services Infrastructure (EBSI)</strong> provides a distributed trust registry 
+                for cross-border recognition. Finnish issuers register in the national registry; that registry federates 
+                into EBSI, making Finnish credentials verifiable across EU.
+            </p>
+            <div class="code-block">
+# Trust hierarchy example
+
+Level 1: EU Trust Root (EBSI)
+  └─ Level 2: Finland National Registry (trust.suomi.fi)
+      └─ Level 3: Education Sector Registry
+          └─ Issuer: University of Helsinki (did:web:helsinki.fi)
+              └─ Authorized credentials:
+                  - Master's Degree in Computer Science
+                  - Bachelor's Degree in Engineering
+
+Verification flow:
+1. Verifier in Germany receives Finnish degree credential
+2. Verifier queries EBSI: "Is did:web:helsinki.fi authorized?"
+3. EBSI resolves → Finland registry → Education registry
+4. Response: "YES, authorized for degree credentials"
+5. Verifier trusts credential (cross-border recognition)
+            </div>
+        </section>
+
+        <!-- Operations -->
+        <section id="operations" class="tech-section">
+            <h2>Registry Operations</h2>
+
+            <h3>1. Issuer Registration</h3>
+            <div class="highlight">
+                <strong>Process:</strong> Organization applies to become authorized issuer.
+                <ol style="margin-top: 10px;">
+                    <li><strong>Application:</strong> Submit proof of authority (e.g., university accreditation certificate)</li>
+                    <li><strong>Verification:</strong> Trust Authority validates documents, audits security posture</li>
+                    <li><strong>DID Assignment:</strong> Organization creates DID (did:web:university.fi), publishes public key</li>
+                    <li><strong>Registry Entry:</strong> Trust Authority adds issuer to registry:
+                        <div class="code-block" style="margin-top: 10px;">
+{
+  "issuerDID": "did:web:university.fi",
+  "legalName": "University of Helsinki",
+  "country": "FI",
+  "accreditation": {
+    "body": "Finnish Education Evaluation Centre",
+    "validUntil": "2030-12-31"
+  },
+  "authorizedCredentials": [
+    "UniversityDegreeCredential",
+    "DiplomaCredential"
+  ],
+  "status": "active",
+  "registeredAt": "2026-01-15T00:00:00Z"
+}
+                        </div>
+                    </li>
+                    <li><strong>Publication:</strong> Entry propagates to federated registries (EBSI)</li>
+                </ol>
+            </div>
+
+            <h3>2. Credential Verification</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Employer verifies job applicant's degree credential.
+                <ol style="margin-top: 10px;">
+                    <li><strong>Receive Credential:</strong> Applicant presents VC (signed by did:web:university.fi)</li>
+                    <li><strong>Query Trust Registry:</strong>
+                        <div class="code-block" style="margin-top: 10px;">
+GET https://trust.suomi.fi/api/v1/issuers/did:web:university.fi
+
+Response:
+{
+  "authorized": true,
+  "credentialTypes": ["UniversityDegreeCredential"],
+  "status": "active",
+  "accreditationValid": true
+}
+                        </div>
+                    </li>
+                    <li><strong>Verify Signature:</strong> Fetch issuer's public key from DID document → verify VC signature</li>
+                    <li><strong>Check Revocation:</strong> Query Status List 2021 → confirm credential not revoked</li>
+                    <li><strong>Decision:</strong> All checks pass → credential trusted</li>
+                </ol>
+            </div>
+
+            <h3>3. Revocation Management</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Revocation Method</th>
+                        <th>Use Case</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Status List 2021</strong></td>
+                        <td>Batch revocation (e.g., expired diplomas)</td>
+                        <td>Fast (bitstring lookup), privacy-preserving</td>
+                    </tr>
+                    <tr>
+                        <td><strong>OCSP (Online Certificate Status Protocol)</strong></td>
+                        <td>Real-time revocation (e.g., stolen credentials)</td>
+                        <td>Slower (HTTP request), issuer knows when credential checked</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accumulator-based</strong></td>
+                        <td>Privacy-preserving (ZK-SNARKs), no issuer query</td>
+                        <td>Complex, emerging (not production-ready)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>4. Issuer Suspension/Revocation</h3>
+            <div class="warning-box">
+                <strong>Critical Scenario:</strong> Issuer's accreditation is revoked (e.g., university loses license).
+                <br><br>
+                <strong>Action:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>Trust Authority updates registry: <code>status: "revoked"</code></li>
+                    <li>All existing credentials issued by that DID become untrusted</li>
+                    <li>Verifiers querying registry receive: <code>"authorized": false</code></li>
+                    <li>Credential holders notified: "Your credential issuer is no longer authorized"</li>
+                </ol>
+                <strong>Challenge:</strong> Balancing revocation speed (security) vs. issuer due process (legal fairness).
+            </div>
+        </section>
+
+        <!-- Security -->
+        <section id="security" class="tech-section">
+            <h2>Security & Resilience</h2>
+
+            <h3>Threat Model</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Attack</th>
+                        <th>Mitigation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Fake Issuer Registration</strong></td>
+                        <td>Manual verification of legal documents, background checks, security audits</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Registry Tampering</strong></td>
+                        <td>Blockchain-backed audit log (immutable), append-only database</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DNS/HTTPS Hijacking</strong></td>
+                        <td>DNSSEC, CAA records, certificate pinning</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DDoS on Registry</strong></td>
+                        <td>CDN caching (Cloudflare), rate limiting, geo-distribution</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Issuer Key Compromise</strong></td>
+                        <td>Hardware Security Modules (HSMs), key rotation policies</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Insider Threats</strong></td>
+                        <td>Multi-party approval for registry changes, audit logs, separation of duties</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>High Availability Design</h3>
+            <div class="code-block">
+# Trust Registry HA Architecture
+
+Primary Site (Helsinki):
+- PostgreSQL primary (active)
+- Redis cache (hot)
+- API servers (3x load balanced)
+
+Secondary Site (Oulu):
+- PostgreSQL replica (streaming replication)
+- Redis cache (replicated)
+- API servers (standby, auto-failover)
+
+CDN Layer (Cloudflare):
+- Cache TTL: 5 minutes (balance freshness vs. load)
+- DDoS protection
+- Global edge distribution
+
+Backup:
+- Daily snapshots to S3 (encrypted)
+- Point-in-time recovery (1-hour RPO)
+
+SLA Target: 99.9% uptime (43 minutes downtime/month)
+            </div>
+
+            <h3>Privacy Considerations</h3>
+            <div class="highlight">
+                <strong>Challenge:</strong> Registry queries leak metadata (who verifies what, when).
+                <br><br>
+                <strong>Privacy-Preserving Techniques:</strong>
+                <ul style="margin-top: 10px;">
+                    <li><strong>Batch Queries:</strong> Verifier requests multiple DIDs at once (obfuscate specific interest)</li>
+                    <li><strong>Anonymous Resolution:</strong> Query via Tor, mixnets (hide verifier IP)</li>
+                    <li><strong>ZK Proofs:</strong> Prove "issuer is in registry" without revealing which issuer (future)</li>
+                    <li><strong>Cached Lookups:</strong> Verifiers cache registry data locally (reduce query frequency)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Standards -->
+        <section class="tech-section">
+            <h2>Standards & Interoperability</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Standard</th>
+                        <th>Organization</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Trust over IP (ToIP) Trust Registry Protocol</strong></td>
+                        <td>ToIP Foundation</td>
+                        <td>API specification for querying trust registries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EBSI Trusted Issuers Registry</strong></td>
+                        <td>European Commission</td>
+                        <td>EU-level trust registry (DLT-based)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>W3C DID Specification</strong></td>
+                        <td>W3C</td>
+                        <td>Decentralized identifier format (did:web, did:ebsi)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Status List 2021</strong></td>
+                        <td>W3C Community Group</td>
+                        <td>Revocation status representation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TRAIN (Trust Registries & Accreditation)</strong></td>
+                        <td>GLEIF, ToIP</td>
+                        <td>Global Legal Entity Identifier integration</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Deployment Timeline -->
+        <section class="tech-section">
+            <h2>Deployment Roadmap</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Deliverables</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Foundation</strong></td>
+                        <td>2025</td>
+                        <td>National trust registry operational, first 10 issuers registered</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Sector Expansion</strong></td>
+                        <td>2026</td>
+                        <td>Education, healthcare, business registries live, 100+ issuers</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EU Integration</strong></td>
+                        <td>2027</td>
+                        <td>Finland registry federates with EBSI, cross-border recognition</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Private Sector</strong></td>
+                        <td>2027-2028</td>
+                        <td>Banks, employers integrate registry checks into verification workflows</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Global Interop</strong></td>
+                        <td>2028+</td>
+                        <td>Recognition of non-EU credentials (US, ASEAN) via mutual agreements</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://trustoverip.org/" target="_blank">Trust over IP Foundation</a></li>
+                <li><a href="https://ec.europa.eu/digital-building-blocks/wikis/display/EBSI" target="_blank">EBSI (European Blockchain Services Infrastructure)</a></li>
+                <li><a href="https://www.w3.org/TR/did-core/" target="_blank">W3C DID Specification</a></li>
+                <li><a href="https://w3c-ccg.github.io/vc-status-list-2021/" target="_blank">Status List 2021 Specification</a></li>
+                <li><a href="https://github.com/trustoverip/tswg-trust-registry-tf" target="_blank">ToIP Trust Registry Task Force (GitHub)</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>

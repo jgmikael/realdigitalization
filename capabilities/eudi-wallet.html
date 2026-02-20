@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU Digital Identity Wallet | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>📱 EU Digital Identity Wallet</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">Personal credential vault enabling portable, verifiable identity across Europe</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#standards">Standards</a>
+            <a href="#flows">Credential Flows</a>
+            <a href="#implementation">Implementation</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                The <strong>EU Digital Identity (EUDI) Wallet</strong> is a mobile application that allows EU citizens to store, 
+                manage, and present verifiable credentials—digital equivalents of physical documents like driver's licenses, 
+                university diplomas, health cards, and more. Mandated by the revised eIDAS 2.0 regulation, member states must 
+                provide wallets to all citizens by 2026.
+            </p>
+            <div class="highlight">
+                <strong>Core Principle:</strong> Self-sovereign identity. Users control which credentials they share, with whom, 
+                and for how long. No central database stores citizen data—wallets are personal vaults secured by biometric authentication.
+            </div>
+            <p>
+                Unlike traditional identity systems where service providers query central registries, EUDI Wallets implement 
+                <strong>holder-presented credentials</strong>: the user receives a cryptographically signed credential from an issuer 
+                (e.g., government, university) and presents it directly to verifiers (e.g., employer, bank) without intermediaries.
+            </p>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>Component Stack</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Credential Format</strong></td>
+                        <td>W3C Verifiable Credentials (VC) 2.0</td>
+                        <td>JSON-LD or JWT representation of claims</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Identifier</strong></td>
+                        <td>W3C Decentralized Identifiers (DID)</td>
+                        <td>User-controlled, cryptographically verifiable IDs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Presentation Protocol</strong></td>
+                        <td>OpenID4VP (Verifiable Presentations)</td>
+                        <td>OAuth 2.0 extension for credential sharing</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Issuance Protocol</strong></td>
+                        <td>OpenID4VCI (Verifiable Credential Issuance)</td>
+                        <td>Standardized credential delivery to wallets</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cryptography</strong></td>
+                        <td>ECDSA (P-256), EdDSA, RSA-PSS</td>
+                        <td>Digital signatures for credential integrity</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Selective Disclosure</strong></td>
+                        <td>SD-JWT (Selective Disclosure JWT)</td>
+                        <td>Share only required attributes (e.g., age ≥18, not birthdate)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Holder Binding</strong></td>
+                        <td>DID Auth, biometric authentication</td>
+                        <td>Prove the presenter is the rightful credential holder</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Revocation</strong></td>
+                        <td>Status List 2021, OCSP</td>
+                        <td>Check if credential has been revoked</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>High-Level Flow Diagram</h3>
+            <div class="arch-diagram">
+┌─────────────────────────────────────────────────────────────────┐
+│                        EUDI Wallet Ecosystem                     │
+└─────────────────────────────────────────────────────────────────┘
+
+┌─────────────┐            ┌─────────────┐            ┌─────────────┐
+│   ISSUER    │            │   HOLDER    │            │  VERIFIER   │
+│ (Government,│            │  (Citizen)  │            │ (Employer,  │
+│ University) │            │             │            │  Bank, etc.)│
+└──────┬──────┘            └──────┬──────┘            └──────┬──────┘
+       │                          │                          │
+       │  1. Credential Request   │                          │
+       │◄─────────────────────────┤                          │
+       │  (OpenID4VCI)            │                          │
+       │                          │                          │
+       │  2. Issue VC (signed)    │                          │
+       ├─────────────────────────►│                          │
+       │  {claims, proof, schema} │                          │
+       │                          │                          │
+       │                          │ 3. Presentation Request  │
+       │                          │◄─────────────────────────┤
+       │                          │  (OpenID4VP)             │
+       │                          │                          │
+       │                          │ 4. Present VP (signed)   │
+       │                          ├─────────────────────────►│
+       │                          │  {selected claims, proof}│
+       │                          │                          │
+       │  5. Verify signature ←───┼──────────────────────────┤
+       │◄─────────────────────────┘  (against issuer DID)   │
+       │                                                     │
+       └─────────────────────────────────────────────────────┘
+
+Storage: Wallet stores VCs locally (encrypted, biometric-protected)
+Trust: Verifier checks issuer's DID against Trust Registry
+Privacy: Holder chooses which attributes to share (selective disclosure)
+            </div>
+        </section>
+
+        <!-- Standards -->
+        <section id="standards" class="tech-section">
+            <h2>Core Standards & Specifications</h2>
+
+            <h3>W3C Verifiable Credentials 2.0</h3>
+            <p>
+                VCs are JSON-LD or JWT documents containing claims about a subject (holder), issued by a trusted authority, 
+                and cryptographically signed. Example structure:
+            </p>
+            <div class="code-block">
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://www.w3.org/2018/credentials/examples/v1"
+  ],
+  "type": ["VerifiableCredential", "UniversityDegreeCredential"],
+  "issuer": "did:web:university.fi",
+  "issuanceDate": "2024-09-01T12:00:00Z",
+  "expirationDate": "2029-09-01T12:00:00Z",
+  "credentialSubject": {
+    "id": "did:key:z6Mkv...",
+    "degree": {
+      "type": "MasterDegree",
+      "name": "Master of Science in Computer Science",
+      "university": "University of Helsinki"
+    }
+  },
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2024-09-01T12:00:00Z",
+    "verificationMethod": "did:web:university.fi#key-1",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z5vK9..."
+  }
+}
+            </div>
+
+            <h3>Selective Disclosure JWT (SD-JWT)</h3>
+            <p>
+                Allows holders to reveal only specific attributes. For example, proving age ≥18 without disclosing exact birthdate:
+            </p>
+            <div class="code-block">
+// Issuer creates SD-JWT with hashed claims:
+{
+  "iss": "https://dvv.fi",
+  "sub": "did:key:z6Mkv...",
+  "_sd": ["hash(birthdate)", "hash(address)", "hash(name)"],
+  "age_over_18": true  // Derived attribute, not selectively disclosable
+}
+
+// Holder presents only the "age_over_18" claim:
+{
+  "vp_token": "eyJ...",  // VP with only age_over_18 revealed
+  "disclosures": []      // No personal details disclosed
+}
+            </div>
+
+            <h3>OpenID4VP (Verifiable Presentations)</h3>
+            <p>
+                Extends OAuth 2.0 for credential presentation. Verifier creates a presentation request; wallet responds with a VP:
+            </p>
+            <div class="code-block">
+// 1. Verifier creates presentation request (QR code or deep link):
+{
+  "response_type": "vp_token",
+  "client_id": "https://bank.fi",
+  "presentation_definition": {
+    "input_descriptors": [{
+      "id": "id_credential",
+      "constraints": {
+        "fields": [{
+          "path": ["$.credentialSubject.age_over_18"],
+          "filter": {"const": true}
+        }]
+      }
+    }]
+  }
+}
+
+// 2. Wallet presents VP:
+{
+  "vp_token": {
+    "@context": ["https://www.w3.org/2018/credentials/v1"],
+    "type": ["VerifiablePresentation"],
+    "verifiableCredential": [{ /* SD-JWT with selected claims */ }],
+    "proof": { /* Holder signature */ }
+  }
+}
+            </div>
+        </section>
+
+        <!-- Credential Flows -->
+        <section id="flows" class="tech-section">
+            <h2>Real-World Credential Flows</h2>
+
+            <h3>Use Case 1: Applying for a Job</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Citizen applies for a job requiring a university degree and work permit.
+                <ol style="margin-top: 15px;">
+                    <li><strong>Employer sends presentation request</strong> (QR code or link) specifying required credentials</li>
+                    <li><strong>Wallet prompts user</strong> to select which credentials to share (degree, work permit)</li>
+                    <li><strong>User approves</strong> (biometric authentication)</li>
+                    <li><strong>Wallet creates VP</strong> with selected credentials, signed by holder's DID</li>
+                    <li><strong>Employer verifies</strong> signatures against Trust Registry, checks revocation status</li>
+                    <li><strong>Automatic eligibility check</strong>: no manual document review needed</li>
+                </ol>
+            </div>
+
+            <h3>Use Case 2: Bank Loan Application</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Citizen applies for a mortgage, bank needs income verification.
+                <ol style="margin-top: 15px;">
+                    <li><strong>Bank requests</strong> income threshold proof (e.g., "annual income ≥60k€")</li>
+                    <li><strong>Tax office credential</strong> uses SD-JWT to prove threshold without revealing exact salary</li>
+                    <li><strong>User shares zero-knowledge proof</strong> (future enhancement with ZK-SNARKs)</li>
+                    <li><strong>Bank receives confirmation</strong> without accessing personal financial data</li>
+                    <li><strong>Privacy preserved</strong>, compliance maintained, loan processed instantly</li>
+                </ol>
+            </div>
+
+            <h3>Use Case 3: Cross-Border Travel</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Finnish citizen travels to Spain, rents a car.
+                <ol style="margin-top: 15px;">
+                    <li><strong>Rental agency requests</strong> driver's license and age verification</li>
+                    <li><strong>EUDI Wallet presents</strong> Finnish driver's license VC (EU-recognized format)</li>
+                    <li><strong>Spanish verifier</strong> trusts Finnish issuer (via EU Trust Registry)</li>
+                    <li><strong>Instant verification</strong>: no need to inspect physical documents or validate foreign IDs</li>
+                    <li><strong>Interoperability</strong> achieved through shared standards (eIDAS 2.0)</li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Implementation -->
+        <section id="implementation" class="tech-section">
+            <h2>Implementation Considerations</h2>
+
+            <h3>Security & Privacy</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Requirement</th>
+                        <th>Implementation</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Credential Storage</td>
+                        <td>Hardware-backed keystores (Android: Keystore, iOS: Secure Enclave)</td>
+                    </tr>
+                    <tr>
+                        <td>Authentication</td>
+                        <td>Biometric (fingerprint, face) + PIN fallback</td>
+                    </tr>
+                    <tr>
+                        <td>Consent</td>
+                        <td>Explicit approval for each presentation (no background sharing)</td>
+                    </tr>
+                    <tr>
+                        <td>Revocation Checking</td>
+                        <td>Real-time OCSP or periodic Status List 2021 updates</td>
+                    </tr>
+                    <tr>
+                        <td>Backup & Recovery</td>
+                        <td>Encrypted cloud backup (user-controlled) or social recovery</td>
+                    </tr>
+                    <tr>
+                        <td>Device Loss</td>
+                        <td>Revoke wallet DID, reissue credentials to new device</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Issuer Integration</h3>
+            <p>
+                Government agencies and other credential issuers integrate via OpenID4VCI:
+            </p>
+            <div class="code-block">
+# Example: University issues degree credential
+
+1. Student authenticates to university portal
+2. University backend generates VC:
+   - Queries student database for degree data
+   - Constructs VC according to schema (e.g., EuropeanDigitalCredential)
+   - Signs with university's DID key
+3. University exposes OpenID4VCI endpoint
+4. Student's wallet fetches credential via OAuth flow
+5. Credential stored locally, issuer retains no copy
+            </div>
+
+            <h3>Verifier Integration</h3>
+            <div class="code-block">
+# Example: Employer verifies degree credential
+
+1. Employer generates presentation request (QR code)
+2. Applicant scans QR with wallet, approves presentation
+3. Employer receives VP with degree credential
+4. Employer verifies:
+   a. Signature valid (university's public key from DID)
+   b. Credential not revoked (check Status List)
+   c. Issuer trusted (check Trust Registry)
+   d. Schema matches expected format
+5. Decision automated: eligible candidates flagged instantly
+            </div>
+
+            <div class="warning-box">
+                <strong>Implementation Challenge:</strong> Verifiers must integrate with Trust Registry to validate issuer DIDs. 
+                Without this, malicious actors could create fake credentials. National trust infrastructure (see: Distributed Trust Registry) 
+                is critical for ecosystem security.
+            </div>
+        </section>
+
+        <!-- Deployment Timeline -->
+        <section class="tech-section">
+            <h2>Deployment Timeline</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Deliverables</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Pilot Programs</strong></td>
+                        <td>2024-2025</td>
+                        <td>Limited rollout in select member states (Germany, Spain, Finland leading)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>National Wallets</strong></td>
+                        <td>2026</td>
+                        <td>All EU member states provide EUDI Wallets to citizens</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cross-Border Recognition</strong></td>
+                        <td>2026-2027</td>
+                        <td>Mutual recognition of credentials across EU (via Trust Registry)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Private Sector Adoption</strong></td>
+                        <td>2027+</td>
+                        <td>Banks, employers, service providers integrate verification</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Advanced Features</strong></td>
+                        <td>2028+</td>
+                        <td>Zero-knowledge proofs, attribute-based credentials, federated identity</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://digital-strategy.ec.europa.eu/en/policies/eudi-wallet" target="_blank">EU Digital Identity Wallet Homepage</a></li>
+                <li><a href="https://www.w3.org/TR/vc-data-model-2.0/" target="_blank">W3C Verifiable Credentials Data Model 2.0</a></li>
+                <li><a href="https://openid.net/specs/openid-4-verifiable-presentations-1_0.html" target="_blank">OpenID4VP Specification</a></li>
+                <li><a href="https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html" target="_blank">OpenID4VCI Specification</a></li>
+                <li><a href="https://www.ietf.org/archive/id/draft-ietf-oauth-selective-disclosure-jwt-07.html" target="_blank">SD-JWT Draft Specification</a></li>
+                <li><a href="https://github.com/eu-digital-identity-wallet" target="_blank">EUDI Wallet Reference Implementation (GitHub)</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>

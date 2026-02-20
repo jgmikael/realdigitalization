@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EU Business Wallet | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>🏢 EU Business Wallet</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">Organizational credential infrastructure enabling automated B2B transactions and compliance</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#credentials">Business Credentials</a>
+            <a href="#trade">Trade Automation</a>
+            <a href="#integration">ERP Integration</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                The <strong>EU Business Wallet</strong> is an organizational extension of the EUDI Wallet framework, designed for 
+                companies, government agencies, and other legal entities. It stores <strong>verifiable business credentials</strong>—
+                company registration certificates, VAT numbers, trade licenses, compliance attestations, and transactional documents 
+                like invoices and bills of lading.
+            </p>
+            <div class="highlight">
+                <strong>Core Value Proposition:</strong> Automate business processes that currently rely on paper documents, manual verification, 
+                and trusted intermediaries. Replace email attachments and PDF scans with machine-readable, cryptographically verifiable credentials 
+                that flow seamlessly between ERP systems, customs platforms, banks, and regulatory authorities.
+            </div>
+            <p>
+                Unlike personal EUDI Wallets (controlled by individuals), Business Wallets are <strong>organizationally managed</strong> with 
+                delegated authorities, role-based access control, and audit trails. A company's CFO might authorize invoice issuance, while 
+                the logistics team handles trade documents—all using the same wallet infrastructure.
+            </p>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>Organizational Identity Model</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Organization DID</strong></td>
+                        <td>did:web, did:ebsi</td>
+                        <td>Root identity for the legal entity (e.g., did:web:company.fi)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Delegation Framework</strong></td>
+                        <td>VC Authorization (VCA), OAuth 2.0 RAR</td>
+                        <td>Employees/systems act on behalf of organization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Credential Format</strong></td>
+                        <td>W3C VC + UN/CEFACT semantics</td>
+                        <td>Trade documents (invoices, CoO, etc.) as VCs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Storage Backend</strong></td>
+                        <td>Enterprise vault (HSM-backed)</td>
+                        <td>Secure key storage + credential repository</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Access Control</strong></td>
+                        <td>RBAC + ABAC policies</td>
+                        <td>Role-based permissions (who can issue/present what)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Audit Log</strong></td>
+                        <td>Tamper-evident log (blockchain or append-only DB)</td>
+                        <td>Compliance trail for all credential operations</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ERP Integration</strong></td>
+                        <td>REST APIs, SAP BTP connectors</td>
+                        <td>Automated credential generation from business systems</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>System Architecture Diagram</h3>
+            <div class="arch-diagram">
+┌────────────────────────────────────────────────────────────────────┐
+│                   EU Business Wallet Ecosystem                      │
+└────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────┐
+│                      COMPANY A (Exporter)                            │
+│  ┌──────────────┐     ┌─────────────────┐     ┌─────────────────┐  │
+│  │  SAP ERP     │────>│ Business Wallet │<────│  Logistics Team │  │
+│  │  (Invoices)  │     │   (Org DID)     │     │  (Human Auth)   │  │
+│  └──────────────┘     └────────┬────────┘     └─────────────────┘  │
+│                                 │ Issues VC:                         │
+│                                 │ - Commercial Invoice               │
+│                                 │ - Cert of Origin (CoO)             │
+│                                 │ - Packing List                     │
+└─────────────────────────────────┼──────────────────────────────────┘
+                                  │
+                                  │ Credential Presentation
+                                  ▼
+┌──────────────────────────────────────────────────────────────────────┐
+│                         VERIFIERS                                     │
+│  ┌─────────────┐    ┌─────────────┐    ┌──────────────────┐         │
+│  │  Customs    │    │  Bank (L/C) │    │  Buyer (Import)  │         │
+│  │  Authority  │    │  Processing │    │  Verification    │         │
+│  └──────┬──────┘    └──────┬──────┘    └────────┬─────────┘         │
+│         │                  │                     │                   │
+│         ▼                  ▼                     ▼                   │
+│  ┌──────────────────────────────────────────────────────┐           │
+│  │          Trust Registry (Verify Issuer DID)          │           │
+│  │  - Is Company A authorized to issue CoO?             │           │
+│  │  - Is credential schema valid?                       │           │
+│  │  - Has credential been revoked?                      │           │
+│  └──────────────────────────────────────────────────────┘           │
+└──────────────────────────────────────────────────────────────────────┘
+
+Key Flow:
+1. ERP generates invoice → Wallet transforms to VC (signs with org DID)
+2. Logistics staff requests CoO → Chamber of Commerce issues as VC
+3. All credentials presented to customs/bank via OpenID4VP
+4. Verifiers check Trust Registry + signature validity → instant clearance
+            </div>
+        </section>
+
+        <!-- Business Credentials -->
+        <section id="credentials" class="tech-section">
+            <h2>Business Credential Types</h2>
+
+            <h3>Core Organizational Credentials</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Credential Type</th>
+                        <th>Issuer</th>
+                        <th>Use Case</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Company Registration</strong></td>
+                        <td>National Business Registry (PRH in Finland)</td>
+                        <td>Prove legal existence, access services requiring company verification</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VAT Registration</strong></td>
+                        <td>Tax Authority</td>
+                        <td>B2B transactions, cross-border VAT compliance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Trade License</strong></td>
+                        <td>Regulatory Authority (sector-specific)</td>
+                        <td>Prove authorization to operate in regulated industries</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ISO Certification</strong></td>
+                        <td>Certification Body (e.g., ISO 27001 auditor)</td>
+                        <td>Quality/security attestations for tenders and partnerships</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EORI Number</strong></td>
+                        <td>Customs Authority</td>
+                        <td>Economic Operator Registration for customs clearance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Power of Attorney</strong></td>
+                        <td>Company (self-issued)</td>
+                        <td>Delegate authority to employees/agents (e.g., customs broker)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Transactional Trade Documents</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Document Type</th>
+                        <th>Standard</th>
+                        <th>Benefit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Commercial Invoice</strong></td>
+                        <td>UN/CEFACT Cross-Industry Invoice (CII)</td>
+                        <td>Machine-readable, auto-validates against PO, eliminates manual entry</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Certificate of Origin (CoO)</strong></td>
+                        <td>UN/CEFACT CoO + W3C VC</td>
+                        <td>Proves product origin for tariff preferences (e.g., EU-Japan EPA)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bill of Lading (B/L)</strong></td>
+                        <td>DCSA e-B/L standard + VC</td>
+                        <td>Digital title transfer, eliminates courier costs, faster payments</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Packing List</strong></td>
+                        <td>UN/CEFACT Packing Specification</td>
+                        <td>Customs pre-clearance, automated risk assessment</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Letter of Credit (L/C)</strong></td>
+                        <td>ICC eUCP (Electronic Presentation)</td>
+                        <td>Banks verify credentials automatically, instant payment release</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Phytosanitary Certificate</strong></td>
+                        <td>IPPC ePhyto + VC</td>
+                        <td>Agricultural product clearance (plant health compliance)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Trade Automation -->
+        <section id="trade" class="tech-section">
+            <h2>International Trade Automation</h2>
+
+            <h3>Current Pain Points</h3>
+            <div class="warning-box">
+                <strong>The Paper-Based Reality:</strong> A single shipment generates 28-36 documents, 240+ copies, handled by 
+                27+ parties (WEF estimate). Documents are:
+                <ul style="margin-top: 10px;">
+                    <li>Printed, signed, scanned, emailed (or couriered)</li>
+                    <li>Manually re-keyed into 5-7 different systems</li>
+                    <li>Verified by human inspectors (slow, error-prone)</li>
+                    <li>Subject to fraud (fake certificates, altered invoices)</li>
+                </ul>
+                <strong>Cost:</strong> Document processing adds 15-20% to shipping costs. Time: 3-7 days for customs clearance.
+            </div>
+
+            <h3>Credential-Based Trade Flow</h3>
+            <div class="highlight">
+                <strong>Automated Export Process (Finland → Japan)</strong>
+                <ol style="margin-top: 15px;">
+                    <li><strong>Order Placed:</strong> Buyer's ERP sends PO to exporter's ERP (API)</li>
+                    <li><strong>Invoice Generated:</strong> SAP creates invoice → Business Wallet transforms to VC (UN/CEFACT CII format)</li>
+                    <li><strong>CoO Requested:</strong> Exporter's wallet requests CoO from Chamber of Commerce</li>
+                    <li><strong>Chamber Issues CoO:</strong> Automated verification (company registered, product eligible) → issues CoO as VC</li>
+                    <li><strong>B/L Created:</strong> Shipping line issues e-B/L as VC (signed by carrier DID)</li>
+                    <li><strong>Customs Declaration:</strong> AI agent reads all VCs → auto-generates customs filing (JSON submission)</li>
+                    <li><strong>Pre-Clearance:</strong> Finnish customs verifies credentials → approves shipment before departure</li>
+                    <li><strong>Payment Trigger:</strong> Bank receives presentation request (invoice + CoO + B/L VCs) → verifies → releases L/C funds</li>
+                    <li><strong>Import Clearance:</strong> Japanese customs receives same VCs → instant clearance (no paper inspection)</li>
+                </ol>
+                <strong>Result:</strong> 7-day process reduced to <strong>24 hours</strong>. Zero paper. 90% cost reduction.
+            </div>
+
+            <h3>Example: Invoice as Verifiable Credential</h3>
+            <div class="code-block">
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://unece.org/trade/uncefact/vocab"
+  ],
+  "type": ["VerifiableCredential", "CommercialInvoice"],
+  "issuer": "did:web:exporter.fi",
+  "issuanceDate": "2026-03-15T10:30:00Z",
+  "credentialSubject": {
+    "id": "urn:invoice:INV-2026-001234",
+    "invoiceNumber": "INV-2026-001234",
+    "issueDate": "2026-03-15",
+    "seller": {
+      "id": "did:web:exporter.fi",
+      "name": "Finnish Exporter Oy",
+      "vatId": "FI12345678",
+      "address": "Helsinki, Finland"
+    },
+    "buyer": {
+      "name": "Japanese Importer KK",
+      "vatId": "JP98765432",
+      "address": "Tokyo, Japan"
+    },
+    "lineItems": [{
+      "description": "Industrial Machinery Parts",
+      "quantity": 100,
+      "unitPrice": 50.00,
+      "currency": "EUR",
+      "total": 5000.00
+    }],
+    "totalAmount": 5000.00,
+    "currency": "EUR",
+    "paymentTerms": "Net 30, L/C at sight"
+  },
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2026-03-15T10:30:00Z",
+    "verificationMethod": "did:web:exporter.fi#invoice-key",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z4Qn..."
+  }
+}
+            </div>
+        </section>
+
+        <!-- ERP Integration -->
+        <section id="integration" class="tech-section">
+            <h2>ERP System Integration</h2>
+
+            <h3>SAP Integration Architecture</h3>
+            <p>
+                Existing ERP systems (SAP S/4HANA, Microsoft Dynamics, Oracle) generate business documents. Business Wallet acts as a 
+                <strong>transformation layer</strong>: converting proprietary formats (IDoc, EDIFACT) to W3C VCs with UN/CEFACT semantics.
+            </p>
+            <div class="arch-diagram">
+┌────────────────────────────────────────────────────────────────┐
+│                    SAP S/4HANA Integration                      │
+└────────────────────────────────────────────────────────────────┘
+
+SAP S/4HANA                Business Wallet Connector           Wallet
+─────────────              ──────────────────────              ──────
+
+[Invoice]                  ┌────────────────────┐
+   │                       │  Format Transform   │
+   ├──> IDoc ────────────► │  IDoc → UN/CEFACT  │
+   │                       │  + VC Wrapper       │
+   │                       └─────────┬───────────┘
+   │                                 │
+   │                       ┌─────────▼───────────┐
+   │                       │  Signing Service    │  ────> [VC]
+   │                       │  (HSM-backed key)   │         │
+   │                       └─────────────────────┘         │
+   │                                                        │
+[Shipment]                                                  │
+   │                       ┌────────────────────┐          │
+   ├──> API ────────────► │  Event Listener     │          │
+   │                       │  (Order Status)     │ ─────────┤
+   │                       └────────────────────┘           │
+   │                                                         │
+   │                                                    ┌────▼────┐
+   │                       ┌────────────────────┐      │ Wallet  │
+   ├──> Query ◄─────────── │  Presentation API   │ ◄────┤ Storage │
+   │                       │  (Verifier Request) │      │  + API  │
+   │                       └────────────────────┘      └─────────┘
+
+Flow:
+1. SAP creates invoice (standard process)
+2. Connector intercepts IDoc, transforms to VC
+3. Wallet signs with company DID, stores credential
+4. External verifier requests presentation → Wallet responds
+5. SAP receives confirmation (payment status, customs clearance)
+            </div>
+
+            <h3>Integration Options</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Approach</th>
+                        <th>Use Case</th>
+                        <th>Complexity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>API Gateway</strong></td>
+                        <td>Real-time credential issuance (SAP BTP + Wallet REST API)</td>
+                        <td>Low (no ERP modification)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Event-Driven</strong></td>
+                        <td>Asynchronous processing (SAP Event Mesh → Wallet subscriber)</td>
+                        <td>Medium (event configuration)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>BAdI Extension</strong></td>
+                        <td>Deep integration (custom ABAP logic for VC generation)</td>
+                        <td>High (requires SAP dev skills)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Middleware (e.g., MuleSoft)</strong></td>
+                        <td>Multi-ERP environments (orchestrate SAP + Dynamics + custom apps)</td>
+                        <td>Medium (integration platform required)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Example: Automated CoO Workflow</h3>
+            <div class="code-block">
+# Scenario: Export order triggers CoO issuance
+
+1. Sales order created in SAP (destination: Japan)
+2. SAP Event Mesh publishes "ExportOrderCreated" event
+3. Business Wallet Connector receives event:
+   - Extracts product details (HS codes, origin)
+   - Calls Chamber of Commerce API (credential request)
+4. Chamber verifies:
+   - Company registered as authorized exporter
+   - Product meets origin rules (>50% EU value-added)
+5. Chamber issues CoO as VC:
+   {
+     "credentialSubject": {
+       "exporter": "did:web:exporter.fi",
+       "product": "Industrial Parts (HS: 8483.50)",
+       "origin": "Finland (EU)",
+       "fta": "EU-Japan EPA (preferential tariff)"
+     },
+     "proof": { /* Chamber's signature */ }
+   }
+6. Wallet stores CoO, links to SAP order (external reference)
+7. When shipment ready → Wallet presents CoO to customs automatically
+            </div>
+        </section>
+
+        <!-- Deployment -->
+        <section class="tech-section">
+            <h2>Deployment Roadmap</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Milestones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Standards Finalization</strong></td>
+                        <td>2025</td>
+                        <td>UN/CEFACT + W3C VC alignment, eIDAS 2.0 legal framework</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Pilot Programs</strong></td>
+                        <td>2026</td>
+                        <td>Trade corridors (Finland-Estonia, Netherlands-Germany), CoO digitization</td>
+                    </tr>
+                    <tr>
+                        <td><strong>National Rollout</strong></td>
+                        <td>2027</td>
+                        <td>EU member states mandate Business Wallet for cross-border trade</td>
+                    </tr>
+                    <tr>
+                        <td><strong>ERP Integration</strong></td>
+                        <td>2027-2028</td>
+                        <td>SAP, Oracle, Microsoft release native Business Wallet connectors</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Global Interop</strong></td>
+                        <td>2028+</td>
+                        <td>Mutual recognition with non-EU partners (US, ASEAN, Japan)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://ec.europa.eu/digital-building-blocks/wikis/display/DIGITAL/EBSI" target="_blank">European Blockchain Services Infrastructure (EBSI)</a></li>
+                <li><a href="https://unece.org/trade/uncefact" target="_blank">UN/CEFACT Trade Facilitation Standards</a></li>
+                <li><a href="https://github.com/jgmikael/trade-automation" target="_blank">Trade Automation Demo (GitHub)</a></li>
+                <li><a href="https://www.iccwbo.org/resources-for-business/incoterms-rules/eUCP/" target="_blank">ICC eUCP (Electronic L/C Presentation)</a></li>
+                <li><a href="https://dcsa.org/standards/ebill-of-lading/" target="_blank">DCSA Electronic Bill of Lading Standard</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>
