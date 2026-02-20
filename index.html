@@ -232,6 +232,166 @@
 
             <!-- Life Events -->
             <div class="matrix-content active" id="life-events">
+                <!-- Event 0: Death of a Close Person -->
+                <div class="event-card">
+                    <div class="event-header">
+                        <h3>🕊️ Death of a Close Person</h3>
+                        <span class="event-timeline">End-of-life services</span>
+                    </div>
+
+                    <div class="event-comparison">
+                        <div class="event-current">
+                            <h4>Today's Reality (Finland & Norway)</h4>
+                            <ul class="pain-points">
+                                <li>Hospital/nursing home notifies population registry → family notified by phone/mail</li>
+                                <li>Family must notify 20-40+ organizations individually (banks, insurance, utilities, landlord, telecom, etc.)</li>
+                                <li>Each organization requires death certificate copy (request, download, email/post)</li>
+                                <li>Kela/NAV: Apply to cancel benefits, pensions → separate forms for each benefit type</li>
+                                <li>Tax office: File estate inventory within 3 months → complex 50+ page form</li>
+                                <li>Banks: Freeze accounts → heirs cannot access funds for weeks/months (probate required)</li>
+                                <li>Insurance: File claims for life insurance, pension insurance → manual paperwork per policy</li>
+                                <li>Real estate: Cancel rental contracts, transfer ownership → notary, forms, registry visits</li>
+                                <li>Digital services: Cancel subscriptions (Netflix, Spotify, newspapers) → no central cancellation</li>
+                                <li>Vehicles: Transfer or deregister → Traficom visit, forms</li>
+                                <li>Pension funds: Calculate survivor's pension → heirs apply, wait for calculation</li>
+                                <li>Healthcare: Retrieve personal belongings from hospital, cancel appointments</li>
+                                <li>Email/social media: No standardized process to close accounts → family locked out</li>
+                                <li><strong>Result:</strong> 60-120 hours of administrative work, spread over 3-6 months, during grief</li>
+                                <li><strong>Errors common:</strong> Missed notifications → services billed to estate → debt collection</li>
+                                <li><strong>EOAVH project (Finland):</strong> Helps with checklist and guidance, but still manual</li>
+                            </ul>
+                        </div>
+
+                        <div class="event-future">
+                            <h4>Fully Automated Ecosystem</h4>
+                            <ul class="benefits">
+                                <li>⚡ <strong>Event Trigger:</strong> Hospital/nursing home registers death → death certificate issued digitally (DVV/Folkeregisteret)</li>
+                                <li>🔗 <strong>Service Bus Notification:</strong> "PersonDeceased" event published with encrypted personal ID</li>
+                                <li>📊 <strong>AI Estate Agent Activated:</strong> Autonomous agent assigned to family (consent via next-of-kin EUDI Wallet)</li>
+                                <li>🤖 <strong>Automatic Inventory Discovery:</strong> Agent queries all connected systems:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Financial:</strong> Banks (account balances, loans), pension funds (accrued benefits)</li>
+                                        <li><strong>Government:</strong> Kela/NAV (active benefits), Tax Office (tax debt/refunds), Land Registry (property ownership)</li>
+                                        <li><strong>Insurance:</strong> All policies (life, health, property) via Insurance Data Space</li>
+                                        <li><strong>Utilities:</strong> Electricity, water, waste, internet contracts via API catalog</li>
+                                        <li><strong>Assets:</strong> Vehicles (Traficom), investments (securities registry), memberships</li>
+                                        <li><strong>Liabilities:</strong> Loans, credit cards, payment plans, subscriptions</li>
+                                    </ul>
+                                </li>
+                                <li>🌐 <strong>Data Space Integration:</strong> AI accesses Federated Data Spaces (with legal authorization):
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Financial Data Space → full account picture (all banks, not just deceased's primary bank)</li>
+                                        <li>Healthcare Data Space → retrieves final health records, outstanding prescriptions</li>
+                                        <li>Real Estate Data Space → mortgage status, rental agreements, co-ownership records</li>
+                                    </ul>
+                                </li>
+                                <li>📱 <strong>Family Dashboard (EUDI Wallet):</strong> Heirs receive unified view:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Complete estate inventory (auto-generated, legally valid)</li>
+                                        <li>Pending actions (13 items require heir decision)</li>
+                                        <li>Automatic cancellations (47 services already terminated)</li>
+                                        <li>Financial summary (assets: €187k, liabilities: €45k, net estate: €142k)</li>
+                                    </ul>
+                                </li>
+                                <li>✅ <strong>Automatic Service Terminations (Zero Heir Action):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Kela/NAV:</strong> All benefits cancelled same-day (pension, healthcare subsidy, etc.)</li>
+                                        <li><strong>Tax Office:</strong> Final tax return auto-filed (AI pulls income data, calculates)</li>
+                                        <li><strong>Utilities:</strong> Electricity/water/waste transferred to heir or cancelled (based on property ownership)</li>
+                                        <li><strong>Telecom:</strong> Mobile/internet contracts cancelled, number released</li>
+                                        <li><strong>Subscriptions:</strong> Streaming services, newspapers, gym → all cancelled via API</li>
+                                        <li><strong>Healthcare:</strong> Appointments cancelled, prescription database updated</li>
+                                        <li><strong>Memberships:</strong> Unions, associations notified automatically</li>
+                                    </ul>
+                                </li>
+                                <li>💰 <strong>Financial Automation:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Bank accounts:</strong> Frozen per law, but <em>balance visible</em> to authorized heirs (no probate delay for info)</li>
+                                        <li><strong>Immediate liquidity:</strong> €10k emergency allowance auto-released to primary heir (covers funeral, urgent bills)</li>
+                                        <li><strong>Life insurance:</strong> Claims auto-filed to all insurers → beneficiaries notified, payout in 48h (not 3 months)</li>
+                                        <li><strong>Pension funds:</strong> Survivor's pension eligibility auto-calculated → pre-approved, first payment within 2 weeks</li>
+                                        <li><strong>Outstanding bills:</strong> Agent pays from estate account (with heir approval for amounts >€500)</li>
+                                    </ul>
+                                </li>
+                                <li>🏠 <strong>Property & Assets:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Real estate:</strong> If rental → landlord notified, contract termination initiated (legal notice period)</li>
+                                        <li><strong>Owned property:</strong> Mortgage holder notified, heirs presented options (assume, sell, transfer)</li>
+                                        <li><strong>Vehicles:</strong> Traficom auto-transfers to heir (with consent) or deregisters</li>
+                                        <li><strong>Digital accounts:</strong> AI requests account closure (Google, Facebook) or memorialization per heir preference</li>
+                                    </ul>
+                                </li>
+                                <li>📋 <strong>Estate Inventory (Legal Document):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>AI generates complete estate inventory (required by law within 3 months)</li>
+                                        <li>All assets/liabilities auto-populated from data sources (verified, timestamped)</li>
+                                        <li>Heirs review on tablet/phone → approve with e-signature</li>
+                                        <li>Submitted to Tax Office automatically → probate process starts (no manual forms)</li>
+                                    </ul>
+                                </li>
+                                <li>🔐 <strong>Privacy & Security:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Trust Registry:</strong> AI agent's authority verified (legal heir status confirmed via population registry)</li>
+                                        <li><strong>Consent:</strong> Heir authorizes agent via EUDI Wallet (biometric auth) → grants access to Data Spaces</li>
+                                        <li><strong>Audit trail:</strong> Every data access logged (who, what, when) → available for legal review</li>
+                                        <li><strong>Zero-knowledge proofs:</strong> Agent proves "authorized heir" to banks without revealing full identity</li>
+                                    </ul>
+                                </li>
+                                <li>🎯 <strong>Family Experience:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Day 1:</strong> Hospital notifies death → Family receives notification: "Estate agent activated"</li>
+                                        <li><strong>Day 2:</strong> Complete inventory ready → 47 services auto-cancelled → Emergency funds available</li>
+                                        <li><strong>Week 1:</strong> Life insurance claims processed → Survivor's pension approved → Bills paid</li>
+                                        <li><strong>Week 2:</strong> Estate inventory approved by heirs → Submitted to Tax Office</li>
+                                        <li><strong>Month 1:</strong> Probate completed (not 6 months) → Assets distributed</li>
+                                        <li><strong>Total heir time:</strong> 2-3 hours (review + approve), not 60-120 hours</li>
+                                        <li><strong>Grief space:</strong> Family focuses on mourning, not paperwork</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="capabilities-used">
+                                <strong>Capabilities:</strong>
+                                <span class="cap-badge">Event-Driven</span>
+                                <span class="cap-badge">EUDI Wallet</span>
+                                <span class="cap-badge">Agentic AI</span>
+                                <span class="cap-badge">Data Spaces</span>
+                                <span class="cap-badge">API Catalog</span>
+                                <span class="cap-badge">Trust Registry</span>
+                                <span class="cap-badge">Zero-Knowledge</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight" style="margin-top: 30px; padding: 20px; background: rgba(74, 124, 44, 0.05); border-left: 4px solid var(--forest-accent);">
+                        <h4 style="margin-top: 0; color: var(--forest-dark);">🇫🇮 Inspiration: EOAVH Project (Finland)</h4>
+                        <p style="margin-bottom: 10px;">
+                            <strong>"Edesmenneen omaisen asioiden vaivaton hoito"</strong> (Effortless Handling of Deceased Relative's Affairs) 
+                            is a government-funded project providing checklists and guidance. Current EOAVH helps families <em>navigate</em> 
+                            the bureaucracy—but still requires manual execution.
+                        </p>
+                        <p style="margin-bottom: 10px;">
+                            <strong>EOAVH Today:</strong> PDF checklist, phone hotline, step-by-step guides (valuable, but labor-intensive)
+                        </p>
+                        <p style="margin: 0;">
+                            <strong>Real Digitalization Vision:</strong> Transform EOAVH from <em>guidance system</em> to <em>autonomous execution system</em>. 
+                            The AI agent <em>does</em> the work, not just explains it. Family approves, system executes. 
+                            <strong>Zero manual notifications, zero form-filling, zero service-by-service cancellations.</strong>
+                        </p>
+                    </div>
+
+                    <div class="warning-box" style="margin-top: 20px; padding: 20px; background: rgba(184, 151, 90, 0.05); border-left: 4px solid var(--gold);">
+                        <h4 style="margin-top: 0; color: var(--forest-dark);">⚖️ Legal & Technical Prerequisites</h4>
+                        <ul style="margin: 10px 0 0 0; padding-left: 20px;">
+                            <li><strong>Legal basis:</strong> Inheritance law must permit AI agents to act on behalf of estate (with heir authorization)</li>
+                            <li><strong>Data access rights:</strong> Heirs granted automatic API access to deceased's data (time-limited, audited)</li>
+                            <li><strong>Financial sector:</strong> Banks must expose account data APIs (read-only) to authorized agents (GDPR-compliant)</li>
+                            <li><strong>Private sector participation:</strong> Utilities, telecoms, insurers join Service Bus (subscribed to death events)</li>
+                            <li><strong>Liability framework:</strong> Clear rules for AI errors (who pays if agent misses a debt?)</li>
+                            <li><strong>Opt-out mechanism:</strong> Individuals can pre-register "do not automate my estate" preference</li>
+                        </ul>
+                    </div>
+                </div>
+
                 <!-- Event 1: Birth & Early Childhood -->
                 <div class="event-card">
                     <div class="event-header">
