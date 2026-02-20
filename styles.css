@@ -767,6 +767,13 @@ section {
     }
 }
 
+/* Ensure first event is always visible (override JS animation) */
+#life-events .event-card:first-of-type,
+#business-events .event-card:first-of-type {
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
 /* Print Styles */
 @media print {
     .hero {

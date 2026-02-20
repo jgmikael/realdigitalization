@@ -60,6 +60,16 @@ document.addEventListener('DOMContentLoaded', function() {
         card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
         observer.observe(card);
     });
+    
+    // Fallback: ensure all cards are visible after 2 seconds (in case observer doesn't trigger)
+    setTimeout(() => {
+        document.querySelectorAll('.capability-card, .event-card, .vision-card').forEach(card => {
+            if (parseFloat(window.getComputedStyle(card).opacity) < 0.5) {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }
+        });
+    }, 2000);
 });
 
 // Add subtle parallax effect to hero
