@@ -20,7 +20,7 @@ This project presents a strategic vision for Finland's future digital infrastruc
 
 ## 🏗️ Infrastructure Capabilities
 
-The vision is built on 9 foundational capabilities:
+The vision is built on 10 foundational capabilities:
 
 ### 1. 🔗 Finnish Interoperability Platform
 National semantic layer (SKOS, OWL, SHACL) enabling standardized, machine-readable data products across all participants.
@@ -69,6 +69,12 @@ Standardized, semantic APIs for all public services with machine-readable specif
 National registry of authorized issuers, verifiers, and credential schemas.
 
 **Status:** 🔄 2026
+
+### 10. ⚖️ Machine-Readable Legislation & Rules API
+Laws drafted with controlled vocabularies (SKOS) linked to OWL ontologies, exposed as queryable APIs. Enables automated eligibility, proactive compliance, instant policy enforcement.
+
+**Status:** 🔄 2026-2028  
+**Examples:** New Zealand Better Rules, France OpenFisca
 
 ---
 

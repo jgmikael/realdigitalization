@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Machine-Readable Legislation & Rules API | Technical Deep-Dive</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .tech-header {
+            background: linear-gradient(135deg, var(--forest-dark) 0%, var(--forest-mid) 100%);
+            color: white;
+            padding: 80px 0 60px;
+        }
+        .tech-nav {
+            padding: 20px 0;
+            background: var(--sand);
+            border-bottom: 1px solid var(--sage-light);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .tech-nav a {
+            color: var(--forest-dark);
+            text-decoration: none;
+            font-weight: 600;
+            margin-right: 30px;
+        }
+        .tech-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 30px;
+        }
+        .tech-section {
+            margin-bottom: 60px;
+        }
+        .tech-section h2 {
+            font-family: var(--font-display);
+            font-size: 2.5em;
+            color: var(--forest-dark);
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--sage-light);
+            padding-bottom: 15px;
+        }
+        .tech-section h3 {
+            font-family: var(--font-display);
+            font-size: 1.8em;
+            color: var(--forest-dark);
+            margin: 40px 0 20px;
+        }
+        .arch-diagram {
+            background: white;
+            border: 2px solid var(--sage-light);
+            border-radius: 4px;
+            padding: 30px;
+            margin: 30px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+        }
+        .spec-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+        }
+        .spec-table th {
+            background: var(--forest-dark);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+        .spec-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--stone);
+        }
+        .spec-table tr:hover {
+            background: var(--fog);
+        }
+        .code-block {
+            background: var(--slate-darkest);
+            color: #a8b499;
+            padding: 25px;
+            border-radius: 4px;
+            overflow-x: auto;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .highlight {
+            background: rgba(74, 124, 44, 0.1);
+            padding: 25px;
+            border-left: 4px solid var(--forest-accent);
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+        .warning-box {
+            background: rgba(184, 151, 90, 0.1);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="tech-header">
+        <div class="container">
+            <h1>⚖️ Machine-Readable Legislation & Rules API</h1>
+            <p style="font-size: 1.3em; margin-top: 20px; opacity: 0.95;">Transforming laws and policies into executable, queryable, automated compliance infrastructure</p>
+        </div>
+    </div>
+
+    <nav class="tech-nav">
+        <div class="container">
+            <a href="../index.html">← Back to Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#vocabularies">Controlled Vocabularies</a>
+            <a href="#rules-api">Rules API</a>
+            <a href="#use-cases">Use Cases</a>
+        </div>
+    </nav>
+
+    <div class="tech-content">
+        <!-- Overview -->
+        <section class="tech-section">
+            <h2>What It Is</h2>
+            <p>
+                <strong>Machine-Readable Legislation</strong> transforms laws, regulations, and policies from unstructured text 
+                (PDFs, legal documents) into structured, semantic, executable formats that software systems can understand, 
+                query, and automatically enforce. <strong>Rules as Code (RaC)</strong> takes this further: legislation is 
+                drafted using controlled vocabularies linked to OWL ontologies, then exposed as queryable APIs.
+            </p>
+            <div class="highlight">
+                <strong>Core Vision:</strong> Instead of humans reading 200-page laws to determine eligibility for a benefit 
+                or permit, AI agents query a Rules API: <code>POST /rules/check-eligibility {"citizen": {...}, "benefit": "housing_allowance"}</code> 
+                → Response: <code>{"eligible": true, "reason": "Income < €30k AND resident_of_municipality"}</code>
+            </div>
+            <p>
+                This is the <strong>missing link</strong> in digital government: We have APIs for data, but not for the rules 
+                that govern how data should be used. Machine-readable legislation enables:
+                <ul style="margin-top: 10px;">
+                    <li><strong>Automated eligibility checking</strong> (benefits, permits, licenses)</li>
+                    <li><strong>Proactive compliance</strong> (systems prevent violations before they occur)</li>
+                    <li><strong>Explainable decisions</strong> (AI cites specific law sections in responses)</li>
+                    <li><strong>Rapid policy iteration</strong> (update rules → systems adapt instantly)</li>
+                </ul>
+            </p>
+        </section>
+
+        <!-- Architecture -->
+        <section id="architecture" class="tech-section">
+            <h2>Technical Architecture</h2>
+
+            <h3>Legislation Drafting Stack</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Layer</th>
+                        <th>Technology</th>
+                        <th>Purpose</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Controlled Vocabularies</strong></td>
+                        <td>SKOS (sanastot.suomi.fi)</td>
+                        <td>Standardized terms with URIs (e.g., "housing_allowance" → unique ID)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ontologies</strong></td>
+                        <td>OWL (tietomallit.suomi.fi)</td>
+                        <td>Semantic relationships (e.g., "Citizen subClassOf Person", "hasIncome range xsd:decimal")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rule Language</strong></td>
+                        <td>SWRL, RIF, DMN (Decision Model Notation), or custom DSL</td>
+                        <td>Express legal logic in machine-executable format</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rule Engine</strong></td>
+                        <td>Drools, OpenFisca, Blawx, or custom (Rete algorithm)</td>
+                        <td>Execute rules against input data → infer conclusions</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legislative Markup</strong></td>
+                        <td>Akoma Ntoso XML, LegalDocML</td>
+                        <td>Structure legal documents (sections, articles, amendments)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Version Control</strong></td>
+                        <td>Git (for rules), Finlex API (for Finnish laws)</td>
+                        <td>Track amendments, temporal validity ("rule valid 2024-01-01 to 2025-12-31")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rules API Gateway</strong></td>
+                        <td>REST/GraphQL + OpenAPI spec</td>
+                        <td>Expose rules as queryable endpoints</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Rules as Code Workflow</h3>
+            <div class="arch-diagram">
+┌──────────────────────────────────────────────────────────────────────┐
+│                  Legislation Lifecycle                                │
+└──────────────────────────────────────────────────────────────────────┘
+
+1. DRAFTING (Legislative Authors)
+   ┌────────────────────────────────┐
+   │  Legal Text (Natural Language) │
+   │  + Controlled Vocabulary Tags  │
+   │  + Semantic Annotations (OWL)  │
+   └────────────┬───────────────────┘
+                │
+2. FORMALIZATION (Legal Engineers + AI)
+   ┌────────────▼───────────────────┐
+   │  Extract Rules:                │
+   │  IF income < €30,000           │
+   │  AND resident_of_municipality  │
+   │  THEN eligible(housing_allow)  │
+   └────────────┬───────────────────┘
+                │
+3. ENCODING (Rules as Code)
+   ┌────────────▼───────────────────┐
+   │  SWRL / DMN / DSL:             │
+   │  Citizen(?c) ^                 │
+   │  hasIncome(?c, ?i) ^           │
+   │  lessThan(?i, 30000) ^         │
+   │  residesIn(?c, ?m) ->          │
+   │  eligible(?c, HousingAllowance)│
+   └────────────┬───────────────────┘
+                │
+4. VALIDATION (Automated Testing)
+   ┌────────────▼───────────────────┐
+   │  Test Cases:                   │
+   │  Input: {income: 25000, ...}   │
+   │  Expected: eligible = true     │
+   │  Result: ✓ Pass               │
+   └────────────┬───────────────────┘
+                │
+5. PUBLICATION (Rules API)
+   ┌────────────▼───────────────────┐
+   │  POST /api/rules/check         │
+   │  {"citizen": {...}}            │
+   │  Response: {"eligible": true}  │
+   └────────────┬───────────────────┘
+                │
+6. CONSUMPTION (Systems + AI Agents)
+   ┌────────────▼───────────────────────────┐
+   │  Kela System: Queries rules API        │
+   │  AI Agent: "Is person X eligible?"     │
+   │  Mobile App: Real-time eligibility     │
+   └────────────────────────────────────────┘
+
+Amendment Flow:
+Parliament passes amendment → Rules updated in Git → CI/CD → API updated → All systems get new rules automatically
+            </div>
+        </section>
+
+        <!-- Controlled Vocabularies -->
+        <section id="vocabularies" class="tech-section">
+            <h2>Controlled Vocabularies & Ontologies</h2>
+
+            <h3>Why Controlled Vocabularies?</h3>
+            <p>
+                Legal text is ambiguous. "Resident" could mean: domicile, registered address, physical presence, or tax residence. 
+                Controlled vocabularies assign <strong>unique URIs</strong> to each concept, linked to <strong>OWL ontologies</strong> 
+                that define precise semantics.
+            </p>
+
+            <h3>Example: Housing Allowance Ontology</h3>
+            <div class="code-block">
+# OWL Ontology (Turtle syntax)
+
+@prefix ex: <https://tietomallit.suomi.fi/housing-allowance/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Classes
+ex:Citizen a owl:Class ;
+    rdfs:label "Citizen"@en, "Kansalainen"@fi ;
+    rdfs:comment "Person with Finnish residency status" .
+
+ex:HousingAllowance a owl:Class ;
+    rdfs:label "Housing Allowance"@en, "Asumistuki"@fi ;
+    rdfs:comment "Social benefit for low-income residents" .
+
+ex:Municipality a owl:Class ;
+    rdfs:label "Municipality"@en, "Kunta"@fi .
+
+# Properties
+ex:hasIncome a owl:DatatypeProperty ;
+    rdfs:domain ex:Citizen ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "annual income in euros" .
+
+ex:residesIn a owl:ObjectProperty ;
+    rdfs:domain ex:Citizen ;
+    rdfs:range ex:Municipality ;
+    rdfs:label "has registered address in" .
+
+ex:hasHousingCost a owl:DatatypeProperty ;
+    rdfs:domain ex:Citizen ;
+    rdfs:range xsd:decimal ;
+    rdfs:label "monthly housing costs in euros" .
+
+# Rules (SWRL - Semantic Web Rule Language)
+[HousingAllowanceEligibility:
+    (?c rdf:type ex:Citizen)
+    (?c ex:hasIncome ?income)
+    lessThan(?income, 30000)
+    (?c ex:residesIn ?m)
+    (?m rdf:type ex:Municipality)
+    ->
+    (?c ex:eligibleFor ex:HousingAllowance)
+]
+            </div>
+
+            <h3>Integration with Finnish Interoperability Platform</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Platform Component</th>
+                        <th>Rules as Code Use</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>sanastot.suomi.fi</strong> (SKOS vocabularies)</td>
+                        <td>Provides standardized URIs for legal terms used in rules</td>
+                    </tr>
+                    <tr>
+                        <td><strong>tietomallit.suomi.fi</strong> (OWL models)</td>
+                        <td>Defines semantic structure referenced by rules (classes, properties, constraints)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>koodistot.suomi.fi</strong> (Code lists)</td>
+                        <td>Enumerations used in rules (e.g., benefit types, permit categories)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p>
+                <strong>Key Insight:</strong> By drafting legislation using terms from these registries, rules automatically 
+                inherit semantic definitions. When a term's definition updates in tietomallit.suomi.fi, all rules referencing 
+                it can be validated for consistency.
+            </p>
+        </section>
+
+        <!-- Rules API -->
+        <section id="rules-api" class="tech-section">
+            <h2>Rules API Design</h2>
+
+            <h3>Two Types of Rules</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Source</th>
+                        <th>Authority</th>
+                        <th>Examples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Legislative Rules</strong></td>
+                        <td>Acts of Parliament, Government decrees</td>
+                        <td>Legal force (binding)</td>
+                        <td>Benefit eligibility, tax rates, permit requirements</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Organizational Policy Rules</strong></td>
+                        <td>Agency policies, internal guidelines</td>
+                        <td>Administrative (discretionary)</td>
+                        <td>Priority scoring, risk assessment, service standards</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>API Endpoints</h3>
+            <div class="code-block">
+# OpenAPI Specification (excerpt)
+
+paths:
+  /rules/check-eligibility:
+    post:
+      summary: Check eligibility for a benefit or service
+      operationId: checkEligibility
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ruleId:
+                  type: string
+                  description: URI of rule (e.g., "housing-allowance-2024")
+                context:
+                  type: object
+                  description: Input data (citizen attributes, application data)
+                  properties:
+                    income:
+                      type: number
+                    residency:
+                      type: string
+                    housingCost:
+                      type: number
+      responses:
+        '200':
+          description: Eligibility determination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  eligible:
+                    type: boolean
+                  reason:
+                    type: string
+                    description: Human-readable explanation
+                  citations:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        law:
+                          type: string
+                          description: "Law identifier (e.g., 'Social Security Act §15')"
+                        url:
+                          type: string
+                          description: "Finlex URL to law section"
+
+  /rules/query:
+    post:
+      summary: Query rules by criteria (e.g., "all rules affecting companies in industry X")
+      # ... (similar structure)
+
+  /rules/validate-compliance:
+    post:
+      summary: Check if an action complies with applicable rules
+      # ... (e.g., "Can company X export product Y to country Z?")
+
+  /rules/calculate:
+    post:
+      summary: Calculate amounts (taxes, benefits, fees) based on rules
+      # ... (e.g., "Calculate child benefit for family with 3 children, income €45k")
+            </div>
+
+            <h3>Example API Call: Housing Allowance Eligibility</h3>
+            <div class="code-block">
+# Request
+POST /api/rules/check-eligibility
+Content-Type: application/json
+
+{
+  "ruleId": "https://tietomallit.suomi.fi/housing-allowance/eligibility-2024",
+  "context": {
+    "citizen": {
+      "id": "010190-900C",
+      "income": 25000,
+      "residency": "Helsinki",
+      "housingCost": 800
+    }
+  }
+}
+
+# Response
+{
+  "eligible": true,
+  "confidence": 1.0,
+  "reason": "Income (€25,000) is below threshold (€30,000) AND registered resident of Helsinki",
+  "citations": [
+    {
+      "law": "Asumistukilaki 408/2015 §3",
+      "section": "Income limits",
+      "url": "https://finlex.fi/fi/laki/ajantasa/2015/20150408#L1P3"
+    }
+  ],
+  "calculatedAmount": 450.50,
+  "unit": "EUR/month",
+  "validFrom": "2024-01-01",
+  "validTo": "2024-12-31"
+}
+            </div>
+        </section>
+
+        <!-- Use Cases -->
+        <section id="use-cases" class="tech-section">
+            <h2>Real-World Use Cases</h2>
+
+            <h3>1. Automated Benefit Eligibility (Kela)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Citizen applies for housing allowance via mobile app.
+                <br><br>
+                <strong>Traditional Process:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>Kela officer reads 200-page Act (Asumistukilaki)</li>
+                    <li>Manually checks income, residency, family size against tables</li>
+                    <li>Calculates benefit amount using formula (error-prone)</li>
+                    <li>Decision in 2-4 weeks</li>
+                </ol>
+                <strong>With Rules API:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>App queries: <code>POST /rules/check-eligibility {"ruleId": "housing-allowance", "context": {...}}</code></li>
+                    <li>Rules API evaluates → returns: <code>{"eligible": true, "amount": 450.50, "reason": "..."}</code></li>
+                    <li><strong>Instant decision</strong> (no human review needed for simple cases)</li>
+                    <li>Officer reviews only edge cases flagged by AI</li>
+                </ol>
+                <strong>Benefit:</strong> 95% of applications auto-processed, decision time: 1 hour → 5 minutes
+            </div>
+
+            <h3>2. Permit Pre-Validation (Construction)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Company designs building, wants to know if it complies before applying for permit.
+                <br><br>
+                <strong>Traditional:</strong> Submit permit application → wait 6 weeks → get rejection ("violates zoning rule §12")
+                <br><br>
+                <strong>With Rules API:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>BIM software queries: <code>POST /rules/validate-compliance {"ruleId": "building-code-2024", "context": {"buildingHeight": 25, "zone": "residential", ...}}</code></li>
+                    <li>Rules API: <code>{"compliant": false, "violations": ["Height exceeds 20m limit for residential zones (§12)"]}</code></li>
+                    <li>Architect adjusts design → re-queries → <code>{"compliant": true}</code></li>
+                    <li>Submits permit application with pre-validated design</li>
+                </ol>
+                <strong>Benefit:</strong> 80% fewer rejections, 50% faster permit processing
+            </div>
+
+            <h3>3. Export Control Automation (Tulli)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Company exports electronics to Russia (hypothetical, complex sanctions).
+                <br><br>
+                <strong>Traditional:</strong> Read 500 pages of EU/UN sanctions lists, dual-use goods regulations → manual determination
+                <br><br>
+                <strong>With Rules API:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>ERP queries: <code>POST /rules/validate-compliance {"ruleId": "export-control-2024", "context": {"product": "HS-8542.31", "destination": "RU", "endUser": "..."}}</code></li>
+                    <li>Rules API checks: Product classification, sanctions lists, dual-use regulations, license requirements</li>
+                    <li>Response: <code>{"allowed": false, "reason": "Product on EU dual-use list, license required for Russia"}</code></li>
+                    <li>System prevents shipment, suggests alternative markets or license application</li>
+                </ol>
+                <strong>Benefit:</strong> Zero violations, automatic compliance in real-time
+            </div>
+
+            <h3>4. Tax Calculation (Vero)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> Freelancer calculates quarterly VAT.
+                <br><br>
+                <strong>Traditional:</strong> Read tax law → fill 20-field form → hope calculation is correct
+                <br><br>
+                <strong>With Rules API:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>Accounting software: <code>POST /rules/calculate {"ruleId": "vat-2024", "context": {"revenue": 50000, "expenses": 10000, "vatRate": "standard"}}</code></li>
+                    <li>Rules API: <code>{"vatOwed": 9600, "calculation": "...", "dueDate": "2024-04-15"}</code></li>
+                    <li>Auto-generates pre-filled tax return</li>
+                </ol>
+                <strong>Benefit:</strong> 99% accuracy, zero manual calculation errors
+            </div>
+
+            <h3>5. Proactive Compliance (AI Agent)</h3>
+            <div class="highlight">
+                <strong>Scenario:</strong> AI agent monitors company operations for regulatory compliance.
+                <br><br>
+                <strong>Process:</strong>
+                <ol style="margin-top: 10px;">
+                    <li>AI subscribes to event stream: "EmployeeHired", "ProductShipped", "ContractSigned"</li>
+                    <li>For each event, queries Rules API: <code>POST /rules/validate-compliance {...}</code></li>
+                    <li>If violation detected: <code>{"compliant": false, "violation": "Employee count >50 requires works council (§25)"}</code></li>
+                    <li>AI alerts management: "Action required: Form works council within 30 days"</li>
+                </ol>
+                <strong>Benefit:</strong> Proactive compliance (violations prevented before they occur)
+            </div>
+        </section>
+
+        <!-- Implementation -->
+        <section class="tech-section">
+            <h2>Implementation Considerations</h2>
+
+            <h3>Legal Engineering Challenges</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Challenge</th>
+                        <th>Solution Approach</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Ambiguity in Legal Text</strong></td>
+                        <td>Use controlled vocabularies from drafting stage, disambiguate with ontologies</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Discretionary Rules</strong></td>
+                        <td>Express as probability scores or flag for human review (e.g., "case officer may grant exception")</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Temporal Validity</strong></td>
+                        <td>Version rules in Git, tag with effective dates, API returns rule valid for query timestamp</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Conflicting Rules</strong></td>
+                        <td>Ontology reasoning detects conflicts, flag for legislative review</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Privacy</strong></td>
+                        <td>Rules API doesn't store input data (stateless), audit log tracks queries only</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Explainability</strong></td>
+                        <td>API returns reasoning trace + law citations (GDPR "right to explanation")</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Technology Stack Recommendation</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Component</th>
+                        <th>Options</th>
+                        <th>Rationale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Rule Engine</strong></td>
+                        <td>OpenFisca, Drools, or custom (Rete algorithm)</td>
+                        <td>OpenFisca: Tax/benefit focus, Python-based, used by France<br>Drools: Enterprise Java, complex rule management</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ontology Store</strong></td>
+                        <td>Apache Jena, Ontotext GraphDB, Stardog</td>
+                        <td>SPARQL query support, reasoning capabilities, scalable</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Legislative Markup</strong></td>
+                        <td>Akoma Ntoso XML, LegalDocML</td>
+                        <td>International standard for parliamentary documents</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Version Control</strong></td>
+                        <td>Git (rules as code), semantic versioning</td>
+                        <td>Track amendments, branching for draft legislation</td>
+                    </tr>
+                    <tr>
+                        <td><strong>API Framework</strong></td>
+                        <td>FastAPI (Python), Spring Boot (Java)</td>
+                        <td>REST + GraphQL support, OpenAPI auto-generation</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="warning-box">
+                <strong>Critical Constraint:</strong> Rules as Code is <em>not</em> the law itself—it's an <strong>interpretation</strong>. 
+                In case of conflict, legal text prevails. Best practice: Treat RaC as "reference implementation" with legal text 
+                as authoritative source. Courts may review rule logic for correctness.
+            </div>
+        </section>
+
+        <!-- Real-World Examples -->
+        <section class="tech-section">
+            <h2>Real-World Implementations</h2>
+
+            <h3>International Leaders</h3>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Country/Initiative</th>
+                        <th>Approach</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>New Zealand - Better Rules</strong></td>
+                        <td>Draft legislation in decision tables → automated eligibility tools</td>
+                        <td>Production (rates rebates, student allowances)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>France - OpenFisca</strong></td>
+                        <td>Tax & benefit rules as Python code, public API</td>
+                        <td>Production (used by gov services + startups)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Australia - Digital Service Standard</strong></td>
+                        <td>Machine-consumable legislation (pilot), API-first mandates</td>
+                        <td>Pilot programs</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Canada - Rules as Code</strong></td>
+                        <td>CRA (tax agency) experimenting with rule formalization</td>
+                        <td>Research phase</td>
+                    </tr>
+                    <tr>
+                        <td><strong>EU - ELI (European Legislation Identifier)</strong></td>
+                        <td>URIs for all EU laws, machine-readable metadata</td>
+                        <td>Adopted (not full RaC, but foundation)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Deployment Timeline -->
+        <section class="tech-section">
+            <h2>Deployment Roadmap (Finland)</h2>
+            <table class="spec-table">
+                <thead>
+                    <tr>
+                        <th>Phase</th>
+                        <th>Timeframe</th>
+                        <th>Deliverables</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Foundation</strong></td>
+                        <td>2025-2026</td>
+                        <td>Pilot: 5 high-volume benefit rules (housing allow, child benefit, etc.) formalized + API</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Expansion</strong></td>
+                        <td>2026-2027</td>
+                        <td>20+ rules online, legislative drafting tools with controlled vocab support</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Integration</strong></td>
+                        <td>2027-2028</td>
+                        <td>Rules API standard for all new legislation, AI agents consume rules</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Maturity</strong></td>
+                        <td>2028+</td>
+                        <td>100+ rules, proactive compliance agents, cross-border rule interop (EU)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- References -->
+        <section class="tech-section">
+            <h2>Technical References</h2>
+            <ul style="line-height: 2;">
+                <li><a href="https://www.digital.govt.nz/standards-and-guidance/technology-and-architecture/better-rules/" target="_blank">New Zealand Better Rules</a></li>
+                <li><a href="https://openfisca.org/" target="_blank">OpenFisca (France)</a></li>
+                <li><a href="https://www.w3.org/TR/swrl/" target="_blank">SWRL (Semantic Web Rule Language)</a></li>
+                <li><a href="https://www.omg.org/spec/DMN/" target="_blank">DMN (Decision Model and Notation)</a></li>
+                <li><a href="http://www.akomantoso.org/" target="_blank">Akoma Ntoso (Legislative XML)</a></li>
+                <li><a href="https://eur-lex.europa.eu/eli-register/about.html" target="_blank">ELI (European Legislation Identifier)</a></li>
+                <li><a href="https://yhteentoimiva.suomi.fi/" target="_blank">Finnish Interoperability Platform</a></li>
+            </ul>
+        </section>
+
+        <div style="text-align: center; margin: 60px 0;">
+            <a href="../index.html" class="btn btn-primary">Back to Overview</a>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>Real Digitalization © 2026 | Technical Deep-Dive Series</p>
+        </div>
+    </footer>
+</body>
+</html>
