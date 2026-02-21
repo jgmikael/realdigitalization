@@ -88,6 +88,8 @@ The site presents a matrix showing how these capabilities transform:
 - 🌍 International Trade
 - 👥 Hiring Employees
 - 📋 Regulatory Compliance
+- 💰 **KYC & Cross-Border Business Financing** (NEW)
+- 📦 **Digital Product Passports** (NEW - inspired by Spherity AG/Carsten Stöcker)
 
 Each event shows:
 - **Current Reality:** Manual, siloed, customer-orchestrated

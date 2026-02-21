@@ -770,6 +770,286 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Business Event 5: KYC & Cross-Border Business Financing -->
+                <div class="event-card">
+                    <div class="event-header">
+                        <h3>💰 KYC & Cross-Border Business Financing</h3>
+                        <span class="event-timeline">International business banking</span>
+                    </div>
+
+                    <div class="event-comparison">
+                        <div class="event-current">
+                            <h4>Today's Experience</h4>
+                            <ul class="pain-points">
+                                <li>Finnish company opens account with German bank → manual KYC process starts</li>
+                                <li>Bank requests: Company registration certificate, beneficial ownership (UBO) data, financial statements (3 years), business plan, shareholder IDs</li>
+                                <li>Company downloads documents from PRH, tax office → scans, PDFs, emails to bank</li>
+                                <li>Bank's compliance team manually reviews each document → verifies authenticity</li>
+                                <li>Cross-border verification: Bank contacts Finnish authorities → weeks of delay</li>
+                                <li>Beneficial ownership: Company provides names, birthdates, addresses → bank verifies against sanctions lists</li>
+                                <li>Financial statements: Bank extracts data manually → enters into risk assessment system</li>
+                                <li>Account opening: 2-4 weeks (sometimes 2 months for complex structures)</li>
+                                <li>Financing application: Same documents requested again by loan department → no reuse</li>
+                                <li>Annual reviews: Repeat entire process → compliance burden</li>
+                                <li><strong>Result:</strong> 40-80 hours of work, 2-4 week delays, high rejection rate due to incomplete docs</li>
+                            </ul>
+                        </div>
+
+                        <div class="event-future">
+                            <h4>Automated Cross-Border KYC</h4>
+                            <ul class="benefits">
+                                <li>🏢 <strong>Company Wallet:</strong> Finnish company holds all credentials as VCs:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>PRH registration certificate (issued as VC)</li>
+                                        <li>UBO register data (verified by PRH, issued as VC)</li>
+                                        <li>Tax compliance certificate (Vero issues VC: "no tax debts")</li>
+                                        <li>Financial statements (auditor-signed VCs with XBRL data)</li>
+                                        <li>AML risk assessment (pre-scored by Finnish authorities)</li>
+                                    </ul>
+                                </li>
+                                <li>🔗 <strong>Presentation Request:</strong> German bank sends OpenID4VP request to company's wallet:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>"Prove: Company registered in Finland, UBO verified, no sanctions matches, tax compliant"</li>
+                                        <li>Selective disclosure: Company reveals only required data (not full financial statements)</li>
+                                    </ul>
+                                </li>
+                                <li>✅ <strong>Trust Registry Verification:</strong> Bank verifies issuer authority:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Checks EU Trust Registry (EBSI): "Is did:web:prh.fi authorized to issue company certificates?"</li>
+                                        <li>Verifies PRH's digital signature on VC</li>
+                                        <li>Confirms credential not revoked (status list check)</li>
+                                    </ul>
+                                </li>
+                                <li>🔐 <strong>Zero-Knowledge Proofs:</strong> Company proves attributes without revealing data:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>"Revenue > €500k" (threshold for loan eligibility) WITHOUT revealing exact revenue</li>
+                                        <li>"UBO is not on sanctions list" WITHOUT revealing UBO's full identity</li>
+                                        <li>"Company age > 2 years" WITHOUT revealing exact registration date</li>
+                                    </ul>
+                                </li>
+                                <li>🤖 <strong>AI Risk Assessment:</strong> Bank's AI agent:
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Receives VCs → extracts structured data (JSON-LD)</li>
+                                        <li>Runs AML checks automatically (credentials pre-verified by Finnish authorities)</li>
+                                        <li>Generates risk score → if low risk, auto-approves account opening</li>
+                                        <li>If medium risk, flags for human review with context (not from scratch)</li>
+                                    </ul>
+                                </li>
+                                <li>💳 <strong>Instant Account Opening:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Low-risk companies: Account opened in <strong>1 hour</strong> (not 2-4 weeks)</li>
+                                        <li>IBAN issued, online banking activated, cards ordered</li>
+                                        <li>No manual document review (VCs are pre-verified)</li>
+                                    </ul>
+                                </li>
+                                <li>💰 <strong>Financing Application (Same VCs):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Company applies for €200k loan → reuses same VCs (no re-submission)</li>
+                                        <li>Bank's AI: "Financial VCs show cash flow positive, tax compliance verified → pre-approved"</li>
+                                        <li>Loan decision: <strong>24 hours</strong> (not 2-4 weeks)</li>
+                                        <li>Funds disbursed to new account automatically</li>
+                                    </ul>
+                                </li>
+                                <li>📊 <strong>Annual Review (Zero Effort):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Bank subscribes to company's credential updates (event-driven)</li>
+                                        <li>PRH updates UBO data → new VC issued → bank receives update automatically</li>
+                                        <li>Auditor issues new financial statement VC → bank's system auto-ingests</li>
+                                        <li><strong>Zero manual compliance reviews</strong> (credentials update in real-time)</li>
+                                    </ul>
+                                </li>
+                                <li>🌍 <strong>Cross-Border Recognition:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Finnish VCs trusted across EU (EBSI federation)</li>
+                                        <li>German bank trusts Finnish PRH credentials (mutual recognition)</li>
+                                        <li>No need for local legal opinions or apostilles</li>
+                                    </ul>
+                                </li>
+                                <li>🎯 <strong>Company Experience:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Day 1:</strong> Submit presentation request from Business Wallet → approve with e-signature</li>
+                                        <li><strong>Day 1 (1 hour later):</strong> Account opened, IBAN received</li>
+                                        <li><strong>Day 2:</strong> Apply for loan (same VCs) → pre-approved</li>
+                                        <li><strong>Day 3:</strong> Funds in account</li>
+                                        <li><strong>Total time:</strong> 15 minutes of work (vs 40-80 hours)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="capabilities-used">
+                                <strong>Capabilities:</strong>
+                                <span class="cap-badge">EU Business Wallet</span>
+                                <span class="cap-badge">Trust Registry</span>
+                                <span class="cap-badge">Zero-Knowledge</span>
+                                <span class="cap-badge">Agentic AI</span>
+                                <span class="cap-badge">Event-Driven</span>
+                                <span class="cap-badge">Interop Platform</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight" style="margin-top: 30px; padding: 20px; background: rgba(74, 124, 44, 0.05); border-left: 4px solid var(--forest-accent);">
+                        <h4 style="margin-top: 0; color: var(--forest-dark);">🔐 Privacy & Compliance</h4>
+                        <p style="margin-bottom: 10px;">
+                            <strong>AML/KYC Compliance Maintained:</strong> Banks still perform due diligence, but credentials are pre-verified by authoritative sources (government registries). Zero-knowledge proofs enable privacy-preserving verification ("prove revenue threshold" without revealing exact financials).
+                        </p>
+                        <p style="margin: 0;">
+                            <strong>GDPR:</strong> Company controls credential sharing (explicit consent per presentation). Bank receives only disclosed attributes. No central database of company data—wallet-based architecture ensures data minimization.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Business Event 6: Digital Product Passports (DPPs) -->
+                <div class="event-card">
+                    <div class="event-header">
+                        <h3>📦 Digital Product Passports</h3>
+                        <span class="event-timeline">Circular economy enabler</span>
+                    </div>
+
+                    <div class="event-comparison">
+                        <div class="event-current">
+                            <h4>Today's Reality</h4>
+                            <ul class="pain-points">
+                                <li>Product information scattered: Manufacturer website, PDFs, labels, certificates (paper/digital mix)</li>
+                                <li>Supply chain opacity: Buyer knows finished product, not upstream materials or labor practices</li>
+                                <li>Sustainability claims: "Eco-friendly" labels with no verifiable proof → greenwashing</li>
+                                <li>Repair impossibility: No access to spare parts sourcing, repair manuals, or component specs</li>
+                                <li>End-of-life: Product thrown away → no data on recyclable materials, disassembly instructions</li>
+                                <li>Regulatory compliance: Manufacturer manually compiles compliance docs per market (CE, RoHS, REACH)</li>
+                                <li>Recalls: Product defect detected → manual tracking of serial numbers, affected batches</li>
+                                <li>Second-hand market: Buyer has no proof of authenticity, warranty status, or maintenance history</li>
+                                <li><strong>Example (EV Battery):</strong> Battery health data locked in manufacturer system → repair shops can't diagnose → entire battery replaced unnecessarily</li>
+                            </ul>
+                        </div>
+
+                        <div class="event-future">
+                            <h4>DPP as "Micro-ERP" Built from Verifiable Credentials</h4>
+                            <p style="margin: 15px 0; font-size: 1.05em;"><strong>Concept:</strong> Digital Product Passport = collection of VCs forming a product-specific "micro-ERP" that follows the product through its lifecycle.</p>
+                            <ul class="benefits">
+                                <li>🏭 <strong>Manufacturing Phase (VC Issuance):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Bill of Materials (BoM) VC:</strong> Manufacturer issues VC listing all components (with supplier DIDs)</li>
+                                        <li><strong>Origin VCs:</strong> Each component supplier issues origin credential ("Lithium mined in Chile, Certified conflict-free")</li>
+                                        <li><strong>Carbon Footprint VC:</strong> Third-party auditor issues VC: "Product production: 12 kg CO₂e" (verified calculation)</li>
+                                        <li><strong>Labor Compliance VC:</strong> Factory audit issues VC: "ILO standards met, no child labor"</li>
+                                        <li><strong>Quality Test VC:</strong> Manufacturer issues VC: "Passed all quality checks, Serial#: 12345"</li>
+                                        <li><strong>Regulatory VCs:</strong> CE marking, RoHS compliance, REACH declaration (all as VCs)</li>
+                                        <li><strong>Warranty VC:</strong> Manufacturer issues: "2-year warranty valid until 2028-03-15"</li>
+                                    </ul>
+                                </li>
+                                <li>📱 <strong>Product Wallet (DPP as Micro-ERP):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Each product has unique DID (e.g., <code>did:web:manufacturer.com:products:battery-12345</code>)</li>
+                                        <li>QR code / NFC tag on product links to DPP portal</li>
+                                        <li>Portal displays: BoM, sustainability data, repair info, warranty status (fetched as VCs)</li>
+                                        <li><strong>Think:</strong> Lightweight ERP just for this one product—tracks its entire lifecycle</li>
+                                    </ul>
+                                </li>
+                                <li>🔗 <strong>Supply Chain Transparency:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Consumer scans QR → sees full supply chain (VC chain of custody)</li>
+                                        <li>"Battery cathode: Nickel from Indonesia (Supplier X VC) → Refined in Japan (Supplier Y VC) → Assembled in Finland"</li>
+                                        <li>Each step cryptographically signed by issuer (tamper-proof provenance)</li>
+                                    </ul>
+                                </li>
+                                <li>🌱 <strong>Sustainability Verification:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Carbon Footprint:</strong> Auditor VC shows 12 kg CO₂e (verified by third party, not self-reported)</li>
+                                        <li><strong>Recycled Content:</strong> VC proves "30% recycled aluminum" (traced back to recycler's VC)</li>
+                                        <li><strong>Circular Design:</strong> VC includes disassembly instructions, recyclability score</li>
+                                        <li><strong>No Greenwashing:</strong> Claims backed by verifiable credentials (can't fake auditor signatures)</li>
+                                    </ul>
+                                </li>
+                                <li>🔧 <strong>Repair & Maintenance:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Repair shop scans product → DPP reveals: Spare parts catalog, repair manuals, diagnostic codes</li>
+                                        <li><strong>Right to Repair:</strong> Manufacturer required to publish VCs with repair info (EU regulation)</li>
+                                        <li><strong>Maintenance History:</strong> Each repair logged as new VC ("Battery cell replaced 2027-06-10 by Shop XYZ")</li>
+                                        <li><strong>Example (EV Battery):</strong> Mechanic scans battery → sees state-of-health data VC → replaces only faulty module (not entire battery)</li>
+                                    </ul>
+                                </li>
+                                <li>🔄 <strong>Second-Hand Market:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Buyer scans used product → DPP shows: Warranty status, maintenance history, authenticity proof</li>
+                                        <li><strong>Anti-Counterfeiting:</strong> Product DID + manufacturer signature = proof of authenticity (can't be cloned)</li>
+                                        <li><strong>Transfer of Ownership:</strong> Seller transfers DPP to buyer's wallet (new VC: "Ownership transferred to DID:buyer123")</li>
+                                    </ul>
+                                </li>
+                                <li>♻️ <strong>End-of-Life (Circular Economy):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li>Recycler scans product → DPP reveals: Material composition, hazardous substances, disassembly sequence</li>
+                                        <li><strong>Automated Sorting:</strong> AI reads DPP VCs → directs product to correct recycling stream</li>
+                                        <li><strong>Material Recovery:</strong> DPP shows "Battery contains 2kg lithium, 15kg cobalt" → targeted extraction</li>
+                                        <li><strong>Recycling Certificate:</strong> Recycler issues VC: "Product recycled, 95% material recovery rate" → closes lifecycle loop</li>
+                                    </ul>
+                                </li>
+                                <li>📊 <strong>Regulatory Automation:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Market Surveillance:</strong> Authority scans product → DPP instantly shows all compliance VCs (CE, RoHS, etc.)</li>
+                                        <li><strong>Recall Management:</strong> Defect detected → manufacturer queries Trust Registry: "Find all products with Battery Model X (Serial range 10000-15000)"</li>
+                                        <li><strong>ESG Reporting:</strong> Company queries DPPs of all sold products → aggregates carbon footprint VCs → auto-generates sustainability report</li>
+                                    </ul>
+                                </li>
+                                <li>🏢 <strong>DPP as "Micro-ERP" (Spherity AG / Carsten Stöcker Vision):</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Concept:</strong> Traditional ERP manages company operations. DPP manages <em>product</em> operations throughout lifecycle.</li>
+                                        <li><strong>VC Collection = Data Model:</strong> Each VC is a "transaction" in product's history (manufacturing, sale, repair, resale, recycling)</li>
+                                        <li><strong>Interoperability:</strong> Different systems (manufacturer, retailer, repair shop, recycler) all write/read from same DPP (shared data layer)</li>
+                                        <li><strong>Sovereignty:</strong> Product data stored as VCs in distributed ledger or IPFS (no central database lock-in)</li>
+                                        <li><strong>AI-Readable:</strong> VCs use semantic standards (JSON-LD + ontologies) → AI agents can query, aggregate, analyze at scale</li>
+                                        <li><strong>Example Use:</strong> Circular economy marketplace AI queries 10,000 DPPs → finds products with >80% recycled content + verified carbon neutral production</li>
+                                    </ul>
+                                </li>
+                                <li>🌐 <strong>Data Spaces Integration:</strong>
+                                    <ul style="margin-top: 8px; font-size: 0.95em;">
+                                        <li><strong>Manufacturing Data Space:</strong> DPPs published to domain-specific space (Catena-X for automotive, Battery Pass for batteries)</li>
+                                        <li><strong>Usage Control:</strong> Manufacturer sets ODRL policies: "Repair shops can read BoM, consumers can't" (granular permissions)</li>
+                                        <li><strong>Data Sovereignty:</strong> Each participant (supplier, manufacturer, recycler) controls their VCs (federated architecture)</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="capabilities-used">
+                                <strong>Capabilities:</strong>
+                                <span class="cap-badge">EU Business Wallet</span>
+                                <span class="cap-badge">Trust Registry</span>
+                                <span class="cap-badge">Interop Platform</span>
+                                <span class="cap-badge">Data Spaces</span>
+                                <span class="cap-badge">Agentic AI</span>
+                                <span class="cap-badge">API Catalog</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="highlight" style="margin-top: 30px; padding: 20px; background: rgba(74, 124, 44, 0.05); border-left: 4px solid var(--forest-accent);">
+                        <h4 style="margin-top: 0; color: var(--forest-dark);">🔬 Inspiration: Spherity AG & Carsten Stöcker</h4>
+                        <p style="margin-bottom: 10px;">
+                            <strong>Spherity AG</strong> (Germany) pioneers "Digital Product Passports as Verifiable Credentials." CEO <strong>Carsten Stöcker</strong> envisions DPPs as:
+                        </p>
+                        <ul style="margin: 10px 0 10px 20px;">
+                            <li><strong>"Product-centric micro-ERPs"</strong> → Data follows product, not locked in company silos</li>
+                            <li><strong>"Machine economy enabler"</strong> → AI agents trade products based on DPP data (autonomous circular marketplaces)</li>
+                            <li><strong>"Trust layer for Industry 4.0"</strong> → VCs enable supply chain partners to transact without contracts (cryptographic trust)</li>
+                        </ul>
+                        <p style="margin: 10px 0 0 0;">
+                            <strong>Key Insight:</strong> DPP isn't just "digital label"—it's an <em>active data entity</em> that orchestrates product lifecycle. Each VC = API endpoint for product intelligence. Entire circular economy becomes queryable, verifiable, AI-orchestrated.
+                        </p>
+                        <p style="margin: 10px 0 0 0;">
+                            <strong>Real Implementations:</strong> Catena-X (automotive), Battery Pass (EU regulation), Textile Passport (fashion), Building Passport (construction).
+                        </p>
+                    </div>
+
+                    <div class="warning-box" style="margin-top: 20px; padding: 20px; background: rgba(184, 151, 90, 0.05); border-left: 4px solid var(--gold);">
+                        <h4 style="margin-top: 0; color: var(--forest-dark);">🚧 Implementation Challenges</h4>
+                        <ul style="margin: 10px 0 0 20px;">
+                            <li><strong>Standardization:</strong> Need common VC schemas for each industry (automotive vs. electronics vs. textiles)</li>
+                            <li><strong>Legacy Systems:</strong> Existing ERPs don't natively support VCs → connector/adapter layer needed</li>
+                            <li><strong>Scale:</strong> Billions of products × 10-50 VCs each = massive data volume → IPFS/decentralized storage required</li>
+                            <li><strong>Privacy:</strong> Some DPP data is proprietary (BoM formulas) → selective disclosure + usage policies critical</li>
+                            <li><strong>Adoption:</strong> Requires ecosystem coordination (manufacturers, suppliers, retailers, recyclers must all participate)</li>
+                            <li><strong>Regulation:</strong> EU mandates DPPs for batteries (2027), textiles (2030+), but global harmonization needed</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
