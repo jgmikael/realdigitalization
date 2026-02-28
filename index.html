@@ -340,13 +340,138 @@
                                         <li><strong>Digital accounts:</strong> AI requests account closure (Google, Facebook) or memorialization per heir preference</li>
                                     </ul>
                                 </li>
-                                <li>📋 <strong>Estate Inventory (Legal Document):</strong>
-                                    <ul style="margin-top: 8px; font-size: 0.95em;">
-                                        <li>AI generates complete estate inventory (required by law within 3 months)</li>
-                                        <li>All assets/liabilities auto-populated from data sources (verified, timestamped)</li>
-                                        <li>Heirs review on tablet/phone → approve with e-signature</li>
-                                        <li>Submitted to Tax Office automatically → probate process starts (no manual forms)</li>
+                                <li>📋 <strong>Perunkirjoitus (Estate Inventory) - Full Automation:</strong>
+                                    <p style="margin: 8px 0; font-size: 0.95em;"><strong>Legal Requirement:</strong> Finnish law (Perintökaari 40/1965) requires heirs to file perunkirjoitus within <strong>3 months</strong> of death. Failure = fines + probate delays. Typically 40-60 pages, requires legal assistance (€1,500-3,000 cost).</p>
+                                    
+                                    <p style="margin: 8px 0; font-size: 0.95em; font-weight: 600;">Traditional Process (Manual Hell):</p>
+                                    <ul style="margin-top: 8px; font-size: 0.9em;">
+                                        <li><strong>Assets Discovery:</strong> Heirs must find all: Bank accounts (every bank separately), real estate, vehicles, securities, personal property, pension accruals, insurance policies, receivables</li>
+                                        <li><strong>Liabilities Discovery:</strong> Loans, credit cards, unpaid bills, tax debts, mortgages, guarantees given</li>
+                                        <li><strong>Valuation:</strong> Real estate → market value (appraiser €500-2000), vehicles → Traficom average, securities → date-of-death prices, personal property → estimates</li>
+                                        <li><strong>Heir Identification:</strong> Will? Intestate succession? Spouse, children, parents → legal shares calculated</li>
+                                        <li><strong>Form Filling:</strong> 40-60 page PDF, hand-written or typed, 20+ sections, attachments (bank statements, deeds, appraisals)</li>
+                                        <li><strong>Legal Review:</strong> Lawyer reviews (€1,500-3,000), signs, submits to Tax Office</li>
+                                        <li><strong>Time:</strong> 20-40 hours of heir work + 2-4 weeks lawyer → total 6-8 weeks to complete</li>
+                                        <li><strong>Errors Common:</strong> Missed accounts → estate reopened → additional costs</li>
                                     </ul>
+                                    
+                                    <p style="margin: 15px 0 8px 0; font-size: 0.95em; font-weight: 600;">Automated Perunkirjoitus Generation:</p>
+                                    <ul style="margin-top: 8px; font-size: 0.9em;">
+                                        <li><strong>Day 1-2: Automatic Asset Discovery</strong>
+                                            <ul style="margin-top: 5px; font-size: 0.95em;">
+                                                <li><strong>Financial Data Space Query:</strong> AI agent queries all banks simultaneously (API access with heir authorization)</li>
+                                                <li>Returns: All accounts (checking, savings, investment), balances as-of date-of-death, co-owners, beneficiaries</li>
+                                                <li><strong>Securities Registry:</strong> Euroclear Finland API → all holdings (stocks, bonds, funds) with date-of-death valuations</li>
+                                                <li><strong>Pension Registry:</strong> ETK (Eläketurvakeskus) API → accrued pension rights (survivor pension eligibility)</li>
+                                                <li><strong>Insurance Registry:</strong> Federation of Finnish Financial Services → all policies (life, property, health) with beneficiaries</li>
+                                                <li><strong>Land Registry:</strong> Maanmittauslaitos API → owned real estate, co-owners, mortgages, cadastral values</li>
+                                                <li><strong>Vehicle Registry:</strong> Traficom API → registered vehicles with valuations</li>
+                                                <li><strong>Business Registry:</strong> PRH API → company shares, board positions, ownership percentages</li>
+                                                <li><strong>Tax Office:</strong> Vero API → outstanding tax debts/refunds, previous years' income (used for valuation estimates)</li>
+                                            </ul>
+                                        </li>
+                                        
+                                        <li><strong>Day 2-3: Automatic Liability Discovery</strong>
+                                            <ul style="margin-top: 5px; font-size: 0.95em;">
+                                                <li><strong>Credit Registry:</strong> Bisnode/UC API → all loans, credit cards, payment plans</li>
+                                                <li><strong>Mortgage Holders:</strong> Banks report mortgages linked to properties (automatic cross-reference)</li>
+                                                <li><strong>Utilities:</strong> Outstanding bills from electricity, water, waste, telecom</li>
+                                                <li><strong>Tax Office:</strong> Any unpaid taxes, penalties, interest</li>
+                                                <li><strong>Guarantees:</strong> If deceased guaranteed someone's loan → liability (banks report)</li>
+                                            </ul>
+                                        </li>
+                                        
+                                        <li><strong>Day 3: Automatic Valuation</strong>
+                                            <ul style="margin-top: 5px; font-size: 0.95em;">
+                                                <li><strong>Real Estate:</strong> AI uses recent sales in area + property characteristics → market value estimate (±5% accuracy)</li>
+                                                <li><strong>Vehicles:</strong> Traficom average prices by make/model/year → instant valuation</li>
+                                                <li><strong>Securities:</strong> Date-of-death closing prices (automated from Euroclear)</li>
+                                                <li><strong>Personal Property:</strong> AI estimates based on tax return data (standard deductions: €3,000-10,000 typical)</li>
+                                                <li><strong>Edge Cases:</strong> Valuable art, antiques → AI flags for manual appraisal</li>
+                                            </ul>
+                                        </li>
+                                        
+                                        <li><strong>Day 3-4: Heir Calculation (Rules as Code)</strong>
+                                            <ul style="margin-top: 5px; font-size: 0.95em;">
+                                                <li><strong>Rules API Query:</strong> <code>POST /rules/calculate-inheritance {"deceased": "...", "family": [...]}</code></li>
+                                                <li><strong>Inheritance Law Rules:</strong> Perintökaari encoded as executable rules (spouse share, children shares, intestate succession)</li>
+                                                <li><strong>Will Verification:</strong> If will exists → verify with Testament Registry API (notarized wills register)</li>
+                                                <li><strong>Legal Shares:</strong> AI calculates: Spouse gets 50% + home, children split remaining 50%, etc.</li>
+                                                <li><strong>Special Cases:</strong> Adopted children (same as biological), estranged heirs (still inherit), disclaimer of inheritance (heir can reject)</li>
+                                            </ul>
+                                        </li>
+                                        
+                                        <li><strong>Day 4-5: Document Generation</strong>
+                                            <ul style="margin-top: 5px; font-size: 0.95em;">
+                                                <li><strong>AI Drafts Perunkirjoitus:</strong> 40-page PDF auto-generated with all sections completed:</li>
+                                                <li>Section 1: Deceased information (from DVV)</li>
+                                                <li>Section 2: Heirs (with personal IDs, addresses, shares)</li>
+                                                <li>Section 3: Assets (complete list with valuations, 15-20 pages typically)</li>
+                                                <li>Section 4: Liabilities (all debts with amounts)</li>
+                                                <li>Section 5: Net estate (assets - liabilities)</li>
+                                                <li>Section 6: Distribution (who gets what)</li>
+                                                <li>Appendices: Bank confirmations, property deeds, vehicle registrations (all as VCs/PDFs)</li>
+                                                <li><strong>Language:</strong> Proper legal terminology, references to relevant laws</li>
+                                            </ul>
+                                        </li>
+                                        
+                                        <li><strong>Day 5: Heir Review & Approval</strong>
+                                            <ul style="margin-top: 5px; font-size: 0.95em;">
+                                                <li><strong>EUDI Wallet Notification:</strong> "Perunkirjoitus ready for review"</li>
+                                                <li>Heirs open on phone/tablet → see complete document</li>
+                                                <li><strong>Review Interface:</strong> Each section expandable, sources cited (click bank name → see account details)</li>
+                                                <li><strong>Corrections:</strong> If heir knows of additional asset → add manually → AI re-calculates</li>
+                                                <li><strong>Verification:</strong> AI highlights: "Unusual items: Classic car valued at €50k (market data: €45k-55k). Verify?"</li>
+                                                <li><strong>E-Signature:</strong> All heirs sign with qualified electronic signature (legally binding per eIDAS)</li>
+                                                <li><strong>Time:</strong> 1-2 hours for heirs (vs 20-40 hours manual)</li>
+                                            </ul>
+                                        </li>
+                                        
+                                        <li><strong>Day 6: Submission to Tax Office</strong>
+                                            <ul style="margin-top: 5px; font-size: 0.95em;">
+                                                <li><strong>Automatic Filing:</strong> Perunkirjoitus submitted via Tax Office API (digital native, not PDF scan)</li>
+                                                <li><strong>Structured Data:</strong> Assets/liabilities as JSON (machine-readable) + PDF (human-readable)</li>
+                                                <li><strong>Verification:</strong> Tax Office AI cross-checks against own databases (bank reports, property registry)</li>
+                                                <li><strong>Instant Validation:</strong> If discrepancies: "We have record of account at Bank X (€12k), not in perunkirjoitus. Add?"</li>
+                                                <li><strong>Approval:</strong> If all checks pass → auto-approved within 24 hours (vs 4-8 weeks manual review)</li>
+                                            </ul>
+                                        </li>
+                                        
+                                        <li><strong>Total Time: 6 Days (vs 6-8 Weeks)</strong></li>
+                                        <li><strong>Heir Effort: 2-3 Hours (vs 20-40 Hours)</strong></li>
+                                        <li><strong>Cost: €0 (vs €1,500-3,000 Legal Fees)</strong></li>
+                                        <li><strong>Accuracy: 99%+ (AI cross-checks multiple sources, flags anomalies)</strong></li>
+                                    </ul>
+                                    
+                                    <p style="margin: 15px 0 8px 0; font-size: 0.95em; font-weight: 600;">Example Automated Perunkirjoitus Output:</p>
+                                    <div style="background: #f5f5f5; padding: 15px; margin: 10px 0; border-left: 4px solid var(--forest-mid); font-family: monospace; font-size: 0.85em;">
+                                        <strong>PERUNKIRJOITUS</strong><br>
+                                        Vainaja: Matti Meikäläinen (010145-1234), kuollut 2026-02-15<br><br>
+                                        
+                                        <strong>VARAT (Assets):</strong><br>
+                                        • Kiinteistö: Mannerheimintie 5, Helsinki (€187,000) [Lähde: MML]<br>
+                                        • Pankkitili: Nordea FI12 3456 (€23,450) [Lähde: Nordea API]<br>
+                                        • Osakesalkku: Nordnet (€15,200) [Lähde: Euroclear]<br>
+                                        • Ajoneuvo: Toyota Corolla 2018 (€8,500) [Lähde: Traficom]<br>
+                                        • Irtaimisto: (€5,000) [Arvio]<br>
+                                        <strong>Yhteensä: €239,150</strong><br><br>
+                                        
+                                        <strong>VELAT (Liabilities):</strong><br>
+                                        • Asuntolaina: OP Bank (€52,000) [Lähde: OP API]<br>
+                                        • Kulutusluotto: Santander (€3,200) [Lähde: Bisnode]<br>
+                                        <strong>Yhteensä: €55,200</strong><br><br>
+                                        
+                                        <strong>NETTOVARALLISUUS: €183,950</strong><br><br>
+                                        
+                                        <strong>PERILLISET (Heirs):</strong><br>
+                                        • Puoliso: Maija Meikäläinen (50% + kotitalousvähennys)<br>
+                                        • Lapsi 1: Pekka Meikäläinen (25%)<br>
+                                        • Lapsi 2: Liisa Meikäläinen (25%)<br><br>
+                                        
+                                        Allekirjoitettu sähköisesti: 2026-02-21<br>
+                                        Toimitettu Verohallinnolle: 2026-02-21 14:35<br>
+                                        [AI-Generated, Human-Verified, Legally Binding]
+                                    </div>
                                 </li>
                                 <li>🔐 <strong>Privacy & Security:</strong>
                                     <ul style="margin-top: 8px; font-size: 0.95em;">
