@@ -1,0 +1,175 @@
+{
+  "document": {
+    "name": "Invoice",
+    "version": "1.0",
+    "description": "Electronic invoice compliant with EN 16931-1",
+    "baseVocabulary": "busdoc",
+    "additionalVocabularies": ["unece", "schema"]
+  },
+  "fields": [
+    {
+      "name": "invoiceNumber",
+      "source": "busdoc:iD",
+      "datatype": "xsd:string",
+      "cardinality": "1..1",
+      "description": "Unique invoice identifier (BT-1)"
+    },
+    {
+      "name": "issueDate",
+      "source": "busdoc:issueDate",
+      "datatype": "xsd:date",
+      "cardinality": "1..1",
+      "description": "Invoice issue date (BT-2)"
+    },
+    {
+      "name": "invoiceTypeCode",
+      "source": "busdoc:invoiceTypeCode",
+      "datatype": "xsd:string",
+      "cardinality": "1..1",
+      "description": "Invoice type code - 380=Invoice, 381=CreditNote (BT-3)"
+    },
+    {
+      "name": "documentCurrencyCode",
+      "source": "busdoc:documentCurrencyCode",
+      "datatype": "xsd:string",
+      "cardinality": "1..1",
+      "pattern": "^[A-Z]{3}$",
+      "description": "Currency code ISO 4217 (BT-5)"
+    },
+    {
+      "name": "seller",
+      "source": "busdoc:sellerSupplierParty",
+      "type": "Party",
+      "cardinality": "1..1",
+      "description": "Seller information (BG-4)"
+    },
+    {
+      "name": "buyer",
+      "source": "busdoc:buyerCustomerParty",
+      "type": "Party",
+      "cardinality": "1..1",
+      "description": "Buyer information (BG-7)"
+    },
+    {
+      "name": "invoiceLine",
+      "source": "busdoc:invoiceLine",
+      "type": "InvoiceLine",
+      "cardinality": "1..n",
+      "description": "Invoice line items (BG-25)"
+    },
+    {
+      "name": "legalMonetaryTotal",
+      "source": "busdoc:legalMonetaryTotal",
+      "type": "MonetaryTotal",
+      "cardinality": "1..1",
+      "description": "Document totals (BG-22)"
+    }
+  ],
+  "types": {
+    "Party": {
+      "description": "Business party (seller, buyer, etc.)",
+      "fields": [
+        {
+          "name": "name",
+          "source": "busdoc:name",
+          "datatype": "xsd:string",
+          "cardinality": "1..1",
+          "description": "Party legal name"
+        },
+        {
+          "name": "vatID",
+          "source": "busdoc:vatID",
+          "datatype": "xsd:string",
+          "cardinality": "0..1",
+          "pattern": "^[A-Z]{2}[0-9A-Z]{2,13}$",
+          "description": "VAT identification number"
+        },
+        {
+          "name": "address",
+          "source": "busdoc:address",
+          "type": "Address",
+          "cardinality": "1..1"
+        }
+      ]
+    },
+    "Address": {
+      "description": "Postal address",
+      "fields": [
+        {
+          "name": "streetName",
+          "source": "busdoc:streetName",
+          "datatype": "xsd:string",
+          "cardinality": "0..1"
+        },
+        {
+          "name": "cityName",
+          "source": "busdoc:cityName",
+          "datatype": "xsd:string",
+          "cardinality": "1..1"
+        },
+        {
+          "name": "postalZone",
+          "source": "busdoc:postalZone",
+          "datatype": "xsd:string",
+          "cardinality": "0..1"
+        },
+        {
+          "name": "countryId",
+          "source": "busdoc:countryId",
+          "datatype": "xsd:string",
+          "cardinality": "1..1",
+          "pattern": "^[A-Z]{2}$"
+        }
+      ]
+    },
+    "InvoiceLine": {
+      "description": "Invoice line item",
+      "fields": [
+        {
+          "name": "lineID",
+          "source": "busdoc:lineID",
+          "datatype": "xsd:string",
+          "cardinality": "1..1"
+        },
+        {
+          "name": "invoicedQuantity",
+          "source": "busdoc:invoicedQuantity",
+          "type": "Quantity",
+          "cardinality": "1..1"
+        },
+        {
+          "name": "lineExtensionAmount",
+          "source": "busdoc:lineExtensionAmount",
+          "datatype": "xsd:decimal",
+          "cardinality": "1..1"
+        }
+      ]
+    },
+    "Quantity": {
+      "fields": [
+        {
+          "name": "value",
+          "source": "@value",
+          "datatype": "xsd:decimal",
+          "cardinality": "1..1"
+        },
+        {
+          "name": "unitCode",
+          "source": "busdoc:unitCode",
+          "datatype": "xsd:string",
+          "cardinality": "1..1"
+        }
+      ]
+    },
+    "MonetaryTotal": {
+      "fields": [
+        {
+          "name": "payableAmount",
+          "source": "busdoc:payableAmount",
+          "datatype": "xsd:decimal",
+          "cardinality": "1..1"
+        }
+      ]
+    }
+  }
+}
