@@ -1,0 +1,541 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "@protected": true,
+    
+    "unece": "https://vocabulary.uncefact.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema": "http://schema.org/",
+    
+    "eCMR": {
+      "@id": "unece:Consignment",
+      "@context": {
+        "consignmentId": {
+          "@id": "unece:id",
+          "@type": "xsd:string"
+        },
+        "consignmentNumber": {
+          "@id": "unece:sequenceNumeric",
+          "@type": "xsd:string"
+        },
+        "issueDate": {
+          "@id": "unece:issueDateTime",
+          "@type": "xsd:dateTime"
+        },
+        "declaredValueForCarriage": {
+          "@id": "unece:declaredValueForCarriageAmount",
+          "@type": "@id"
+        },
+        "declaredValueForCustoms": {
+          "@id": "unece:declaredValueForCustomsAmount",
+          "@type": "@id"
+        },
+        "insuranceValueAmount": {
+          "@id": "unece:insuranceValueAmount",
+          "@type": "@id"
+        },
+        "grossWeightMeasure": {
+          "@id": "unece:grossWeightMeasure",
+          "@type": "@id"
+        },
+        "grossVolumeMeasure": {
+          "@id": "unece:grossVolumeMeasure",
+          "@type": "@id"
+        },
+        "packageQuantity": {
+          "@id": "unece:packageQuantity",
+          "@type": "@id"
+        },
+        "carrierInstructions": {
+          "@id": "unece:handlingInstructions",
+          "@type": "xsd:string"
+        },
+        "specialAgreement": {
+          "@id": "unece:information",
+          "@type": "xsd:string"
+        },
+        "paymentArrangementCode": {
+          "@id": "unece:paymentArrangementCode",
+          "@type": "@vocab"
+        },
+        "consignor": {
+          "@id": "unece:consignorParty",
+          "@type": "@id"
+        },
+        "consignee": {
+          "@id": "unece:consigneeParty",
+          "@type": "@id"
+        },
+        "carrier": {
+          "@id": "unece:carrierParty",
+          "@type": "@id"
+        },
+        "deliveryTerms": {
+          "@id": "unece:applicableDeliveryTerms",
+          "@type": "@id"
+        },
+        "transportMovement": {
+          "@id": "unece:mainCarriageLogisticsTransportMovement",
+          "@type": "@id"
+        },
+        "transportEquipment": {
+          "@id": "unece:utilizedLogisticsTransportEquipment",
+          "@type": "@id",
+          "@container": "@list"
+        },
+        "consignmentItem": {
+          "@id": "unece:includedConsignmentItem",
+          "@type": "@id",
+          "@container": "@list"
+        },
+        "loadingLocation": {
+          "@id": "unece:loadingBaseportLocation",
+          "@type": "@id"
+        },
+        "unloadingLocation": {
+          "@id": "unece:unloadingBaseportLocation",
+          "@type": "@id"
+        },
+        "pickUpEvent": {
+          "@id": "unece:actualPickUpEvent",
+          "@type": "@id"
+        },
+        "deliveryEvent": {
+          "@id": "unece:actualDeliveryEvent",
+          "@type": "@id"
+        },
+        "remarks": {
+          "@id": "unece:remarks",
+          "@type": "xsd:string"
+        },
+        "dangerousGoods": {
+          "@id": "unece:applicableDangerousGoods",
+          "@type": "@id",
+          "@container": "@list"
+        }
+      }
+    },
+    
+    "Party": {
+      "@id": "unece:TradeParty",
+      "@context": {
+        "name": {
+          "@id": "unece:name",
+          "@type": "xsd:string"
+        },
+        "id": {
+          "@id": "unece:id",
+          "@type": "xsd:string"
+        },
+        "address": {
+          "@id": "unece:postalAddress",
+          "@type": "@id"
+        },
+        "contact": {
+          "@id": "unece:definedContact",
+          "@type": "@id"
+        },
+        "taxRegistration": {
+          "@id": "unece:specifiedTaxRegistration",
+          "@type": "@id"
+        }
+      }
+    },
+    
+    "Address": {
+      "@id": "unece:TradeAddress",
+      "@context": {
+        "streetName": {
+          "@id": "unece:lineOne",
+          "@type": "xsd:string"
+        },
+        "additionalStreetName": {
+          "@id": "unece:lineTwo",
+          "@type": "xsd:string"
+        },
+        "cityName": {
+          "@id": "unece:cityName",
+          "@type": "xsd:string"
+        },
+        "postcode": {
+          "@id": "unece:postcodeCode",
+          "@type": "xsd:string"
+        },
+        "countrySubDivision": {
+          "@id": "unece:countrySubDivisionName",
+          "@type": "xsd:string"
+        },
+        "countryId": {
+          "@id": "unece:countryId",
+          "@type": "@vocab"
+        }
+      }
+    },
+    
+    "Contact": {
+      "@id": "unece:TradeContact",
+      "@context": {
+        "personName": {
+          "@id": "unece:personName",
+          "@type": "xsd:string"
+        },
+        "departmentName": {
+          "@id": "unece:departmentName",
+          "@type": "xsd:string"
+        },
+        "telephoneUniversalCommunication": {
+          "@id": "unece:telephoneUniversalCommunication",
+          "@type": "@id"
+        },
+        "emailURIUniversalCommunication": {
+          "@id": "unece:emailURIUniversalCommunication",
+          "@type": "@id"
+        }
+      }
+    },
+    
+    "ConsignmentItem": {
+      "@id": "unece:ConsignmentItem",
+      "@context": {
+        "sequenceNumeric": {
+          "@id": "unece:sequenceNumeric",
+          "@type": "xsd:integer"
+        },
+        "information": {
+          "@id": "unece:information",
+          "@type": "xsd:string"
+        },
+        "natureIdentificationCargo": {
+          "@id": "unece:natureIdentificationCargo",
+          "@type": "@id"
+        },
+        "grossWeightMeasure": {
+          "@id": "unece:grossWeightMeasure",
+          "@type": "@id"
+        },
+        "grossVolumeMeasure": {
+          "@id": "unece:grossVolumeMeasure",
+          "@type": "@id"
+        },
+        "packageQuantity": {
+          "@id": "unece:packageQuantity",
+          "@type": "@id"
+        },
+        "typeCode": {
+          "@id": "unece:typeCode",
+          "@type": "@vocab"
+        },
+        "transportPackage": {
+          "@id": "unece:transportPackage",
+          "@type": "@id",
+          "@container": "@list"
+        },
+        "applicableDangerousGoods": {
+          "@id": "unece:applicableDangerousGoods",
+          "@type": "@id",
+          "@container": "@list"
+        },
+        "associatedDocument": {
+          "@id": "unece:associatedReferencedDocument",
+          "@type": "@id",
+          "@container": "@list"
+        }
+      }
+    },
+    
+    "Cargo": {
+      "@id": "unece:Cargo",
+      "@context": {
+        "identificationId": {
+          "@id": "unece:identificationId",
+          "@type": "xsd:string"
+        },
+        "typeCode": {
+          "@id": "unece:typeCode",
+          "@type": "@vocab"
+        },
+        "typeExtensionCode": {
+          "@id": "unece:typeExtensionCode",
+          "@type": "@vocab"
+        }
+      }
+    },
+    
+    "TransportPackage": {
+      "@id": "unece:Package",
+      "@context": {
+        "itemQuantity": {
+          "@id": "unece:itemQuantity",
+          "@type": "@id"
+        },
+        "typeCode": {
+          "@id": "unece:typeCode",
+          "@type": "@vocab"
+        },
+        "type": {
+          "@id": "unece:type",
+          "@type": "xsd:string"
+        },
+        "shippingMarks": {
+          "@id": "unece:physicalShippingMarks",
+          "@type": "@id",
+          "@container": "@list"
+        }
+      }
+    },
+    
+    "TransportMovement": {
+      "@id": "unece:LogisticsTransportMovement",
+      "@context": {
+        "modeCode": {
+          "@id": "unece:modeCode",
+          "@type": "@vocab"
+        },
+        "id": {
+          "@id": "unece:id",
+          "@type": "xsd:string"
+        },
+        "usedTransportMeans": {
+          "@id": "unece:usedLogisticsTransportMeans",
+          "@type": "@id"
+        },
+        "specifiedEvent": {
+          "@id": "unece:specifiedEvent",
+          "@type": "@id",
+          "@container": "@list"
+        }
+      }
+    },
+    
+    "TransportMeans": {
+      "@id": "unece:LogisticsTransportMeans",
+      "@context": {
+        "id": {
+          "@id": "unece:id",
+          "@type": "xsd:string"
+        },
+        "name": {
+          "@id": "unece:name",
+          "@type": "xsd:string"
+        },
+        "typeCode": {
+          "@id": "unece:typeCode",
+          "@type": "@vocab"
+        },
+        "registrationCountryId": {
+          "@id": "unece:registrationCountryId",
+          "@type": "@vocab"
+        }
+      }
+    },
+    
+    "TransportEquipment": {
+      "@id": "unece:LogisticsTransportEquipment",
+      "@context": {
+        "id": {
+          "@id": "unece:id",
+          "@type": "xsd:string"
+        },
+        "characteristicCode": {
+          "@id": "unece:characteristicCode",
+          "@type": "@vocab"
+        },
+        "supplierPartyRoleCode": {
+          "@id": "unece:supplierPartyRoleCode",
+          "@type": "@vocab"
+        },
+        "tareWeightMeasure": {
+          "@id": "unece:tareWeightMeasure",
+          "@type": "@id"
+        },
+        "affixedSeal": {
+          "@id": "unece:affixedSeal",
+          "@type": "@id",
+          "@container": "@list"
+        }
+      }
+    },
+    
+    "Seal": {
+      "@id": "unece:Seal",
+      "@context": {
+        "id": {
+          "@id": "unece:id",
+          "@type": "xsd:string"
+        },
+        "issuerPartyRoleCode": {
+          "@id": "unece:issuerPartyRoleCode",
+          "@type": "@vocab"
+        },
+        "sealingPartyRoleCode": {
+          "@id": "unece:sealingPartyRoleCode",
+          "@type": "@vocab"
+        }
+      }
+    },
+    
+    "Location": {
+      "@id": "unece:LogisticsLocation",
+      "@context": {
+        "id": {
+          "@id": "unece:id",
+          "@type": "xsd:string"
+        },
+        "name": {
+          "@id": "unece:name",
+          "@type": "xsd:string"
+        },
+        "typeCode": {
+          "@id": "unece:typeCode",
+          "@type": "@vocab"
+        },
+        "physicalGeographicalCoordinate": {
+          "@id": "unece:physicalGeographicalCoordinate",
+          "@type": "@id"
+        },
+        "postalAddress": {
+          "@id": "unece:postalAddress",
+          "@type": "@id"
+        }
+      }
+    },
+    
+    "DangerousGoods": {
+      "@id": "unece:DangerousGoods",
+      "@context": {
+        "UNDGId": {
+          "@id": "unece:UNDGIdentificationCode",
+          "@type": "xsd:string"
+        },
+        "regulationName": {
+          "@id": "unece:regulationName",
+          "@type": "xsd:string"
+        },
+        "regulationCode": {
+          "@id": "unece:regulationCode",
+          "@type": "@vocab"
+        },
+        "technicalName": {
+          "@id": "unece:technicalName",
+          "@type": "xsd:string"
+        },
+        "hazardClassId": {
+          "@id": "unece:hazardClassificationId",
+          "@type": "xsd:string"
+        },
+        "packingGroupCode": {
+          "@id": "unece:packingDangerLevelCode",
+          "@type": "@vocab"
+        },
+        "netWeightMeasure": {
+          "@id": "unece:netWeightMeasure",
+          "@type": "@id"
+        },
+        "flashpointTemperatureMeasure": {
+          "@id": "unece:flashpointTemperatureMeasure",
+          "@type": "@id"
+        },
+        "emergencyContactCommunication": {
+          "@id": "unece:emergencyContactCommunication",
+          "@type": "@id"
+        }
+      }
+    },
+    
+    "Event": {
+      "@id": "unece:SupplyChainEvent",
+      "@context": {
+        "occurrenceDateTime": {
+          "@id": "unece:occurrenceDateTime",
+          "@type": "xsd:dateTime"
+        },
+        "typeCode": {
+          "@id": "unece:typeCode",
+          "@type": "@vocab"
+        },
+        "description": {
+          "@id": "unece:description",
+          "@type": "xsd:string"
+        },
+        "occurrenceLocation": {
+          "@id": "unece:occurrenceLogisticsLocation",
+          "@type": "@id"
+        }
+      }
+    },
+    
+    "DeliveryTerms": {
+      "@id": "unece:DeliveryTerms",
+      "@context": {
+        "deliveryTypeCode": {
+          "@id": "unece:deliveryTypeCode",
+          "@type": "@vocab"
+        },
+        "description": {
+          "@id": "unece:description",
+          "@type": "xsd:string"
+        },
+        "relevantLocation": {
+          "@id": "unece:relevantTradeLocation",
+          "@type": "@id"
+        }
+      }
+    },
+    
+    "Measurement": {
+      "@id": "unece:Measurement",
+      "@context": {
+        "actualMeasure": {
+          "@id": "unece:actualMeasure",
+          "@type": "@id"
+        },
+        "typeCode": {
+          "@id": "unece:typeCode",
+          "@type": "@vocab"
+        }
+      }
+    },
+    
+    "Measure": {
+      "@id": "unece:MeasureType",
+      "@context": {
+        "value": {
+          "@id": "@value",
+          "@type": "xsd:decimal"
+        },
+        "unitCode": {
+          "@id": "unece:unitCode",
+          "@type": "xsd:string"
+        }
+      }
+    },
+    
+    "Amount": {
+      "@id": "unece:AmountType",
+      "@context": {
+        "value": {
+          "@id": "@value",
+          "@type": "xsd:decimal"
+        },
+        "currencyId": {
+          "@id": "unece:currencyId",
+          "@type": "xsd:string"
+        }
+      }
+    },
+    
+    "Quantity": {
+      "@id": "unece:QuantityType",
+      "@context": {
+        "value": {
+          "@id": "@value",
+          "@type": "xsd:decimal"
+        },
+        "unitCode": {
+          "@id": "unece:unitCode",
+          "@type": "xsd:string"
+        }
+      }
+    }
+  }
+}

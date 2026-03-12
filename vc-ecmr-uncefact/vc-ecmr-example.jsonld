@@ -1,0 +1,470 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://vocabulary.uncefact.org/unece-context-D23B.jsonld",
+    "https://iri.suomi.fi/model/vc-ecmr-uncefact/context/v1",
+    {
+      "unece": "https://vocabulary.uncefact.org/",
+      "xsd": "http://www.w3.org/2001/XMLSchema#"
+    }
+  ],
+  "type": ["VerifiableCredential", "eCMRConsignmentNote"],
+  "id": "urn:uuid:4e8c9b2a-7f3d-4c1e-9a5b-8d6f7e9c0a1b",
+  "issuer": {
+    "id": "did:example:carrier789",
+    "name": "Nordic Transport Oy",
+    "businessId": "FI98765432",
+    "carrierLicense": "FI-TRANS-2024-789"
+  },
+  "issuanceDate": "2024-03-12T08:30:00Z",
+  "expirationDate": "2024-04-12T23:59:59Z",
+  "credentialSubject": {
+    "id": "urn:ecmr:FI-2024-CMR-001234",
+    "type": "eCMR",
+    "consignmentId": "CMR-FI-2024-001234",
+    "consignmentNumber": "001234",
+    "issueDate": "2024-03-12T08:30:00Z",
+    
+    "consignor": {
+      "type": "Party",
+      "id": "FI12345678",
+      "name": "Suomen Teollisuus Oy",
+      "address": {
+        "type": "Address",
+        "streetName": "Teollisuuskatu 15",
+        "cityName": "Tampere",
+        "postcode": "33100",
+        "countryId": "FI"
+      },
+      "contact": {
+        "type": "Contact",
+        "personName": "Matti Lähettäjä",
+        "telephoneUniversalCommunication": {
+          "completeNumber": "+358 40 1234567"
+        },
+        "emailURIUniversalCommunication": {
+          "uriId": "matti.lahettaja@teollisuus.fi"
+        }
+      },
+      "taxRegistration": {
+        "id": "FI12345678"
+      }
+    },
+    
+    "consignee": {
+      "type": "Party",
+      "id": "DE987654321",
+      "name": "Deutsche Industrie GmbH",
+      "address": {
+        "type": "Address",
+        "streetName": "Industriestraße 42",
+        "cityName": "Hamburg",
+        "postcode": "20095",
+        "countryId": "DE"
+      },
+      "contact": {
+        "type": "Contact",
+        "personName": "Hans Müller",
+        "telephoneUniversalCommunication": {
+          "completeNumber": "+49 40 9876543"
+        },
+        "emailURIUniversalCommunication": {
+          "uriId": "h.mueller@industrie.de"
+        }
+      },
+      "taxRegistration": {
+        "id": "DE987654321"
+      }
+    },
+    
+    "carrier": {
+      "type": "Party",
+      "id": "FI98765432",
+      "name": "Nordic Transport Oy",
+      "address": {
+        "type": "Address",
+        "streetName": "Kuljetustie 8",
+        "cityName": "Helsinki",
+        "postcode": "00200",
+        "countryId": "FI"
+      },
+      "contact": {
+        "type": "Contact",
+        "personName": "Pekka Kuljettaja",
+        "telephoneUniversalCommunication": {
+          "completeNumber": "+358 50 9876543"
+        },
+        "emailURIUniversalCommunication": {
+          "uriId": "operations@nordictransport.fi"
+        }
+      },
+      "taxRegistration": {
+        "id": "FI98765432"
+      }
+    },
+    
+    "loadingLocation": {
+      "type": "Location",
+      "id": "FI-TAM-WAREHOUSE-01",
+      "name": "Tampere Main Warehouse",
+      "typeCode": "10",
+      "postalAddress": {
+        "type": "Address",
+        "streetName": "Varastokatu 20",
+        "cityName": "Tampere",
+        "postcode": "33100",
+        "countryId": "FI"
+      }
+    },
+    
+    "unloadingLocation": {
+      "type": "Location",
+      "id": "DE-HAM-PORT-01",
+      "name": "Hamburg Port Terminal 3",
+      "typeCode": "11",
+      "postalAddress": {
+        "type": "Address",
+        "streetName": "Hafenstraße 100",
+        "cityName": "Hamburg",
+        "postcode": "20095",
+        "countryId": "DE"
+      }
+    },
+    
+    "pickUpEvent": {
+      "type": "Event",
+      "typeCode": "10",
+      "description": "Goods picked up from consignor",
+      "occurrenceDateTime": "2024-03-12T09:00:00Z",
+      "occurrenceLocation": {
+        "@id": "#loadingLocation"
+      }
+    },
+    
+    "deliveryEvent": {
+      "type": "Event",
+      "typeCode": "11",
+      "description": "Delivered to consignee",
+      "occurrenceDateTime": "2024-03-14T14:30:00Z",
+      "occurrenceLocation": {
+        "@id": "#unloadingLocation"
+      }
+    },
+    
+    "transportMovement": {
+      "type": "TransportMovement",
+      "id": "TRN-2024-001234",
+      "modeCode": "3",
+      "usedTransportMeans": {
+        "type": "TransportMeans",
+        "id": "ABC-123",
+        "name": "Volvo FH16 750",
+        "typeCode": "30",
+        "registrationCountryId": "FI"
+      }
+    },
+    
+    "transportEquipment": [
+      {
+        "type": "TransportEquipment",
+        "id": "CONT123456789",
+        "characteristicCode": "CN",
+        "supplierPartyRoleCode": "CA",
+        "tareWeightMeasure": {
+          "type": "Measure",
+          "value": 2400.0,
+          "unitCode": "KGM"
+        },
+        "affixedSeal": [
+          {
+            "type": "Seal",
+            "id": "SEAL-FI-2024-001234",
+            "issuerPartyRoleCode": "SH",
+            "sealingPartyRoleCode": "CN"
+          }
+        ]
+      }
+    ],
+    
+    "grossWeightMeasure": {
+      "type": "Measure",
+      "value": 18500.0,
+      "unitCode": "KGM"
+    },
+    
+    "grossVolumeMeasure": {
+      "type": "Measure",
+      "value": 45.5,
+      "unitCode": "MTQ"
+    },
+    
+    "packageQuantity": {
+      "type": "Quantity",
+      "value": 480,
+      "unitCode": "XPK"
+    },
+    
+    "declaredValueForCarriage": {
+      "type": "Amount",
+      "value": 125000.00,
+      "currencyId": "EUR"
+    },
+    
+    "insuranceValueAmount": {
+      "type": "Amount",
+      "value": 150000.00,
+      "currencyId": "EUR"
+    },
+    
+    "deliveryTerms": {
+      "type": "DeliveryTerms",
+      "deliveryTypeCode": "DAP",
+      "description": "Delivered At Place - Hamburg Port",
+      "relevantLocation": {
+        "@id": "#unloadingLocation"
+      }
+    },
+    
+    "paymentArrangementCode": "PP",
+    
+    "carrierInstructions": "Handle with care. Fragile electronic components. Keep dry. Temperature controlled transport required.",
+    
+    "specialAgreement": "Insurance coverage arranged separately by consignor. Customs clearance responsibility: consignee.",
+    
+    "consignmentItem": [
+      {
+        "type": "ConsignmentItem",
+        "sequenceNumeric": 1,
+        "information": "Industrial machinery parts - Motors and controllers",
+        "natureIdentificationCargo": {
+          "type": "Cargo",
+          "identificationId": "84145100",
+          "typeCode": "1"
+        },
+        "grossWeightMeasure": {
+          "type": "Measure",
+          "value": 9200.0,
+          "unitCode": "KGM"
+        },
+        "grossVolumeMeasure": {
+          "type": "Measure",
+          "value": 22.5,
+          "unitCode": "MTQ"
+        },
+        "packageQuantity": {
+          "type": "Quantity",
+          "value": 240,
+          "unitCode": "XPK"
+        },
+        "typeCode": "1",
+        "transportPackage": [
+          {
+            "type": "TransportPackage",
+            "itemQuantity": {
+              "type": "Quantity",
+              "value": 240,
+              "unitCode": "XPK"
+            },
+            "typeCode": "CT",
+            "type": "Crate",
+            "shippingMarks": [
+              {
+                "marking": "SUOMEN TEOLLISUUS - FI",
+                "barcode": "SSCC-FI-2024-001234-001"
+              }
+            ]
+          }
+        ],
+        "associatedDocument": [
+          {
+            "type": "Document",
+            "id": "PKL-2024-001234",
+            "typeCode": "271",
+            "name": "Packing List"
+          },
+          {
+            "type": "Document",
+            "id": "INVOICE-2024-5678",
+            "typeCode": "380",
+            "name": "Commercial Invoice"
+          }
+        ]
+      },
+      {
+        "type": "ConsignmentItem",
+        "sequenceNumeric": 2,
+        "information": "Electronic control units and sensors",
+        "natureIdentificationCargo": {
+          "type": "Cargo",
+          "identificationId": "85371091",
+          "typeCode": "1"
+        },
+        "grossWeightMeasure": {
+          "type": "Measure",
+          "value": 4800.0,
+          "unitCode": "KGM"
+        },
+        "grossVolumeMeasure": {
+          "type": "Measure",
+          "value": 18.0,
+          "unitCode": "MTQ"
+        },
+        "packageQuantity": {
+          "type": "Quantity",
+          "value": 120,
+          "unitCode": "XPK"
+        },
+        "typeCode": "1",
+        "transportPackage": [
+          {
+            "type": "TransportPackage",
+            "itemQuantity": {
+              "type": "Quantity",
+              "value": 120,
+              "unitCode": "XPK"
+            },
+            "typeCode": "BX",
+            "type": "Box",
+            "shippingMarks": [
+              {
+                "marking": "FRAGILE - ELECTRONICS",
+                "barcode": "SSCC-FI-2024-001234-002"
+              }
+            ]
+          }
+        ],
+        "associatedDocument": [
+          {
+            "type": "Document",
+            "id": "PKL-2024-001234",
+            "typeCode": "271",
+            "name": "Packing List"
+          }
+        ]
+      },
+      {
+        "type": "ConsignmentItem",
+        "sequenceNumeric": 3,
+        "information": "Lithium-ion battery packs (UN 3480)",
+        "natureIdentificationCargo": {
+          "type": "Cargo",
+          "identificationId": "85076000",
+          "typeCode": "1"
+        },
+        "grossWeightMeasure": {
+          "type": "Measure",
+          "value": 4500.0,
+          "unitCode": "KGM"
+        },
+        "grossVolumeMeasure": {
+          "type": "Measure",
+          "value": 5.0,
+          "unitCode": "MTQ"
+        },
+        "packageQuantity": {
+          "type": "Quantity",
+          "value": 120,
+          "unitCode": "XPK"
+        },
+        "typeCode": "7",
+        "transportPackage": [
+          {
+            "type": "TransportPackage",
+            "itemQuantity": {
+              "type": "Quantity",
+              "value": 120,
+              "unitCode": "XPK"
+            },
+            "typeCode": "4H2",
+            "type": "Special packaging for dangerous goods",
+            "shippingMarks": [
+              {
+                "marking": "UN 3480 - LITHIUM ION BATTERIES",
+                "barcode": "SSCC-FI-2024-001234-003"
+              }
+            ]
+          }
+        ],
+        "applicableDangerousGoods": [
+          {
+            "type": "DangerousGoods",
+            "UNDGId": "3480",
+            "regulationName": "ADR 2023",
+            "regulationCode": "ADR",
+            "technicalName": "Lithium ion batteries",
+            "hazardClassId": "9",
+            "packingGroupCode": "II",
+            "netWeightMeasure": {
+              "type": "Measure",
+              "value": 4200.0,
+              "unitCode": "KGM"
+            },
+            "emergencyContactCommunication": {
+              "completeNumber": "+358 800 147 111"
+            }
+          }
+        ],
+        "associatedDocument": [
+          {
+            "type": "Document",
+            "id": "DGD-2024-001234",
+            "typeCode": "704",
+            "name": "Dangerous Goods Declaration"
+          },
+          {
+            "type": "Document",
+            "id": "MSDS-LI-ION-2024",
+            "typeCode": "856",
+            "name": "Material Safety Data Sheet"
+          }
+        ]
+      }
+    ],
+    
+    "dangerousGoods": [
+      {
+        "@id": "#consignmentItem[2].applicableDangerousGoods[0]"
+      }
+    ],
+    
+    "remarks": "Consignment contains dangerous goods (UN 3480 - Class 9). ADR certified driver and vehicle required. Temperature monitoring throughout transport. Delivery scheduled for 14 March 2024 between 13:00-15:00 CET. Contact consignee 24h in advance for delivery confirmation."
+  },
+  
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2024-03-12T08:30:00Z",
+    "verificationMethod": "did:example:carrier789#key-1",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z3fQ7vN9wK2xR5tY8mP1jL4hG6cD9bA3sW7eV5nM8qU2zX4cV6bN8mK1jH3gF5dS4aP9oI7uY6tR5eW4qA3sD2fG1hJ0kL9mN8bV7cX6zQ5yP4wO3vU2tI1rE0qA9sD8fG7hJ6kL5mN4bV3cX2zQ1yP"
+  },
+  
+  "evidence": [
+    {
+      "id": "urn:proof:consignor-signature",
+      "type": ["DocumentVerification"],
+      "verifier": "did:example:carrier789",
+      "evidenceDocument": "Consignor signature captured",
+      "subjectPresence": "Physical",
+      "documentPresence": "Physical",
+      "created": "2024-03-12T09:00:00Z"
+    },
+    {
+      "id": "urn:proof:consignee-signature",
+      "type": ["DocumentVerification"],
+      "verifier": "did:example:carrier789",
+      "evidenceDocument": "Consignee signature captured - goods received in good condition",
+      "subjectPresence": "Physical",
+      "documentPresence": "Physical",
+      "created": "2024-03-14T14:30:00Z"
+    },
+    {
+      "id": "urn:proof:driver-qualification",
+      "type": ["DocumentVerification"],
+      "verifier": "did:example:carrier789",
+      "evidenceDocument": "ADR certification verified for dangerous goods transport",
+      "licenseNumber": "FI-ADR-2024-PK-789",
+      "expiryDate": "2025-12-31",
+      "created": "2024-03-12T08:00:00Z"
+    }
+  ]
+}
