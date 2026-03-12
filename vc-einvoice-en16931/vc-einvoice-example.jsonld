@@ -1,0 +1,307 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://iri.suomi.fi/model/vc-einvoice-en16931/context/v1",
+    {
+      "en16931": "https://iri.suomi.fi/model/en16931/",
+      "busdoc": "https://iri.suomi.fi/model/busdoc/",
+      "xsd": "http://www.w3.org/2001/XMLSchema#"
+    }
+  ],
+  "type": ["VerifiableCredential", "EN16931Invoice"],
+  "id": "urn:uuid:8f3c6d4a-9f2e-4b1a-8c3d-7e5f6a8b9c0d",
+  "issuer": {
+    "id": "did:example:seller123",
+    "name": "Example Supplier Oy",
+    "vatID": "FI12345678"
+  },
+  "issuanceDate": "2024-03-12T10:00:00Z",
+  "expirationDate": "2024-06-12T23:59:59Z",
+  "credentialSubject": {
+    "id": "urn:invoice:2024-001",
+    "type": "Invoice",
+    "invoiceNumber": "INV-2024-001",
+    "issueDate": "2024-03-12",
+    "dueDate": "2024-04-12",
+    "invoiceTypeCode": "380",
+    "documentCurrencyCode": "EUR",
+    "customizationID": "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0",
+    "profileID": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
+    "buyerReference": "BUYER-REF-456",
+    
+    "seller": {
+      "type": "Party",
+      "name": "Example Supplier Oy",
+      "tradingName": "Example Supplier",
+      "partyIdentification": {
+        "id": "0123456-7",
+        "schemeID": "0037"
+      },
+      "partyLegalEntity": {
+        "registrationName": "Example Supplier Oy",
+        "companyID": "0123456-7"
+      },
+      "partyTaxScheme": {
+        "companyID": "FI12345678",
+        "taxScheme": {
+          "id": "VAT"
+        }
+      },
+      "postalAddress": {
+        "type": "PostalAddress",
+        "streetName": "Esimerkkikatu 1",
+        "cityName": "Helsinki",
+        "postalZone": "00100",
+        "country": {
+          "identificationCode": "FI"
+        }
+      },
+      "contact": {
+        "type": "Contact",
+        "name": "Matti Meikäläinen",
+        "telephone": "+358 9 1234567",
+        "electronicMail": "matti@example.fi"
+      },
+      "endpointID": {
+        "value": "0037:0123456-7",
+        "schemeID": "0088"
+      }
+    },
+    
+    "buyer": {
+      "type": "Party",
+      "name": "Example Buyer Ltd",
+      "partyIdentification": {
+        "id": "7654321-0",
+        "schemeID": "0037"
+      },
+      "partyLegalEntity": {
+        "registrationName": "Example Buyer Ltd",
+        "companyID": "7654321-0"
+      },
+      "partyTaxScheme": {
+        "companyID": "FI87654321",
+        "taxScheme": {
+          "id": "VAT"
+        }
+      },
+      "postalAddress": {
+        "type": "PostalAddress",
+        "streetName": "Ostajankatu 10",
+        "cityName": "Espoo",
+        "postalZone": "02100",
+        "country": {
+          "identificationCode": "FI"
+        }
+      },
+      "contact": {
+        "type": "Contact",
+        "name": "Liisa Ostaja",
+        "telephone": "+358 9 7654321",
+        "electronicMail": "liisa@buyer.fi"
+      },
+      "endpointID": {
+        "value": "0037:7654321-0",
+        "schemeID": "0088"
+      }
+    },
+    
+    "delivery": {
+      "type": "Delivery",
+      "actualDeliveryDate": "2024-03-10",
+      "deliveryLocation": {
+        "address": {
+          "type": "PostalAddress",
+          "streetName": "Toimitusosoite 5",
+          "cityName": "Vantaa",
+          "postalZone": "01300",
+          "country": {
+            "identificationCode": "FI"
+          }
+        }
+      }
+    },
+    
+    "paymentMeans": {
+      "type": "PaymentMeans",
+      "paymentMeansCode": "30",
+      "paymentID": "RF121234567890",
+      "payeeFinancialAccount": {
+        "type": "FinancialAccount",
+        "accountID": "FI2112345600000785",
+        "accountName": "Example Supplier Oy",
+        "financialInstitutionBranch": {
+          "financialInstitution": {
+            "bicID": "NDEAFIHH"
+          }
+        }
+      }
+    },
+    
+    "paymentTerms": {
+      "note": "Payment within 30 days. 2% discount if paid within 14 days.",
+      "settlementPeriod": {
+        "durationMeasure": {
+          "value": 30,
+          "unitCode": "DAY"
+        }
+      }
+    },
+    
+    "allowanceCharge": [
+      {
+        "type": "AllowanceCharge",
+        "chargeIndicator": false,
+        "allowanceChargeReasonCode": "95",
+        "allowanceChargeReason": "Volume discount",
+        "multiplierFactorNumeric": 5.0,
+        "amount": 50.00,
+        "baseAmount": 1000.00,
+        "taxCategory": {
+          "type": "TaxCategory",
+          "taxCategoryID": "S",
+          "percent": 24.0,
+          "taxScheme": {
+            "id": "VAT"
+          }
+        }
+      }
+    ],
+    
+    "taxTotal": {
+      "type": "TaxTotal",
+      "taxAmount": 228.00,
+      "taxSubtotal": [
+        {
+          "type": "TaxSubtotal",
+          "taxableAmount": 950.00,
+          "taxAmount": 228.00,
+          "taxCategory": {
+            "type": "TaxCategory",
+            "taxCategoryID": "S",
+            "percent": 24.0,
+            "taxScheme": {
+              "id": "VAT"
+            }
+          }
+        }
+      ]
+    },
+    
+    "legalMonetaryTotal": {
+      "type": "MonetaryTotal",
+      "lineExtensionAmount": 1000.00,
+      "taxExclusiveAmount": 950.00,
+      "taxInclusiveAmount": 1178.00,
+      "allowanceTotalAmount": 50.00,
+      "chargeTotalAmount": 0.00,
+      "prepaidAmount": 0.00,
+      "payableAmount": 1178.00
+    },
+    
+    "invoiceLine": [
+      {
+        "type": "InvoiceLine",
+        "lineID": "1",
+        "note": "First batch delivery",
+        "invoicedQuantity": {
+          "value": 10,
+          "unitCode": "C62"
+        },
+        "lineExtensionAmount": 500.00,
+        "accountingCost": "4711",
+        "invoicePeriod": {
+          "type": "Period",
+          "startDate": "2024-03-01",
+          "endDate": "2024-03-10"
+        },
+        "item": {
+          "type": "Item",
+          "name": "Professional Services - Consulting",
+          "description": "Strategic business consulting services for Q1 2024",
+          "sellersItemIdentification": {
+            "id": "CONS-001"
+          },
+          "standardItemIdentification": {
+            "id": "85121800",
+            "schemeID": "CPV"
+          },
+          "classifiedTaxCategory": {
+            "type": "TaxCategory",
+            "taxCategoryID": "S",
+            "percent": 24.0,
+            "taxScheme": {
+              "id": "VAT"
+            }
+          },
+          "additionalItemProperty": [
+            {
+              "type": "ItemProperty",
+              "name": "Project",
+              "value": "Digital Transformation 2024"
+            }
+          ]
+        },
+        "price": {
+          "type": "Price",
+          "priceAmount": 50.00,
+          "baseQuantity": {
+            "value": 1,
+            "unitCode": "HUR"
+          }
+        }
+      },
+      {
+        "type": "InvoiceLine",
+        "lineID": "2",
+        "invoicedQuantity": {
+          "value": 10,
+          "unitCode": "C62"
+        },
+        "lineExtensionAmount": 500.00,
+        "item": {
+          "type": "Item",
+          "name": "Software Development Services",
+          "description": "Custom application development",
+          "sellersItemIdentification": {
+            "id": "DEV-002"
+          },
+          "classifiedTaxCategory": {
+            "type": "TaxCategory",
+            "taxCategoryID": "S",
+            "percent": 24.0,
+            "taxScheme": {
+              "id": "VAT"
+            }
+          }
+        },
+        "price": {
+          "type": "Price",
+          "priceAmount": 50.00,
+          "baseQuantity": {
+            "value": 1,
+            "unitCode": "HUR"
+          }
+        }
+      }
+    ],
+    
+    "note": "Thank you for your business. For questions, please contact our billing department.",
+    
+    "precedingInvoiceReference": null,
+    "projectReference": {
+      "id": "PRJ-2024-001"
+    },
+    "contractReference": {
+      "id": "CONTRACT-2024-ABC"
+    }
+  },
+  
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2024-03-12T10:00:00Z",
+    "verificationMethod": "did:example:seller123#key-1",
+    "proofPurpose": "assertionMethod",
+    "proofValue": "z58DAdFfa9SkqZMVPxAQpic7ndSayn1PzZs6ZjWp1CktyGesjuTSwRdoWhAfGFCF5bppETSTojQCrfFPP2oumHKtz"
+  }
+}
