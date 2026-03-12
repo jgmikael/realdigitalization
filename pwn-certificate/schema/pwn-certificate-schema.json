@@ -1,0 +1,647 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://realdigitalization.eu/schemas/pwn-certificate/1.0",
+  "title": "EU Posted Workers Notification (PWN) Certificate",
+  "description": "W3C Verifiable Credential schema for EU standardized Posted Workers Notification Certificate as per COM(2024) 531 final and Directive 2014/67/EU",
+  "type": "object",
+  "required": [
+    "@context",
+    "type",
+    "id",
+    "issuer",
+    "issuanceDate",
+    "credentialSubject"
+  ],
+  "properties": {
+    "@context": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 2,
+      "default": [
+        "https://www.w3.org/2018/credentials/v1",
+        "https://realdigitalization.eu/contexts/pwn/v1"
+      ]
+    },
+    "type": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "contains": {
+        "const": "PostedWorkersNotificationCertificate"
+      },
+      "minItems": 2
+    },
+    "id": {
+      "type": "string",
+      "format": "uri",
+      "description": "Unique identifier for this PWN certificate (e.g., urn:uuid:...)"
+    },
+    "issuer": {
+      "type": "object",
+      "description": "Competent authority issuing the certificate (Member State labor authority)",
+      "required": ["id", "name"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri",
+          "description": "DID or EUDI Wallet identifier of the issuing authority"
+        },
+        "name": {
+          "type": "string",
+          "description": "Name of the competent authority"
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2 country code of issuing Member State"
+        },
+        "authorityType": {
+          "type": "string",
+          "enum": ["labor-inspectorate", "social-security-institution", "tax-authority", "other"]
+        }
+      }
+    },
+    "issuanceDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Date and time when the certificate was issued (ISO 8601)"
+    },
+    "validFrom": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Start of validity period"
+    },
+    "validUntil": {
+      "type": "string",
+      "format": "date-time",
+      "description": "End of validity period (typically end of posting period)"
+    },
+    "credentialStatus": {
+      "type": "object",
+      "description": "Status of the credential for verification and revocation",
+      "required": ["id", "type"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uri"
+        },
+        "type": {
+          "type": "string",
+          "enum": ["StatusList2021Entry", "BitstringStatusListEntry"]
+        }
+      }
+    },
+    "credentialSubject": {
+      "type": "object",
+      "description": "Core posting of workers information",
+      "required": [
+        "serviceProvider",
+        "postedWorkers",
+        "receivingUndertaking",
+        "posting",
+        "declaration"
+      ],
+      "properties": {
+        "serviceProvider": {
+          "type": "object",
+          "description": "Employer posting the workers",
+          "required": ["legalName", "registrationNumber", "address", "country"],
+          "properties": {
+            "legalName": {
+              "type": "string",
+              "description": "Legal name of the service provider"
+            },
+            "tradeName": {
+              "type": "string",
+              "description": "Trading name if different from legal name"
+            },
+            "registrationNumber": {
+              "type": "string",
+              "description": "National business registration number"
+            },
+            "vatNumber": {
+              "type": "string",
+              "description": "VAT identification number"
+            },
+            "eoriNumber": {
+              "type": "string",
+              "description": "Economic Operator Registration and Identification number"
+            },
+            "address": {
+              "$ref": "#/$defs/Address"
+            },
+            "country": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code of establishment"
+            },
+            "contactDetails": {
+              "$ref": "#/$defs/ContactDetails"
+            },
+            "economicActivity": {
+              "type": "object",
+              "properties": {
+                "naceCode": {
+                  "type": "string",
+                  "description": "NACE Rev. 2 classification code"
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "postedWorkers": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["personalDetails", "occupation"],
+            "properties": {
+              "personalDetails": {
+                "type": "object",
+                "required": ["givenName", "familyName", "dateOfBirth", "nationality"],
+                "properties": {
+                  "givenName": {
+                    "type": "string"
+                  },
+                  "familyName": {
+                    "type": "string"
+                  },
+                  "dateOfBirth": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "nationality": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$",
+                    "description": "ISO 3166-1 alpha-2 country code"
+                  },
+                  "identificationDocument": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": ["passport", "id-card", "residence-permit"]
+                      },
+                      "number": {
+                        "type": "string"
+                      },
+                      "issuingCountry": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{2}$"
+                      }
+                    }
+                  }
+                }
+              },
+              "occupation": {
+                "type": "object",
+                "required": ["title"],
+                "properties": {
+                  "title": {
+                    "type": "string",
+                    "description": "Job title or occupation"
+                  },
+                  "iscoCode": {
+                    "type": "string",
+                    "description": "ISCO-08 occupation classification code"
+                  },
+                  "qualifications": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "socialSecurity": {
+                "type": "object",
+                "properties": {
+                  "homeCountryRegime": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$",
+                    "description": "Country whose social security legislation applies"
+                  },
+                  "socialSecurityNumber": {
+                    "type": "string",
+                    "description": "National social security identification number"
+                  },
+                  "a1CertificateReference": {
+                    "type": "string",
+                    "description": "Reference to Portable Document A1 (social security coordination)"
+                  },
+                  "a1ValidFrom": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "a1ValidUntil": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              },
+              "employmentContract": {
+                "type": "object",
+                "properties": {
+                  "startDate": {
+                    "type": "string",
+                    "format": "date"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": ["permanent", "fixed-term", "temporary"]
+                  },
+                  "workingHoursPerWeek": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 168
+                  }
+                }
+              }
+            }
+          }
+        },
+        "receivingUndertaking": {
+          "type": "object",
+          "description": "Host organization in the Member State of posting",
+          "required": ["legalName", "address", "country"],
+          "properties": {
+            "legalName": {
+              "type": "string"
+            },
+            "registrationNumber": {
+              "type": "string"
+            },
+            "address": {
+              "$ref": "#/$defs/Address"
+            },
+            "country": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code of host Member State"
+            },
+            "contactDetails": {
+              "$ref": "#/$defs/ContactDetails"
+            }
+          }
+        },
+        "posting": {
+          "type": "object",
+          "description": "Details of the posting arrangement",
+          "required": ["startDate", "endDate", "memberStateOfPosting", "natureOfServices"],
+          "properties": {
+            "startDate": {
+              "type": "string",
+              "format": "date",
+              "description": "First day of posting"
+            },
+            "endDate": {
+              "type": "string",
+              "format": "date",
+              "description": "Last day of posting (expected)"
+            },
+            "memberStateOfPosting": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$",
+              "description": "ISO 3166-1 alpha-2 country code of host Member State"
+            },
+            "workLocations": {
+              "type": "array",
+              "description": "Specific work sites within the host Member State",
+              "minItems": 1,
+              "items": {
+                "$ref": "#/$defs/Address"
+              }
+            },
+            "natureOfServices": {
+              "type": "string",
+              "description": "Description of the services to be provided"
+            },
+            "serviceCategory": {
+              "type": "string",
+              "enum": [
+                "construction",
+                "transport",
+                "healthcare",
+                "IT-services",
+                "manufacturing",
+                "agriculture",
+                "other"
+              ]
+            },
+            "expectedNumberOfWorkers": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Total number of workers expected to be posted"
+            },
+            "isLongTermPosting": {
+              "type": "boolean",
+              "description": "Whether posting exceeds 12 months (triggers enhanced obligations)"
+            }
+          }
+        },
+        "termsAndConditions": {
+          "type": "object",
+          "description": "Working conditions applicable to posted workers",
+          "properties": {
+            "remuneration": {
+              "type": "object",
+              "properties": {
+                "monthlyGrossSalary": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "currency": {
+                  "type": "string",
+                  "pattern": "^[A-Z]{3}$",
+                  "description": "ISO 4217 currency code"
+                },
+                "paymentFrequency": {
+                  "type": "string",
+                  "enum": ["weekly", "bi-weekly", "monthly"]
+                },
+                "allowances": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "examples": ["accommodation", "meal", "travel", "per-diem"]
+                      },
+                      "amount": {
+                        "type": "number"
+                      },
+                      "currency": {
+                        "type": "string",
+                        "pattern": "^[A-Z]{3}$"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "workingTime": {
+              "type": "object",
+              "properties": {
+                "regularHoursPerWeek": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 48
+                },
+                "maxDailyHours": {
+                  "type": "number"
+                },
+                "restPeriods": {
+                  "type": "string",
+                  "description": "Description of daily and weekly rest periods"
+                }
+              }
+            },
+            "paidLeave": {
+              "type": "object",
+              "properties": {
+                "annualLeaveDays": {
+                  "type": "number",
+                  "minimum": 0
+                },
+                "publicHolidays": {
+                  "type": "string",
+                  "description": "Which Member State's public holidays apply"
+                }
+              }
+            },
+            "healthAndSafety": {
+              "type": "object",
+              "properties": {
+                "appliedStandards": {
+                  "type": "string",
+                  "description": "Health and safety standards applied"
+                },
+                "protectiveEquipment": {
+                  "type": "string"
+                }
+              }
+            },
+            "accommodation": {
+              "type": "object",
+              "properties": {
+                "providedByEmployer": {
+                  "type": "boolean"
+                },
+                "address": {
+                  "$ref": "#/$defs/Address"
+                },
+                "costToWorker": {
+                  "type": "number",
+                  "description": "Cost deducted from salary, if any"
+                }
+              }
+            },
+            "applicableCollectiveAgreements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "sector": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "liaisonPerson": {
+          "type": "object",
+          "description": "Contact person in the host Member State for authorities and workers",
+          "required": ["fullName", "contactDetails"],
+          "properties": {
+            "fullName": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string",
+              "description": "Role or position"
+            },
+            "contactDetails": {
+              "$ref": "#/$defs/ContactDetails"
+            },
+            "languagesSpoken": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^[a-z]{2}$",
+                "description": "ISO 639-1 language codes"
+              }
+            }
+          }
+        },
+        "declaration": {
+          "type": "object",
+          "description": "Legal declaration and attestation",
+          "required": ["declarationDate", "signatory"],
+          "properties": {
+            "declarationDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "signatory": {
+              "type": "object",
+              "required": ["fullName", "role"],
+              "properties": {
+                "fullName": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string",
+                  "description": "Position in the service provider organization"
+                },
+                "email": {
+                  "type": "string",
+                  "format": "email"
+                }
+              }
+            },
+            "attestation": {
+              "type": "string",
+              "description": "Legal attestation text confirming accuracy and compliance",
+              "default": "I hereby declare that the information provided in this notification is complete and accurate, and that the posting complies with Directive 96/71/EC and Directive 2014/67/EU."
+            },
+            "digitalSignature": {
+              "type": "object",
+              "description": "Digital signature or seal of the service provider",
+              "properties": {
+                "algorithm": {
+                  "type": "string",
+                  "examples": ["ES256", "EdDSA", "RS256"]
+                },
+                "value": {
+                  "type": "string",
+                  "description": "Base64-encoded signature"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "array",
+      "description": "Supporting documents and evidence",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uri"
+          },
+          "type": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "examples": [["A1Certificate"], ["BusinessRegistration"], ["EmploymentContract"]]
+          },
+          "verifier": {
+            "type": "string",
+            "format": "uri"
+          },
+          "evidenceDocument": {
+            "type": "string",
+            "format": "uri",
+            "description": "Link to the supporting document"
+          }
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "description": "Cryptographic proof (e.g., JSON-LD signature, JWT)",
+      "required": ["type", "created", "proofPurpose", "verificationMethod"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "examples": ["Ed25519Signature2020", "JsonWebSignature2020"]
+        },
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "proofPurpose": {
+          "type": "string",
+          "enum": ["assertionMethod", "authentication"]
+        },
+        "verificationMethod": {
+          "type": "string",
+          "format": "uri",
+          "description": "DID URL of the public key"
+        },
+        "jws": {
+          "type": "string",
+          "description": "JSON Web Signature (for JWT-based credentials)"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Address": {
+      "type": "object",
+      "required": ["street", "city", "postalCode", "country"],
+      "properties": {
+        "street": {
+          "type": "string"
+        },
+        "buildingNumber": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string",
+          "description": "State, province, or region"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$",
+          "description": "ISO 3166-1 alpha-2 country code"
+        }
+      }
+    },
+    "ContactDetails": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "International format preferred (e.g., +358 40 1234567)"
+        },
+        "fax": {
+          "type": "string"
+        },
+        "website": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    }
+  }
+}

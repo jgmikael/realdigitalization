@@ -1,0 +1,250 @@
+{
+  "@context": [
+    "https://www.w3.org/2018/credentials/v1",
+    "https://realdigitalization.eu/contexts/pwn/v1"
+  ],
+  "type": ["VerifiableCredential", "PostedWorkersNotificationCertificate"],
+  "id": "urn:uuid:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "issuer": {
+    "id": "did:ebsi:zAbCdEfGhIjKlMnOpQrStUvWxYz",
+    "name": "Finnish Occupational Safety and Health Authority",
+    "country": "FI",
+    "authorityType": "labor-inspectorate"
+  },
+  "issuanceDate": "2024-11-15T10:30:00Z",
+  "validFrom": "2024-12-01T00:00:00Z",
+  "validUntil": "2025-05-31T23:59:59Z",
+  "credentialStatus": {
+    "id": "https://trust-registry.finland.fi/status/pwn/2024/123456#0",
+    "type": "StatusList2021Entry"
+  },
+  "credentialSubject": {
+    "serviceProvider": {
+      "legalName": "Rakennuspalvelu Oy",
+      "tradeName": "BuildServices Finland",
+      "registrationNumber": "1234567-8",
+      "vatNumber": "FI12345678",
+      "eoriNumber": "FI1234567800000",
+      "address": {
+        "street": "Teollisuustie",
+        "buildingNumber": "15",
+        "city": "Helsinki",
+        "postalCode": "00510",
+        "country": "FI"
+      },
+      "country": "FI",
+      "contactDetails": {
+        "email": "info@buildservices.fi",
+        "phone": "+358 9 1234567",
+        "website": "https://www.buildservices.fi"
+      },
+      "economicActivity": {
+        "naceCode": "41.20",
+        "description": "Construction of residential and non-residential buildings"
+      }
+    },
+    "postedWorkers": [
+      {
+        "personalDetails": {
+          "givenName": "Pekka",
+          "familyName": "Virtanen",
+          "dateOfBirth": "1985-03-15",
+          "nationality": "FI",
+          "identificationDocument": {
+            "type": "id-card",
+            "number": "123456789A",
+            "issuingCountry": "FI"
+          }
+        },
+        "occupation": {
+          "title": "Construction Site Manager",
+          "iscoCode": "3123",
+          "qualifications": [
+            "Professional Qualification in Construction",
+            "Occupational Safety Card"
+          ]
+        },
+        "socialSecurity": {
+          "homeCountryRegime": "FI",
+          "socialSecurityNumber": "150385-123A",
+          "a1CertificateReference": "FI-A1-2024-987654",
+          "a1ValidFrom": "2024-12-01",
+          "a1ValidUntil": "2025-05-31"
+        },
+        "employmentContract": {
+          "startDate": "2020-01-15",
+          "type": "permanent",
+          "workingHoursPerWeek": 40
+        }
+      },
+      {
+        "personalDetails": {
+          "givenName": "Anna",
+          "familyName": "Korhonen",
+          "dateOfBirth": "1990-07-22",
+          "nationality": "FI",
+          "identificationDocument": {
+            "type": "passport",
+            "number": "AB1234567",
+            "issuingCountry": "FI"
+          }
+        },
+        "occupation": {
+          "title": "Electrical Engineer",
+          "iscoCode": "2151",
+          "qualifications": [
+            "Master of Science in Electrical Engineering",
+            "Electrical Safety Certificate"
+          ]
+        },
+        "socialSecurity": {
+          "homeCountryRegime": "FI",
+          "socialSecurityNumber": "220790-456B",
+          "a1CertificateReference": "FI-A1-2024-987655",
+          "a1ValidFrom": "2024-12-01",
+          "a1ValidUntil": "2025-05-31"
+        },
+        "employmentContract": {
+          "startDate": "2018-06-01",
+          "type": "permanent",
+          "workingHoursPerWeek": 37.5
+        }
+      }
+    ],
+    "receivingUndertaking": {
+      "legalName": "Bau GmbH Deutschland",
+      "registrationNumber": "HRB 12345",
+      "address": {
+        "street": "Baustraße",
+        "buildingNumber": "42",
+        "city": "Munich",
+        "region": "Bavaria",
+        "postalCode": "80331",
+        "country": "DE"
+      },
+      "country": "DE",
+      "contactDetails": {
+        "email": "kontakt@bau-deutschland.de",
+        "phone": "+49 89 12345678",
+        "website": "https://www.bau-deutschland.de"
+      }
+    },
+    "posting": {
+      "startDate": "2024-12-01",
+      "endDate": "2025-05-31",
+      "memberStateOfPosting": "DE",
+      "workLocations": [
+        {
+          "street": "Projektstraße",
+          "buildingNumber": "5",
+          "city": "Munich",
+          "region": "Bavaria",
+          "postalCode": "80339",
+          "country": "DE"
+        }
+      ],
+      "natureOfServices": "Construction and electrical installation for new commercial building complex",
+      "serviceCategory": "construction",
+      "expectedNumberOfWorkers": 2,
+      "isLongTermPosting": false
+    },
+    "termsAndConditions": {
+      "remuneration": {
+        "monthlyGrossSalary": 4500,
+        "currency": "EUR",
+        "paymentFrequency": "monthly",
+        "allowances": [
+          {
+            "type": "accommodation",
+            "amount": 800,
+            "currency": "EUR"
+          },
+          {
+            "type": "meal",
+            "amount": 15,
+            "currency": "EUR"
+          },
+          {
+            "type": "travel",
+            "amount": 300,
+            "currency": "EUR"
+          }
+        ]
+      },
+      "workingTime": {
+        "regularHoursPerWeek": 40,
+        "maxDailyHours": 8,
+        "restPeriods": "11 consecutive hours daily rest, 24 hours weekly rest"
+      },
+      "paidLeave": {
+        "annualLeaveDays": 25,
+        "publicHolidays": "German public holidays apply"
+      },
+      "healthAndSafety": {
+        "appliedStandards": "German Occupational Health and Safety Act (ArbSchG) and Finnish standards",
+        "protectiveEquipment": "Provided by employer according to German construction site regulations"
+      },
+      "accommodation": {
+        "providedByEmployer": true,
+        "address": {
+          "street": "Wohnstraße",
+          "buildingNumber": "12",
+          "city": "Munich",
+          "postalCode": "80335",
+          "country": "DE"
+        },
+        "costToWorker": 0
+      },
+      "applicableCollectiveAgreements": [
+        {
+          "name": "Construction Industry Collective Agreement",
+          "sector": "Construction",
+          "country": "DE"
+        }
+      ]
+    },
+    "liaisonPerson": {
+      "fullName": "Markus Schmidt",
+      "role": "HR Manager, Bau GmbH Deutschland",
+      "contactDetails": {
+        "email": "m.schmidt@bau-deutschland.de",
+        "phone": "+49 89 12345679"
+      },
+      "languagesSpoken": ["de", "en", "fi"]
+    },
+    "declaration": {
+      "declarationDate": "2024-11-15T10:25:00Z",
+      "signatory": {
+        "fullName": "Matti Virtanen",
+        "role": "Managing Director",
+        "email": "matti.virtanen@buildservices.fi"
+      },
+      "attestation": "I hereby declare that the information provided in this notification is complete and accurate, and that the posting complies with Directive 96/71/EC and Directive 2014/67/EU. The posted workers will be subject to the applicable terms and conditions of employment in the host Member State.",
+      "digitalSignature": {
+        "algorithm": "ES256",
+        "value": "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9..."
+      }
+    }
+  },
+  "evidence": [
+    {
+      "id": "urn:uuid:evidence-a1-cert-001",
+      "type": ["A1Certificate"],
+      "verifier": "did:ebsi:finnish-social-insurance",
+      "evidenceDocument": "https://kela.fi/a1-certificates/FI-A1-2024-987654"
+    },
+    {
+      "id": "urn:uuid:evidence-business-reg-001",
+      "type": ["BusinessRegistration"],
+      "verifier": "did:ebsi:finnish-patent-registration-office",
+      "evidenceDocument": "https://ytj.fi/en/company/1234567-8"
+    }
+  ],
+  "proof": {
+    "type": "Ed25519Signature2020",
+    "created": "2024-11-15T10:30:00Z",
+    "proofPurpose": "assertionMethod",
+    "verificationMethod": "did:ebsi:zAbCdEfGhIjKlMnOpQrStUvWxYz#keys-1",
+    "jws": "eyJhbGciOiJFZERTQSIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..kN0TmJGN3NhVGhpcyBpcyBhbiBleGFtcGxlIHNpZ25hdHVyZQ"
+  }
+}
