@@ -1,0 +1,1014 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://realdigitalization.eu/schemas/ubl-invoice-en16931/1.0",
+  "title": "UBL 2.4 Invoice (EN 16931-1 Compliant)",
+  "description": "JSON Schema for UBL 2.4 Invoice implementing EN 16931-1 European Standard for electronic invoicing",
+  "type": "object",
+  "required": [
+    "customizationID",
+    "id",
+    "issueDate",
+    "invoiceTypeCode",
+    "documentCurrencyCode",
+    "accountingSupplierParty",
+    "accountingCustomerParty",
+    "legalMonetaryTotal",
+    "invoiceLine"
+  ],
+  "properties": {
+    "customizationID": {
+      "type": "string",
+      "description": "BT-24: Specification identifier",
+      "default": "urn:cen.eu:en16931:2017",
+      "examples": ["urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0"]
+    },
+    "profileID": {
+      "type": "string",
+      "description": "BT-23: Business process type",
+      "examples": ["urn:fdc:peppol.eu:2017:poacc:billing:01:1.0"]
+    },
+    "id": {
+      "type": "string",
+      "description": "BT-1: Invoice number",
+      "examples": ["INV-2024-001"]
+    },
+    "issueDate": {
+      "type": "string",
+      "format": "date",
+      "description": "BT-2: Invoice issue date (YYYY-MM-DD)"
+    },
+    "dueDate": {
+      "type": "string",
+      "format": "date",
+      "description": "BT-9: Payment due date"
+    },
+    "invoiceTypeCode": {
+      "type": "string",
+      "description": "BT-3: Invoice type code (UNCL1001)",
+      "enum": ["380", "381", "383", "386", "389", "751"],
+      "examples": ["380"]
+    },
+    "note": {
+      "type": "array",
+      "description": "BT-22: Invoice note",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "type": "string"
+          },
+          "languageID": {
+            "type": "string",
+            "description": "BT-21: Note subject code"
+          }
+        }
+      }
+    },
+    "taxPointDate": {
+      "type": "string",
+      "format": "date",
+      "description": "BT-7: VAT point date"
+    },
+    "documentCurrencyCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "BT-5: Invoice currency code (ISO 4217)",
+      "examples": ["EUR", "USD", "GBP"]
+    },
+    "taxCurrencyCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$",
+      "description": "BT-6: VAT accounting currency code (ISO 4217)"
+    },
+    "accountingCost": {
+      "type": "string",
+      "description": "BT-19: Buyer accounting reference"
+    },
+    "buyerReference": {
+      "type": "string",
+      "description": "BT-10: Buyer reference"
+    },
+    "invoicePeriod": {
+      "type": "object",
+      "description": "BG-14: Invoicing period",
+      "properties": {
+        "startDate": {
+          "type": "string",
+          "format": "date",
+          "description": "BT-73: Period start date"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date",
+          "description": "BT-74: Period end date"
+        }
+      }
+    },
+    "orderReference": {
+      "type": "object",
+      "description": "Purchase order reference",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "BT-13: Purchase order reference"
+        },
+        "salesOrderID": {
+          "type": "string",
+          "description": "BT-14: Sales order reference"
+        }
+      }
+    },
+    "billingReference": {
+      "type": "array",
+      "description": "BG-3: Preceding invoice reference",
+      "items": {
+        "type": "object",
+        "properties": {
+          "invoiceDocumentReference": {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "BT-25: Preceding invoice number"
+              },
+              "issueDate": {
+                "type": "string",
+                "format": "date",
+                "description": "BT-26: Preceding invoice date"
+              }
+            }
+          }
+        }
+      }
+    },
+    "despatchDocumentReference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "BT-16: Despatch advice reference"
+        }
+      }
+    },
+    "receiptDocumentReference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "BT-15: Receiving advice reference"
+        }
+      }
+    },
+    "originatorDocumentReference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "BT-17: Tender or lot reference"
+        }
+      }
+    },
+    "contractDocumentReference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "BT-12: Contract reference"
+        }
+      }
+    },
+    "additionalDocumentReference": {
+      "type": "array",
+      "description": "BG-24: Additional supporting documents",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "BT-122: Document reference"
+          },
+          "documentDescription": {
+            "type": "string",
+            "description": "BT-123: Document description"
+          },
+          "attachment": {
+            "type": "object",
+            "properties": {
+              "externalReference": {
+                "type": "object",
+                "properties": {
+                  "uri": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "BT-124: External document location"
+                  }
+                }
+              },
+              "embeddedDocumentBinaryObject": {
+                "type": "string",
+                "contentEncoding": "base64",
+                "description": "BT-125: Attached document (Base64)"
+              }
+            }
+          }
+        }
+      }
+    },
+    "projectReference": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "BT-11: Project reference"
+        }
+      }
+    },
+    "accountingSupplierParty": {
+      "type": "object",
+      "description": "BG-4: Seller",
+      "required": ["party"],
+      "properties": {
+        "party": {
+          "$ref": "#/$defs/Party",
+          "description": "Seller party information"
+        }
+      }
+    },
+    "accountingCustomerParty": {
+      "type": "object",
+      "description": "BG-7: Buyer",
+      "required": ["party"],
+      "properties": {
+        "party": {
+          "$ref": "#/$defs/Party",
+          "description": "Buyer party information"
+        }
+      }
+    },
+    "payeeParty": {
+      "$ref": "#/$defs/PartySimple",
+      "description": "BG-10: Payee"
+    },
+    "taxRepresentativeParty": {
+      "$ref": "#/$defs/Party",
+      "description": "BG-11: Seller tax representative party"
+    },
+    "delivery": {
+      "type": "object",
+      "description": "BG-13: Delivery information",
+      "properties": {
+        "actualDeliveryDate": {
+          "type": "string",
+          "format": "date",
+          "description": "BT-72: Actual delivery date"
+        },
+        "deliveryLocation": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "BT-71: Deliver to location identifier"
+            },
+            "address": {
+              "$ref": "#/$defs/Address",
+              "description": "BG-15: Deliver to address"
+            }
+          }
+        },
+        "deliveryParty": {
+          "type": "object",
+          "properties": {
+            "partyName": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "BT-70: Deliver to party name"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "paymentMeans": {
+      "type": "array",
+      "description": "BG-16: Payment instructions",
+      "items": {
+        "type": "object",
+        "required": ["paymentMeansCode"],
+        "properties": {
+          "paymentMeansCode": {
+            "type": "string",
+            "description": "BT-81: Payment means type code (UNCL4461)",
+            "examples": ["30", "48", "49"]
+          },
+          "paymentMeansCodeName": {
+            "type": "string",
+            "description": "BT-82: Payment means text"
+          },
+          "instructionNote": {
+            "type": "string",
+            "description": "BT-83: Remittance information"
+          },
+          "payeeFinancialAccount": {
+            "type": "object",
+            "description": "BG-17: Credit transfer",
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "BT-84: Payment account identifier (IBAN)"
+              },
+              "name": {
+                "type": "string",
+                "description": "BT-85: Payment account name"
+              },
+              "financialInstitutionBranch": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "BT-86: Payment service provider (BIC)"
+                  }
+                }
+              }
+            }
+          },
+          "cardAccount": {
+            "type": "object",
+            "description": "BG-18: Payment card information",
+            "required": ["primaryAccountNumberID"],
+            "properties": {
+              "primaryAccountNumberID": {
+                "type": "string",
+                "description": "BT-87: Card PAN (masked)"
+              },
+              "holderName": {
+                "type": "string",
+                "description": "BT-88: Cardholder name"
+              }
+            }
+          },
+          "paymentMandate": {
+            "type": "object",
+            "description": "BG-19: Direct debit",
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "BT-89: Mandate reference identifier"
+              },
+              "payerFinancialAccount": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "BT-91: Debited account identifier"
+                  },
+                  "financialInstitutionBranch": {
+                    "type": "object",
+                    "properties": {
+                      "financialInstitution": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "description": "BT-90: Bank assigned creditor identifier"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "paymentTerms": {
+      "type": "object",
+      "properties": {
+        "note": {
+          "type": "string",
+          "description": "BT-20: Payment terms"
+        }
+      }
+    },
+    "allowanceCharge": {
+      "type": "array",
+      "description": "BG-20: Document level allowances / BG-21: Document level charges",
+      "items": {
+        "type": "object",
+        "required": ["chargeIndicator", "amount"],
+        "properties": {
+          "chargeIndicator": {
+            "type": "boolean",
+            "description": "false = allowance, true = charge"
+          },
+          "allowanceChargeReasonCode": {
+            "type": "string",
+            "description": "BT-98/BT-105: Reason code"
+          },
+          "allowanceChargeReason": {
+            "type": "string",
+            "description": "BT-97/BT-104: Reason text"
+          },
+          "multiplierFactorNumeric": {
+            "type": "number",
+            "description": "BT-94/BT-101: Percentage"
+          },
+          "amount": {
+            "type": "number",
+            "description": "BT-92/BT-99: Allowance/charge amount"
+          },
+          "baseAmount": {
+            "type": "number",
+            "description": "BT-93/BT-100: Base amount"
+          },
+          "taxCategory": {
+            "type": "object",
+            "required": ["id"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "BT-95/BT-102: VAT category code"
+              },
+              "percent": {
+                "type": "number",
+                "description": "BT-96/BT-103: VAT rate"
+              }
+            }
+          }
+        }
+      }
+    },
+    "taxTotal": {
+      "type": "array",
+      "description": "VAT breakdown",
+      "minItems": 1,
+      "maxItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["taxAmount"],
+        "properties": {
+          "taxAmount": {
+            "type": "number",
+            "description": "BT-110/BT-111: Total VAT amount"
+          },
+          "taxAmountCurrency": {
+            "type": "string",
+            "pattern": "^[A-Z]{3}$",
+            "description": "Currency for this tax total"
+          },
+          "taxSubtotal": {
+            "type": "array",
+            "description": "BG-23: VAT breakdown",
+            "items": {
+              "type": "object",
+              "required": ["taxableAmount", "taxAmount", "taxCategory"],
+              "properties": {
+                "taxableAmount": {
+                  "type": "number",
+                  "description": "BT-116: VAT category taxable amount"
+                },
+                "taxAmount": {
+                  "type": "number",
+                  "description": "BT-117: VAT category tax amount"
+                },
+                "taxCategory": {
+                  "type": "object",
+                  "required": ["id"],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "BT-118: VAT category code",
+                      "enum": ["S", "Z", "E", "AE", "K", "G", "O", "L", "M"]
+                    },
+                    "percent": {
+                      "type": "number",
+                      "description": "BT-119: VAT category rate"
+                    },
+                    "taxExemptionReasonCode": {
+                      "type": "string",
+                      "description": "BT-120: VAT exemption reason code"
+                    },
+                    "taxExemptionReason": {
+                      "type": "string",
+                      "description": "BT-121: VAT exemption reason text"
+                    },
+                    "taxScheme": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "default": "VAT"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "legalMonetaryTotal": {
+      "type": "object",
+      "description": "BG-22: Document totals",
+      "required": [
+        "lineExtensionAmount",
+        "taxExclusiveAmount",
+        "taxInclusiveAmount",
+        "payableAmount"
+      ],
+      "properties": {
+        "lineExtensionAmount": {
+          "type": "number",
+          "description": "BT-106: Sum of invoice line net amount"
+        },
+        "taxExclusiveAmount": {
+          "type": "number",
+          "description": "BT-109: Invoice total amount without VAT"
+        },
+        "taxInclusiveAmount": {
+          "type": "number",
+          "description": "BT-112: Invoice total amount with VAT"
+        },
+        "allowanceTotalAmount": {
+          "type": "number",
+          "description": "BT-107: Sum of allowances on document level"
+        },
+        "chargeTotalAmount": {
+          "type": "number",
+          "description": "BT-108: Sum of charges on document level"
+        },
+        "prepaidAmount": {
+          "type": "number",
+          "description": "BT-113: Paid amount"
+        },
+        "payableRoundingAmount": {
+          "type": "number",
+          "description": "BT-114: Rounding amount"
+        },
+        "payableAmount": {
+          "type": "number",
+          "description": "BT-115: Amount due for payment"
+        }
+      }
+    },
+    "invoiceLine": {
+      "type": "array",
+      "description": "BG-25: Invoice line",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "invoicedQuantity",
+          "lineExtensionAmount",
+          "item",
+          "price"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "BT-126: Invoice line identifier"
+          },
+          "note": {
+            "type": "string",
+            "description": "BT-127: Invoice line note"
+          },
+          "invoicedQuantity": {
+            "type": "number",
+            "description": "BT-129: Invoiced quantity"
+          },
+          "invoicedQuantityUnitCode": {
+            "type": "string",
+            "description": "BT-130: Unit of measure code (UN/ECE Rec 20)",
+            "examples": ["C62", "LTR", "KGM", "MTR"]
+          },
+          "lineExtensionAmount": {
+            "type": "number",
+            "description": "BT-131: Invoice line net amount"
+          },
+          "accountingCost": {
+            "type": "string",
+            "description": "BT-133: Buyer accounting reference"
+          },
+          "invoicePeriod": {
+            "type": "object",
+            "description": "BG-26: Invoice line period",
+            "properties": {
+              "startDate": {
+                "type": "string",
+                "format": "date",
+                "description": "BT-134: Line period start date"
+              },
+              "endDate": {
+                "type": "string",
+                "format": "date",
+                "description": "BT-135: Line period end date"
+              }
+            }
+          },
+          "orderLineReference": {
+            "type": "object",
+            "properties": {
+              "lineID": {
+                "type": "string",
+                "description": "BT-132: Referenced purchase order line"
+              }
+            }
+          },
+          "documentReference": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "description": "BT-128: Invoice line object identifier"
+                }
+              }
+            }
+          },
+          "allowanceCharge": {
+            "type": "array",
+            "description": "BG-27: Line allowances / BG-28: Line charges",
+            "items": {
+              "type": "object",
+              "required": ["chargeIndicator", "amount"],
+              "properties": {
+                "chargeIndicator": {
+                  "type": "boolean"
+                },
+                "allowanceChargeReasonCode": {
+                  "type": "string",
+                  "description": "BT-139/BT-144"
+                },
+                "allowanceChargeReason": {
+                  "type": "string",
+                  "description": "BT-140/BT-145"
+                },
+                "multiplierFactorNumeric": {
+                  "type": "number",
+                  "description": "BT-138/BT-143"
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "BT-136/BT-141"
+                },
+                "baseAmount": {
+                  "type": "number",
+                  "description": "BT-137/BT-142"
+                }
+              }
+            }
+          },
+          "item": {
+            "type": "object",
+            "description": "BG-31: Item information",
+            "required": ["name", "classifiedTaxCategory"],
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "BT-154: Item description"
+              },
+              "name": {
+                "type": "string",
+                "description": "BT-153: Item name"
+              },
+              "buyersItemIdentification": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "BT-156: Buyer's item identifier"
+                  }
+                }
+              },
+              "sellersItemIdentification": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "BT-155: Seller's item identifier"
+                  }
+                }
+              },
+              "standardItemIdentification": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "BT-157: Item standard identifier (GTIN, EAN)"
+                  },
+                  "schemeID": {
+                    "type": "string",
+                    "examples": ["0160"]
+                  }
+                }
+              },
+              "originCountry": {
+                "type": "object",
+                "properties": {
+                  "identificationCode": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$",
+                    "description": "BT-159: Item country of origin (ISO 3166-1)"
+                  }
+                }
+              },
+              "commodityClassification": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "itemClassificationCode": {
+                      "type": "string",
+                      "description": "BT-158: Item classification identifier"
+                    },
+                    "listID": {
+                      "type": "string",
+                      "examples": ["UNSPSC", "CPV", "HS"]
+                    }
+                  }
+                }
+              },
+              "classifiedTaxCategory": {
+                "type": "object",
+                "description": "BG-30: Line VAT information",
+                "required": ["id"],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "BT-151: Invoiced item VAT category code",
+                    "enum": ["S", "Z", "E", "AE", "K", "G", "O", "L", "M"]
+                  },
+                  "percent": {
+                    "type": "number",
+                    "description": "BT-152: Invoiced item VAT rate"
+                  },
+                  "taxScheme": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "default": "VAT"
+                      }
+                    }
+                  }
+                }
+              },
+              "additionalItemProperty": {
+                "type": "array",
+                "description": "Item attributes",
+                "items": {
+                  "type": "object",
+                  "required": ["name", "value"],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "BT-160: Item attribute name"
+                    },
+                    "value": {
+                      "type": "string",
+                      "description": "BT-161: Item attribute value"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "price": {
+            "type": "object",
+            "description": "BG-29: Price details",
+            "required": ["priceAmount"],
+            "properties": {
+              "priceAmount": {
+                "type": "number",
+                "description": "BT-146: Item net price"
+              },
+              "baseQuantity": {
+                "type": "number",
+                "description": "BT-149: Item price base quantity",
+                "default": 1
+              },
+              "baseQuantityUnitCode": {
+                "type": "string",
+                "description": "BT-150: Base quantity unit code"
+              },
+              "allowanceCharge": {
+                "type": "object",
+                "properties": {
+                  "chargeIndicator": {
+                    "type": "boolean",
+                    "default": false
+                  },
+                  "amount": {
+                    "type": "number",
+                    "description": "BT-147: Item price discount"
+                  },
+                  "baseAmount": {
+                    "type": "number",
+                    "description": "BT-148: Item gross price"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "Party": {
+      "type": "object",
+      "required": ["partyLegalEntity", "postalAddress", "endpointID"],
+      "properties": {
+        "endpointID": {
+          "type": "string",
+          "description": "Electronic address (BT-34/BT-49)"
+        },
+        "endpointIDScheme": {
+          "type": "string",
+          "description": "Scheme ID (e.g., 0088 for GLN, 0192 for SEPA)"
+        },
+        "partyIdentification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "BT-29/BT-46: Party identifier"
+              },
+              "schemeID": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "partyName": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "BT-28/BT-45: Trading name"
+            }
+          }
+        },
+        "postalAddress": {
+          "$ref": "#/$defs/Address"
+        },
+        "partyTaxScheme": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "companyID": {
+                "type": "string",
+                "description": "BT-31/BT-48: VAT identifier or BT-32: Tax registration"
+              },
+              "taxScheme": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "enum": ["VAT", "TAX"]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "partyLegalEntity": {
+          "type": "object",
+          "required": ["registrationName"],
+          "properties": {
+            "registrationName": {
+              "type": "string",
+              "description": "BT-27/BT-44: Legal name"
+            },
+            "companyID": {
+              "type": "string",
+              "description": "BT-30/BT-47: Legal registration identifier"
+            },
+            "companyIDScheme": {
+              "type": "string"
+            },
+            "companyLegalForm": {
+              "type": "string",
+              "description": "BT-33: Additional legal information"
+            }
+          }
+        },
+        "contact": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "BT-41/BT-56: Contact point"
+            },
+            "telephone": {
+              "type": "string",
+              "description": "BT-42/BT-57: Contact telephone"
+            },
+            "electronicMail": {
+              "type": "string",
+              "format": "email",
+              "description": "BT-43/BT-58: Contact email"
+            }
+          }
+        }
+      }
+    },
+    "PartySimple": {
+      "type": "object",
+      "properties": {
+        "partyIdentification": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "BT-60: Payee identifier"
+              }
+            }
+          }
+        },
+        "partyName": {
+          "type": "object",
+          "required": ["name"],
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "BT-59: Payee name"
+            }
+          }
+        },
+        "partyLegalEntity": {
+          "type": "object",
+          "properties": {
+            "companyID": {
+              "type": "string",
+              "description": "BT-61: Payee legal registration identifier"
+            }
+          }
+        }
+      }
+    },
+    "Address": {
+      "type": "object",
+      "required": ["country"],
+      "properties": {
+        "streetName": {
+          "type": "string",
+          "description": "Address line 1 (BT-35/BT-50/BT-75)"
+        },
+        "additionalStreetName": {
+          "type": "string",
+          "description": "Address line 2 (BT-36/BT-51/BT-76)"
+        },
+        "addressLine": {
+          "type": "object",
+          "properties": {
+            "line": {
+              "type": "string",
+              "description": "Address line 3 (BT-37/BT-52/BT-77)"
+            }
+          }
+        },
+        "cityName": {
+          "type": "string",
+          "description": "City (BT-38/BT-53/BT-78)"
+        },
+        "postalZone": {
+          "type": "string",
+          "description": "Post code (BT-39/BT-54/BT-79)"
+        },
+        "countrySubentity": {
+          "type": "string",
+          "description": "Country subdivision (BT-40/BT-55/BT-80)"
+        },
+        "country": {
+          "type": "object",
+          "required": ["identificationCode"],
+          "properties": {
+            "identificationCode": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$",
+              "description": "Country code ISO 3166-1 (BT-41/BT-56/BT-81)"
+            }
+          }
+        }
+      }
+    }
+  }
+}

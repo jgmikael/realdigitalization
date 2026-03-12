@@ -1,0 +1,333 @@
+{
+  "customizationID": "urn:cen.eu:en16931:2017#compliant#urn:fdc:peppol.eu:2017:poacc:billing:3.0",
+  "profileID": "urn:fdc:peppol.eu:2017:poacc:billing:01:1.0",
+  "id": "INV-2024-12-001",
+  "issueDate": "2024-12-15",
+  "dueDate": "2025-01-14",
+  "invoiceTypeCode": "380",
+  "note": [
+    {
+      "value": "Thank you for your business. Payment terms: Net 30 days.",
+      "languageID": "en"
+    }
+  ],
+  "documentCurrencyCode": "EUR",
+  "buyerReference": "PROJ-2024-DIGISERV",
+  "invoicePeriod": {
+    "startDate": "2024-11-01",
+    "endDate": "2024-11-30"
+  },
+  "orderReference": {
+    "id": "PO-2024-9876",
+    "salesOrderID": "SO-2024-1234"
+  },
+  "contractDocumentReference": {
+    "id": "CONTRACT-2024-DIGITAL"
+  },
+  "projectReference": {
+    "id": "PROJECT-DIGITALIZATION-FI"
+  },
+  "accountingSupplierParty": {
+    "party": {
+      "endpointID": "FI12345678",
+      "endpointIDScheme": "0037",
+      "partyIdentification": [
+        {
+          "id": "FI12345678",
+          "schemeID": "0037"
+        }
+      ],
+      "partyName": {
+        "name": "Digital Solutions Finland Oy"
+      },
+      "postalAddress": {
+        "streetName": "Kauppakatu",
+        "additionalStreetName": "Building 5A",
+        "cityName": "Helsinki",
+        "postalZone": "00100",
+        "countrySubentity": "Uusimaa",
+        "country": {
+          "identificationCode": "FI"
+        }
+      },
+      "partyTaxScheme": [
+        {
+          "companyID": "FI12345678",
+          "taxScheme": {
+            "id": "VAT"
+          }
+        }
+      ],
+      "partyLegalEntity": {
+        "registrationName": "Digital Solutions Finland Oy",
+        "companyID": "1234567-8",
+        "companyIDScheme": "0037",
+        "companyLegalForm": "Limited liability company (Osakeyhtiö)"
+      },
+      "contact": {
+        "name": "Sanna Virtanen",
+        "telephone": "+358 9 1234567",
+        "electronicMail": "sanna.virtanen@digitalsolutions.fi"
+      }
+    }
+  },
+  "accountingCustomerParty": {
+    "party": {
+      "endpointID": "DE987654321",
+      "endpointIDScheme": "0088",
+      "partyIdentification": [
+        {
+          "id": "DE987654321",
+          "schemeID": "0088"
+        }
+      ],
+      "partyName": {
+        "name": "Industrie GmbH"
+      },
+      "postalAddress": {
+        "streetName": "Industriestraße",
+        "additionalStreetName": "Gebäude 12",
+        "cityName": "München",
+        "postalZone": "80331",
+        "countrySubentity": "Bayern",
+        "country": {
+          "identificationCode": "DE"
+        }
+      },
+      "partyTaxScheme": [
+        {
+          "companyID": "DE987654321",
+          "taxScheme": {
+            "id": "VAT"
+          }
+        }
+      ],
+      "partyLegalEntity": {
+        "registrationName": "Industrie Digitalisierung GmbH",
+        "companyID": "HRB 98765",
+        "companyIDScheme": "0204",
+        "companyLegalForm": "Gesellschaft mit beschränkter Haftung"
+      },
+      "contact": {
+        "name": "Dr. Klaus Müller",
+        "telephone": "+49 89 123456",
+        "electronicMail": "k.mueller@industrie-gmbh.de"
+      }
+    }
+  },
+  "delivery": {
+    "actualDeliveryDate": "2024-11-30",
+    "deliveryLocation": {
+      "id": "DE-MUNC-001",
+      "address": {
+        "streetName": "Industriestraße",
+        "cityName": "München",
+        "postalZone": "80331",
+        "country": {
+          "identificationCode": "DE"
+        }
+      }
+    },
+    "deliveryParty": {
+      "partyName": {
+        "name": "Industrie Digitalisierung GmbH - IT Department"
+      }
+    }
+  },
+  "paymentMeans": [
+    {
+      "paymentMeansCode": "30",
+      "paymentMeansCodeName": "Credit transfer",
+      "instructionNote": "Please reference invoice number INV-2024-12-001",
+      "payeeFinancialAccount": {
+        "id": "FI2112345600000785",
+        "name": "Digital Solutions Finland Oy",
+        "financialInstitutionBranch": {
+          "id": "NDEAFIHH"
+        }
+      }
+    }
+  ],
+  "paymentTerms": {
+    "note": "Net 30 days. Payment due by 2025-01-14. Late payment subject to 8% annual interest."
+  },
+  "allowanceCharge": [
+    {
+      "chargeIndicator": false,
+      "allowanceChargeReasonCode": "95",
+      "allowanceChargeReason": "Project volume discount",
+      "multiplierFactorNumeric": 5,
+      "amount": 500.00,
+      "baseAmount": 10000.00,
+      "taxCategory": {
+        "id": "S",
+        "percent": 24
+      }
+    }
+  ],
+  "taxTotal": [
+    {
+      "taxAmount": 2280.00,
+      "taxAmountCurrency": "EUR",
+      "taxSubtotal": [
+        {
+          "taxableAmount": 9500.00,
+          "taxAmount": 2280.00,
+          "taxCategory": {
+            "id": "S",
+            "percent": 24,
+            "taxScheme": {
+              "id": "VAT"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "legalMonetaryTotal": {
+    "lineExtensionAmount": 10000.00,
+    "taxExclusiveAmount": 9500.00,
+    "taxInclusiveAmount": 11780.00,
+    "allowanceTotalAmount": 500.00,
+    "chargeTotalAmount": 0.00,
+    "prepaidAmount": 0.00,
+    "payableRoundingAmount": 0.00,
+    "payableAmount": 11780.00
+  },
+  "invoiceLine": [
+    {
+      "id": "1",
+      "note": "Monthly digital transformation consulting services - November 2024",
+      "invoicedQuantity": 80,
+      "invoicedQuantityUnitCode": "HUR",
+      "lineExtensionAmount": 6400.00,
+      "accountingCost": "PROJ-2024-DIGISERV",
+      "invoicePeriod": {
+        "startDate": "2024-11-01",
+        "endDate": "2024-11-30"
+      },
+      "orderLineReference": {
+        "lineID": "1"
+      },
+      "item": {
+        "description": "Senior consultant services for EU Business Wallet implementation and digital process optimization",
+        "name": "Digital Transformation Consulting - Senior Consultant",
+        "sellersItemIdentification": {
+          "id": "SVC-CONSULT-SENIOR"
+        },
+        "buyersItemIdentification": {
+          "id": "BUY-CONSULT-001"
+        },
+        "standardItemIdentification": {
+          "id": "85121800",
+          "schemeID": "UNSPSC"
+        },
+        "commodityClassification": [
+          {
+            "itemClassificationCode": "85121800",
+            "listID": "UNSPSC"
+          }
+        ],
+        "classifiedTaxCategory": {
+          "id": "S",
+          "percent": 24,
+          "taxScheme": {
+            "id": "VAT"
+          }
+        },
+        "additionalItemProperty": [
+          {
+            "name": "Consultant Level",
+            "value": "Senior"
+          },
+          {
+            "name": "Technology Focus",
+            "value": "EU Business Wallet, W3C Verifiable Credentials"
+          }
+        ]
+      },
+      "price": {
+        "priceAmount": 80.00,
+        "baseQuantity": 1,
+        "baseQuantityUnitCode": "HUR"
+      }
+    },
+    {
+      "id": "2",
+      "note": "Technical architecture design and implementation support",
+      "invoicedQuantity": 40,
+      "invoicedQuantityUnitCode": "HUR",
+      "lineExtensionAmount": 3600.00,
+      "accountingCost": "PROJ-2024-DIGISERV",
+      "invoicePeriod": {
+        "startDate": "2024-11-01",
+        "endDate": "2024-11-30"
+      },
+      "orderLineReference": {
+        "lineID": "2"
+      },
+      "item": {
+        "description": "Technical architect services for EBSI integration, trust registry setup, and API design",
+        "name": "Technical Architecture Services",
+        "sellersItemIdentification": {
+          "id": "SVC-ARCHITECT"
+        },
+        "buyersItemIdentification": {
+          "id": "BUY-ARCH-002"
+        },
+        "standardItemIdentification": {
+          "id": "85121801",
+          "schemeID": "UNSPSC"
+        },
+        "commodityClassification": [
+          {
+            "itemClassificationCode": "85121801",
+            "listID": "UNSPSC"
+          }
+        ],
+        "classifiedTaxCategory": {
+          "id": "S",
+          "percent": 24,
+          "taxScheme": {
+            "id": "VAT"
+          }
+        },
+        "additionalItemProperty": [
+          {
+            "name": "Specialization",
+            "value": "EBSI, Trust Registry, OpenAPI"
+          },
+          {
+            "name": "Certification",
+            "value": "TOGAF Enterprise Architect"
+          }
+        ]
+      },
+      "price": {
+        "priceAmount": 90.00,
+        "baseQuantity": 1,
+        "baseQuantityUnitCode": "HUR"
+      }
+    }
+  ],
+  "additionalDocumentReference": [
+    {
+      "id": "TIMESHEET-2024-11",
+      "documentDescription": "Detailed timesheet for November 2024 consulting hours",
+      "attachment": {
+        "externalReference": {
+          "uri": "https://digitalsolutions.fi/documents/timesheets/2024-11.pdf"
+        }
+      }
+    },
+    {
+      "id": "CONTRACT-2024-DIGITAL",
+      "documentDescription": "Master services agreement - Digital Transformation Project",
+      "attachment": {
+        "externalReference": {
+          "uri": "https://digitalsolutions.fi/contracts/2024-DIGITAL.pdf"
+        }
+      }
+    }
+  ]
+}
